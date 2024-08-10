@@ -1,12 +1,13 @@
-import { StatusBar } from 'expo-status-bar';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, ImageBackground, StyleSheet, Text} from 'react-native';
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Welcome to SquireL</Text>
-      <Button title='Start to Play!'></Button>
-    </View>
+
+  return (    
+      <ImageBackground style={styles.container} source={require('./welcomePage.jpg')}>
+          <Text>Welcome to SquireL</Text>
+          <Button title='Start to Play!'></Button>
+      </ImageBackground>    
+
   );
 }
 
