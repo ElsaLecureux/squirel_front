@@ -1,6 +1,17 @@
 import { Button, ImageBackground, StyleSheet, Text} from 'react-native';
+import * as ScreenOrientation from 'expo-screen-orientation';
+import { useEffect } from 'react';
+
 
 export default function App() {
+
+  async function changeScreenOrientation() {
+    await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+  }
+
+  useEffect(() => {
+    changeScreenOrientation();
+  })
 
   return (    
       <ImageBackground style={styles.container} source={require('./welcomePage.jpg')}>
