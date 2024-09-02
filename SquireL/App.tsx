@@ -1,12 +1,19 @@
-import { Button, ImageBackground, StyleSheet, Text} from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import { useEffect } from 'react';
-
+import { useEffect, useState } from 'react';
+import LoadingScreen from './LoadingScreen';
+import WelcomePage from './WelcomePage';
 
 export default function App() {
 
+  const [isLoading, setIsloading] = useState(true);
+
   async function changeScreenOrientation() {
     await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+    console.log(await ScreenOrientation.getOrientationAsync())
+    if (await ScreenOrientation.getOrientationAsync() === 4){
+      setIsloading(false);
+    }
   }
 
   useEffect(() => {
@@ -14,19 +21,17 @@ export default function App() {
   })
 
   return (    
-      <ImageBackground style={styles.container} source={require('./welcomePage.jpg')}>
-          <Text>Welcome to SquireL</Text>
-          <Button title='Start to Play!'></Button>
-      </ImageBackground>    
-
+    <View style={styles.container} >
+      {
+       isLoading ? <LoadingScreen></LoadingScreen> : <WelcomePage></WelcomePage>
+      }      
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  }
 });
+
