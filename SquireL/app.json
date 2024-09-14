@@ -21,6 +21,9 @@
         "backgroundColor": "#ffffff"
       }
     },
+    "androidNavigationBar": {
+      "visible": "sticky-immersive"
+    },
     "plugins": [
       [
         "expo-screen-orientation",
