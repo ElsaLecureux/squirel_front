@@ -1,12 +1,15 @@
 import { Button, ImageBackground, StyleSheet, Text, View} from 'react-native';
 
-export default function WelcomeScreen() {
+export default function WelcomeScreen({ navigation }) {
 
   return (    
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/welcomeScreen.jpg')}>
         <View style={styles.container}>
             <Text>Welcome to SquireL</Text>
-            <Button title='Start to Play!'></Button>
+            <Button 
+              title='Start to Play!'
+              onPress={() => navigation.navigate('SignInScreen')}
+            />
         </View>
       </ImageBackground>    
   );

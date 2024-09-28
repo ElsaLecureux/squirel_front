@@ -1,11 +1,19 @@
-import { ImageBackground, StyleSheet, Text, View} from 'react-native';
+import { ImageBackground, StyleSheet, Text, View, Button} from 'react-native';
 
-export default function SignUpScreen() {
+export default function SignUpScreen({ navigation }) {
 
   return (    
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/welcomeScreen.jpg')}>
         <View style={styles.container}>
-            <Text>Sign Up</Text>
+            <Text style={styles.text}>Sign Up</Text>
+            <Button 
+              title='Register'
+              // onPress={() => navigation.navigate('SignInScreen')}
+              />
+            <Button
+              title='Sign In'
+              onPress={() => navigation.navigate('SignInScreen')}
+             />
         </View>
       </ImageBackground>    
   );
@@ -22,5 +30,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 0.5,
     alignItems: 'center',
+  },
+  text: {
+    color: '#fff' 
   }
 });
