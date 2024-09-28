@@ -1,6 +1,6 @@
-import { ImageBackground, StyleSheet } from 'react-native';
+import { ImageBackground, StyleSheet, Button } from 'react-native';
 
-export default function PlayroomScreen() {
+export default function PlayroomScreen({ navigation }) {
 
   return (    
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/playroomScreen.jpg')}>

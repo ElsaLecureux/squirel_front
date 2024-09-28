@@ -1,9 +1,9 @@
-import { ImageBackground, StyleSheet } from 'react-native';
+import { ImageBackground, StyleSheet, Button } from 'react-native';
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }) {
 
   return (    
-      <ImageBackground style={styles.pageContainer} source={require('../../assets/images/profileScreen.jpeg')}>
+      <ImageBackground style={styles.pageContainer} source={require('../../assets/images/profileScreen.jpg')}>
       </ImageBackground>    
   );
 }

@@ -8,7 +8,7 @@ export default function SignInScreen({ navigation }) {
             <Text style={styles.text}>Sign In</Text>
             <Button 
               title='Validate'
-              //onPress={() => navigation.navigate('SignInScreen')}
+              onPress={() => navigation.navigate('HomeDrawer')}
             />
             <Button 
               title='Sign Up'

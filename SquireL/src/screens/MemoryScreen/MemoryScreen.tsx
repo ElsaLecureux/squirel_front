@@ -1,6 +1,6 @@
-import { ImageBackground, StyleSheet, Text } from 'react-native';
+import { ImageBackground, StyleSheet, Text, Button } from 'react-native';
 
-export default function MemoryScreen() {
+export default function MemoryScreen({ navigation }) {
 
   return (    
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/memoryGame.jpg')}>
