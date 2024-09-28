@@ -5,7 +5,7 @@ export default function MemoryScreen({ navigation }) {
   return (    
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/memoryGame.jpg')}>
         <Text style={styles.title}>
-            Painting room!!!
+            Memory
         </Text>
       </ImageBackground>    
   );
