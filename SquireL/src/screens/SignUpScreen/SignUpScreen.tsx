@@ -8,7 +8,7 @@ export default function SignUpScreen({ navigation }) {
             <Text style={styles.text}>Sign Up</Text>
             <Button 
               title='Register'
-              onPress={() => navigation.navigate('HomeDrawer')}
+              onPress={() => navigation.navigate('AppDrawer')}
               />
             <Button
               title='Sign In'

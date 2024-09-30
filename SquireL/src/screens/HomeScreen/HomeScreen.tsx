@@ -6,7 +6,7 @@ export default function HomeScreen({ navigation }) {
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/homeScreen.jpg')}>
         <Button 
           title='Go to PlayRoom'
-          onPress={() => navigation.navigate('Playroom')}
+          onPress={() => navigation.navigate('PlayroomStack', {screen: 'Playroom'})}
           >          
         </Button>
         <Button 

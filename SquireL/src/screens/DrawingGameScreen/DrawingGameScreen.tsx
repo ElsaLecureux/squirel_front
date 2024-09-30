@@ -5,7 +5,7 @@ export default function DrawingGameScreen() {
   return (    
       <View style={styles.pageContainer}>
         <Text style={styles.title}>
-            Drawings Box
+            Drawings Game...
         </Text>
       </View>    
   );

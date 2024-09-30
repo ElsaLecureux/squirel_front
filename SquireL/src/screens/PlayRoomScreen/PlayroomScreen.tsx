@@ -4,6 +4,21 @@ export default function PlayroomScreen({ navigation }) {
 
   return (    
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/playroomScreen.jpg')}>
+         <Button 
+          title='Puzzle'
+          onPress={() => navigation.navigate('Puzzle')}
+          >          
+        </Button>
+        <Button 
+          title='DrawingGame'
+          onPress={() => navigation.navigate('DrawingGame')}
+          >          
+        </Button>
+        <Button 
+          title='DrawingBox'
+          onPress={() => navigation.navigate('HomeStack', {screen: 'DrawingBoxScreen'})}
+          >          
+        </Button>
       </ImageBackground>    
   );
 }

@@ -12,7 +12,7 @@ export default function MemoryScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-    pageContainer: {
+    pageContainer: { 
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',

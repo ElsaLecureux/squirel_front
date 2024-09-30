@@ -4,7 +4,7 @@ import WelcomeScreen from '../screens/WelcomeScreen/WelcomeScreen';
 import SignInScreen from '../screens/SignInScreen/SignInScreen';
 import SignUpScreen from '../screens/SignUpScreen/SignUpScreen';
 
-import HomeDrawer  from '../routes/HomeDrawer';
+import AppDrawer from './AppDrawer';
 
 const Stack = createNativeStackNavigator();
 
@@ -14,7 +14,7 @@ export default function RootStack () {
           <Stack.Screen name="WelcomeScreen" component={WelcomeScreen}   />
           <Stack.Screen name="SignInScreen" component={SignInScreen}   />
           <Stack.Screen name="SignUpScreen" component={SignUpScreen}   />
-          <Stack.Screen name="HomeDrawer" component={HomeDrawer}   />
+          <Stack.Screen name="AppDrawer" component={AppDrawer}   />
       </Stack.Navigator>  
     )
 
