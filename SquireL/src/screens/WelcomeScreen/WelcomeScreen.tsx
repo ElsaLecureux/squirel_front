@@ -1,5 +1,4 @@
-import {ImageBackground, StyleSheet, Text, View} from 'react-native';
-import { Button, ButtonText, ButtonGroup } from "@/components/ui/button";
+import {ImageBackground, StyleSheet, Text, View, Button} from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 type WelcomeScreenNavigationProp = StackNavigationProp<
@@ -17,14 +16,11 @@ export default function WelcomeScreen({ navigation}: Props) {
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/welcomeScreen.jpg')}>
         <View style={styles.container}>
             <Text>Welcome to SquireL</Text>
-            <ButtonGroup>
-              <Button size="md" variant="solid" action="primary"
+              <Button 
+                title ='Start to Play!'
                 onPress={() => navigation.navigate('SignIn')}
               >
-                <ButtonText>Start to Play!</ButtonText>
               </Button>
-
-            </ButtonGroup>
         </View>
       </ImageBackground>    
   );
