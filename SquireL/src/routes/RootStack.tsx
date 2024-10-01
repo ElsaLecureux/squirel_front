@@ -6,16 +6,16 @@ import SignUpScreen from '../screens/SignUpScreen/SignUpScreen';
 
 import AppDrawer from './AppDrawer';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootStack () {
 
     return (
 
-    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="WelcomeScreen" >
-        <Stack.Screen name="WelcomeScreen" component={WelcomeScreen}/>
-        <Stack.Screen name="SignInScreen" component={SignInScreen}/>
-        <Stack.Screen name="SignUpScreen" component={SignUpScreen}/>
+    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Welcome" >
+        <Stack.Screen name="Welcome" component={WelcomeScreen}/>
+        <Stack.Screen name="SignIn" component={SignInScreen}/>
+        <Stack.Screen name="SignUp" component={SignUpScreen}/>
         <Stack.Screen name="AppDrawer" component={AppDrawer}/>
     </Stack.Navigator>  
     )

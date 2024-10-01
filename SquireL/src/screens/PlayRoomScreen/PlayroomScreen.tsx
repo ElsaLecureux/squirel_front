@@ -1,6 +1,16 @@
 import { ImageBackground, StyleSheet, Button } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-export default function PlayroomScreen({ navigation }) {
+type PlayroomScreenNavigationProp = StackNavigationProp<
+  PlayroomStackParamList,
+  'Playroom'
+>;
+
+type Props = {
+  navigation: PlayroomScreenNavigationProp;
+};
+
+export default function PlayroomScreen({ navigation }: Props) {
 
   return (    
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/playroomScreen.jpg')}>
@@ -15,8 +25,8 @@ export default function PlayroomScreen({ navigation }) {
           >          
         </Button>
         <Button 
-          title='DrawingBox'
-          onPress={() => navigation.navigate('HomeStack', {screen: 'DrawingBoxScreen'})}
+          title='DrawingsBox'
+          onPress={() => navigation.getParent()?.navigate('DrawingsBox')}
           >          
         </Button>
       </ImageBackground>    

@@ -1,6 +1,16 @@
-import { ImageBackground, StyleSheet, Text, Button } from 'react-native';
+import { ImageBackground, StyleSheet, Text } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-export default function MemoryScreen({ navigation }) {
+type MemoryScreenNavigationProp = StackNavigationProp<
+  HomeStackParamList,
+  'Memory'
+>;
+
+type Props = {
+  navigation: MemoryScreenNavigationProp;
+};
+
+export default function MemoryScreen({ navigation }: Props) {
 
   return (    
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/memoryGame.jpg')}>

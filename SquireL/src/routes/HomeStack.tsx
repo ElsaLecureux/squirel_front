@@ -1,13 +1,20 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-import { Button } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import MemoryScreen from '../screens/MemoryScreen/MemoryScreen';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<HomeStackParamList>();
 
-export default function HomeStack ({navigation}) {
+type PlayroomStackNavigationProp = StackNavigationProp<
+  HomeStackParamList
+>;
+
+type Props = {
+  navigation: PlayroomStackNavigationProp;
+};
+
+export default function HomeStack ({navigation}: Props) {
 
         return (
           <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>

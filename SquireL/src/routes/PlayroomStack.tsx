@@ -1,15 +1,21 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-import { Button } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 import PuzzleScreen from '../screens/PuzzleScreen/puzzleScreen';
 import DrawingGameScreen from '../screens/DrawingGameScreen/DrawingGameScreen';
 import PlayroomScreen from '../screens/PlayRoomScreen/PlayroomScreen';
 
+const Stack = createNativeStackNavigator<PlayroomStackParamList>();
 
-const Stack = createNativeStackNavigator();
+type PlayroomStackNavigationProp = StackNavigationProp<
+  PlayroomStackParamList 
+>;
 
-export default function PlayroomStack ({navigation}) {
+type Props = {
+  navigation: PlayroomStackNavigationProp;
+};
+
+export default function PlayroomStack ({navigation}: Props) {
 
         return (
           <Stack.Navigator initialRouteName="Playroom" screenOptions={{ headerShown: false }}>

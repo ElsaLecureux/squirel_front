@@ -1,5 +1,7 @@
 import './gesture-handler';
 
+import 'global.css';
+
 import { OverlayProvider } from "@gluestack-ui/overlay"
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider"
 

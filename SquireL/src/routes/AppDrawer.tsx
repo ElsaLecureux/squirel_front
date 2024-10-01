@@ -1,4 +1,5 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { DrawerNavigationProp  } from '@react-navigation/drawer';
 
 import { TouchableOpacity, Text } from 'react-native';
 
@@ -7,12 +8,22 @@ import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
 import PlayroomStack from './PlayroomStack';
 import DrawingsBoxScreen from '../screens/DrawingsBoxScreen/DrawingsBoxScreen';
 
-const Drawer = createDrawerNavigator();
+const Drawer = createDrawerNavigator<AppDrawerParamList>();
 
-export default function AppDrawer ({navigation}) {
+type AppDrawerNavigationProp = DrawerNavigationProp <
+  AppDrawerParamList
+>;
+
+type Props = {
+  navigation: AppDrawerNavigationProp;
+};
+
+//screenOptions={{ headerTransparent: true }} might be the issue with the buttons
+
+export default function AppDrawer ({navigation}: Props) {
 
         return (
-          <Drawer.Navigator initialRouteName="Home" screenOptions={{ headerTransparent: true }}>
+          <Drawer.Navigator initialRouteName="HomeStack" screenOptions={{ headerTransparent: true }}>
             <Drawer.Screen 
               name="HomeStack" 
               component={ HomeStack }

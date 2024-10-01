@@ -1,6 +1,16 @@
 import { ImageBackground, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-export default function SignInScreen({ navigation }) {
+type SignInScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'SignIn'
+>;
+
+type Props = {
+  navigation: SignInScreenNavigationProp;
+};
+
+export default function SignInScreen({ navigation }: Props) {
 
   return (    
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/welcomeScreen.jpg')}>
@@ -12,7 +22,7 @@ export default function SignInScreen({ navigation }) {
               <Text>Validate</Text>
             </TouchableOpacity>
             <TouchableOpacity 
-              onPress={() => navigation.navigate('SignUpScreen')}
+              onPress={() => navigation.navigate('SignUp')}
             >
               <Text>Sign Up</Text>
             </TouchableOpacity>

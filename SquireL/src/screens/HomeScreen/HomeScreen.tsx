@@ -1,11 +1,21 @@
 import { Text, ImageBackground, StyleSheet, TouchableOpacity  } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-export default function HomeScreen({ navigation }) {
+type HomeScreenNavigationProp = StackNavigationProp<
+  HomeStackParamList,
+  'Home'
+>;
+
+type Props = {
+  navigation: HomeScreenNavigationProp;
+};
+
+export default function HomeScreen({ navigation }: Props) {
 
   return (    
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/homeScreen.jpg')}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('PlayroomStack', {screen: 'Playroom'})}
+          onPress={() => navigation.getParent()?.navigate('PlayroomStack', {screen: 'Playroom'})}
           >
             <Text>Go to Playroom</Text>
           </TouchableOpacity>           
@@ -15,7 +25,7 @@ export default function HomeScreen({ navigation }) {
             <Text>Memory Game</Text>
           </TouchableOpacity>
         <TouchableOpacity  
-          onPress={() => navigation.navigate('Profile')}
+          onPress={() => navigation.getParent()?.navigate('Profile')}
         > 
           <Text>Profile</Text>         
         </TouchableOpacity> 

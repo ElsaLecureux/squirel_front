@@ -1,6 +1,16 @@
 import { ImageBackground, StyleSheet, Button } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-export default function ProfileScreen({ navigation }) {
+type ProfileScreenNavigationProp = StackNavigationProp<
+  AppDrawerParamList,
+  'Profile'
+>;
+
+type Props = {
+  navigation: ProfileScreenNavigationProp;
+};
+
+export default function ProfileScreen({ navigation }: Props) {
 
   return (    
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/profileScreen.jpg')}>
