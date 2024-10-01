@@ -1,15 +1,20 @@
-import { Button, ImageBackground, StyleSheet, Text, View} from 'react-native';
+import {ImageBackground, StyleSheet, Text, View} from 'react-native';
+import { Button, ButtonText, ButtonGroup } from "@/components/ui/button";
 
-export default function WelcomeScreen({ navigation }) {
+export default function WelcomeScreen({ navigation}) {
 
   return (    
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/welcomeScreen.jpg')}>
         <View style={styles.container}>
             <Text>Welcome to SquireL</Text>
-            <Button 
-              title='Start to Play!'
-              onPress={() => navigation.navigate('SignInScreen')}
-            />
+            <ButtonGroup>
+              <Button size="md" variant="solid" action="primary"
+                onPress={() => navigation.navigate('SignInScreen')}
+              >
+                <ButtonText>Start to Play!</ButtonText>
+              </Button>
+
+            </ButtonGroup>
         </View>
       </ImageBackground>    
   );
@@ -18,7 +23,7 @@ export default function WelcomeScreen({ navigation }) {
 const styles = StyleSheet.create({
     pageContainer: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#000000',
     alignItems: 'center',
     justifyContent: 'flex-start',
     flexDirection: 'row',

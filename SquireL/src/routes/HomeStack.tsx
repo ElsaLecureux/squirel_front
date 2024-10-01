@@ -5,30 +5,19 @@ import { Button } from 'react-native';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import MemoryScreen from '../screens/MemoryScreen/MemoryScreen';
 
-import { createDrawerNavigator } from '@react-navigation/drawer';
-
 const Stack = createNativeStackNavigator();
 
-const Drawer = createDrawerNavigator();
 export default function HomeStack ({navigation}) {
 
         return (
           <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
-            <Drawer.Screen 
+            <Stack.Screen 
               name="Home" 
               component={ HomeScreen }
             />
-            <Drawer.Screen 
+            <Stack.Screen 
               name="Memory" 
-              component={ MemoryScreen } 
-              options={{
-                headerRight: () => {
-                  return <Button
-                      title='Home'
-                      onPress={() => navigation.navigate('Home')}
-                    />
-                  }
-              }}
+              component={ MemoryScreen }
             />          
           </Stack.Navigator>
         );

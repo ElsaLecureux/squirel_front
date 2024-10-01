@@ -1,6 +1,9 @@
 import './gesture-handler';
 
-import { StyleSheet } from 'react-native';
+import { OverlayProvider } from "@gluestack-ui/overlay"
+import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider"
+
+import { StyleSheet, Platform } from 'react-native';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useEffect, useState } from 'react';
 
@@ -19,15 +22,23 @@ export default function App() {
   }
 
   useEffect(() => {
+    if (Platform.OS !== 'web') {
     changeScreenOrientation();
+    } else {
+      setIsloading(false);
+    }
   },[]);
 
-  return (    
-    <NavigationContainer >  
-      { isLoading ? <LoadingScreen/> :
-        <RootStack/>
-      }
-    </NavigationContainer>
+  return (
+    <GluestackUIProvider mode="light">
+      <OverlayProvider>
+        <NavigationContainer >
+          { isLoading ? <LoadingScreen/> :
+            <RootStack/>
+          }
+        </NavigationContainer>
+      </OverlayProvider>
+      </GluestackUIProvider>
   );
 }
 

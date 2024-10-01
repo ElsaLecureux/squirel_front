@@ -16,23 +16,17 @@ export default function PlayroomStack ({navigation}) {
             <Stack.Screen 
             name="Playroom" 
             component={ PlayroomScreen }
-            options={{
-              headerShown: false
-            }}
+            
             />
             <Stack.Screen 
               name="Puzzle" 
               component={ PuzzleScreen }
-              options={{
-                headerShown: false
-              }}
+             
             />
             <Stack.Screen 
               name="DrawingGame" 
               component={ DrawingGameScreen }
-              options={{
-                headerShown: false
-              }} 
+              
             />
           </Stack.Navigator>
         );

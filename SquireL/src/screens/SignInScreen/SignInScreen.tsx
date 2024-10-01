@@ -1,4 +1,4 @@
-import { ImageBackground, StyleSheet, Text, View, Button} from 'react-native';
+import { ImageBackground, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 
 export default function SignInScreen({ navigation }) {
 
@@ -6,14 +6,16 @@ export default function SignInScreen({ navigation }) {
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/welcomeScreen.jpg')}>
         <View style={styles.container}>
             <Text style={styles.text}>Sign In</Text>
-            <Button 
-              title='Validate'
+            <TouchableOpacity
               onPress={() => navigation.navigate('AppDrawer')}
-            />
-            <Button 
-              title='Sign Up'
+            >
+              <Text>Validate</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
               onPress={() => navigation.navigate('SignUpScreen')}
-            />
+            >
+              <Text>Sign Up</Text>
+            </TouchableOpacity>
         </View>
       </ImageBackground>    
   );

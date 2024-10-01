@@ -1,6 +1,6 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
-import { Button } from 'react-native';
+import { TouchableOpacity, Text } from 'react-native';
 
 import HomeStack from './HomeStack';
 import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
@@ -12,10 +12,21 @@ const Drawer = createDrawerNavigator();
 export default function AppDrawer ({navigation}) {
 
         return (
-          <Drawer.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
+          <Drawer.Navigator initialRouteName="Home" screenOptions={{ headerTransparent: true }}>
             <Drawer.Screen 
               name="HomeStack" 
-              component={ HomeStack } 
+              component={ HomeStack }
+              options={{
+                headerTitleStyle: {display:'none'},
+                headerRight: () => {
+                  return <TouchableOpacity
+                      onPress={() => navigation.navigate('HomeStack', {screen:'Home'})}
+                    >
+                      <Text>Home</Text>
+                    </TouchableOpacity>
+                }
+              }}
+
             />
             <Drawer.Screen 
               name="Profile" 
@@ -23,10 +34,11 @@ export default function AppDrawer ({navigation}) {
               options={{
                 headerTitleStyle: {display:'none'},
                 headerRight: () => {
-                  return <Button
-                      title='Home'
+                  return <TouchableOpacity
                       onPress={() => navigation.navigate('HomeStack', {screen:'Home'})}
-                    />
+                    >
+                      <Text>Home</Text>
+                    </TouchableOpacity>
                   }
               }}
             />
@@ -36,10 +48,11 @@ export default function AppDrawer ({navigation}) {
               options={{
                 headerTitleStyle: {display:'none'},
                 headerRight: () => {
-                  return <Button
-                      title='Home'
+                  return <TouchableOpacity
                       onPress={() => navigation.navigate('HomeStack', {screen:'Home'})}
-                    />
+                    >
+                      <Text>Home</Text>
+                    </TouchableOpacity>
                   }
               }}
             />
@@ -49,10 +62,11 @@ export default function AppDrawer ({navigation}) {
               options={{
                 headerTitleStyle: {display:'none'},
                 headerRight: () => {
-                  return <Button
-                      title='Playroom'
+                  return <TouchableOpacity
                       onPress={() => navigation.navigate('PlayroomStack', {screen:'Playroom'})}
-                    />
+                    >
+                      <Text>Playroom</Text>
+                    </TouchableOpacity>
                   }
               }} 
             />

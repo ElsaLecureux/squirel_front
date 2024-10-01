@@ -1,24 +1,24 @@
-import { Button, ImageBackground, StyleSheet } from 'react-native';
+import { Text, ImageBackground, StyleSheet, TouchableOpacity  } from 'react-native';
 
 export default function HomeScreen({ navigation }) {
 
   return (    
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/homeScreen.jpg')}>
-        <Button 
-          title='Go to PlayRoom'
+        <TouchableOpacity
           onPress={() => navigation.navigate('PlayroomStack', {screen: 'Playroom'})}
-          >          
-        </Button>
-        <Button 
-          title='Memory Game'
+          >
+            <Text>Go to Playroom</Text>
+          </TouchableOpacity>           
+        <TouchableOpacity
           onPress={() => navigation.navigate('Memory')}
-          >          
-        </Button>
-        <Button 
-          title='Profile'
+          >
+            <Text>Memory Game</Text>
+          </TouchableOpacity>
+        <TouchableOpacity  
           onPress={() => navigation.navigate('Profile')}
-          >          
-        </Button>
+        > 
+          <Text>Profile</Text>         
+        </TouchableOpacity> 
       </ImageBackground>    
   );
 }
