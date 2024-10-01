@@ -17,6 +17,7 @@ export default function AppDrawer ({navigation}) {
               name="HomeStack" 
               component={ HomeStack }
               options={{
+                title: 'Home' ,
                 headerTitleStyle: {display:'none'},
                 headerRight: () => {
                   return <TouchableOpacity
@@ -46,6 +47,7 @@ export default function AppDrawer ({navigation}) {
               name="PlayroomStack" 
               component={ PlayroomStack }
               options={{
+                title: 'Playroom' ,
                 headerTitleStyle: {display:'none'},
                 headerRight: () => {
                   return <TouchableOpacity
