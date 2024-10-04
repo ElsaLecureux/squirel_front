@@ -5,6 +5,7 @@ export default function LoadingScreen() {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.text}>Loading...</Text>
     </View>
   );
 }
