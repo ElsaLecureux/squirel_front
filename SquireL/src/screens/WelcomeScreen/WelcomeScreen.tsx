@@ -1,5 +1,7 @@
-import {ImageBackground, StyleSheet, Text, View, Button} from 'react-native';
+import {ImageBackground, StyleSheet, Text, View} from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
+
+import { Button } from 'tamagui';
 
 type WelcomeScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -16,10 +18,9 @@ export default function WelcomeScreen({ navigation}: Props) {
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/welcomeScreen.jpg')}>
         <View style={styles.container}>
             <Text>Welcome to SquireL</Text>
-              <Button 
-                title ='Start to Play!'
+              <Button size="$3" variant="outlined" theme='orange' color='#FF8A01'
                 onPress={() => navigation.navigate('SignIn')}
-              >
+              >Start to Play!
               </Button>
         </View>
       </ImageBackground>    
