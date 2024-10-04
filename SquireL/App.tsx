@@ -10,8 +10,9 @@ import { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 
 import LoadingScreen from './src/screens/LoadingScreen';
-import RootStack from './src/routes/RootStack'
+import RootStack from './src/routes/RootStack';
 
+import { useFonts } from 'expo-font'
 
 const tamaguiConfig = createTamagui(config);
 
@@ -22,7 +23,6 @@ interface TamaguiCustomConfig extends Conf {}
 
 
 export default function App() {
-  
 
   const [isLoading, setIsloading] = useState(true);
   
@@ -38,6 +38,15 @@ export default function App() {
       setIsloading(false);
     }
   },[]);
+
+  const [loaded] = useFonts({
+    Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
+    InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
+  })
+
+  if (!loaded) {
+    return null
+  }  
 
   return (    
     <TamaguiProvider config={tamaguiConfig}>
