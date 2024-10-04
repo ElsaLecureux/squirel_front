@@ -1,4 +1,4 @@
-import { ImageBackground, StyleSheet, Button } from 'react-native';
+import { ImageBackground, StyleSheet, Text } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 type ProfileScreenNavigationProp = StackNavigationProp<
@@ -14,6 +14,9 @@ export default function ProfileScreen({ navigation }: Props) {
 
   return (    
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/profileScreen.jpg')}>
+        <Text style={styles.title}>
+            Profile
+        </Text>
       </ImageBackground>    
   );
 }
@@ -25,5 +28,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     flexDirection: 'row',
+  },
+  title: {
+    flex: 1
   }
 });
