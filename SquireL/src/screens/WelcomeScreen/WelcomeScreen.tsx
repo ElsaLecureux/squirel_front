@@ -18,7 +18,7 @@ export default function WelcomeScreen({ navigation}: Props) {
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/welcomeScreen.jpg')}>
         <View style={styles.container}>
             <Text>Welcome to SquireL</Text>
-              <Button theme="blue"
+              <Button size="$3" variant="outlined" theme='orange' color='#FF8A01'
                 onPress={() => navigation.navigate('SignIn')}
               >Start to Play!
               </Button>
