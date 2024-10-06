@@ -5,8 +5,9 @@ import * as SplashScreen from 'expo-splash-screen';
 import { MedievalSharp_400Regular } from '@expo-google-fonts/medievalsharp';
 
 import { useEffect } from 'react';
+import { Image } from 'react-native';
 
-import { Button, Stack, Text, XStack, YStack } from 'tamagui';
+import { Button, Stack, Text, YStack, XStack } from 'tamagui';
 
 type WelcomeScreenNavigationProp = StackNavigationProp<RootStackParamList,'Welcome'>;
 
@@ -14,7 +15,7 @@ type Props = {
   navigation: WelcomeScreenNavigationProp;
 };
 
-export default function WelcomeScreen({ navigation}: Props) {
+export default function WelcomeScreen({ navigation }: Props) {
 
   const [loaded, error] = useFonts({
     MedievalSharp_400Regular,
@@ -33,44 +34,61 @@ export default function WelcomeScreen({ navigation}: Props) {
     return null;
   }
 
-  return (    
-      <ImageBackground style={styles.pageContainer} source={require('../../assets/images/welcomeScreen.jpg')}>
-        <Stack
-         flex={1}
-         justifyContent="center"
-         alignItems="flex-start"
-         paddingLeft='10%'>
-          <Stack
-          alignSelf="flex-start">
-            <Stack
-            alignItems="center"
-            marginBottom={20}>
-              <Text fontSize={30} fontFamily='MedievalSharp_400Regular' color='#fff'>
-                Welcome to SquireL
-              </Text>
-            </Stack>
-            <Stack
-            alignItems="center"
+  return (
+    <ImageBackground 
+      style={styles.pageContainer} 
+      source={require('../../assets/images/welcomeScreen.jpg')}
+    >
+      <XStack 
+        flex={1}
+      >
+        <YStack
+          flex={2}
+          justifyContent="center"
+          alignItems="flex-start"
+          paddingLeft='2%'
+        >
+          <Image
+            style={styles.titleWelcomePage}
+            source={require('../../assets/images/titleWelcomePage3.png')}
+          />
+          <YStack
+            alignItems="center" 
+            width='100%'
+            paddingTop='5%'
+          >
+            <Button
+              size="$5"
+              variant="outlined"
+              theme="orange"
+              width='auto' 
+              onPress={() => navigation.navigate('SignIn')}
             >
-              <Button size="$5" variant="outlined" theme='orange' width='auto'
-              onPress={() => navigation.navigate('SignIn')}>
-                <Text fontSize={22} fontFamily='MedievalSharp_400Regular' color='#FF8A01'>
-                  Play
-                </Text>
-              </Button>
-            </Stack>
-          </Stack>
-        </Stack>
-      </ImageBackground>    
+              <Text 
+                fontSize={22} 
+                fontFamily="MedievalSharp_400Regular" 
+                color="#FF8A01"
+              >
+                Play
+              </Text>
+            </Button>
+          </YStack>
+        </YStack>
+        <YStack flex={1}></YStack>
+      </XStack>
+      
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   pageContainer: {
-  flex: 1,
-  backgroundColor: '#000000',
-  alignItems: 'center',
-  justifyContent: 'flex-start',
-  flexDirection: 'row',
-},
+    flex: 1,
+    backgroundColor: '#000000',
+  },
+  titleWelcomePage: {
+    width: '82%',
+    height: '20%',
+    alignSelf: 'center'
+  },
 });
