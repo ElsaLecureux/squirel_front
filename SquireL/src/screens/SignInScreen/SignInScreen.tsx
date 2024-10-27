@@ -5,11 +5,11 @@ import { MedievalSharp_400Regular } from '@expo-google-fonts/medievalsharp';
 import { XStack, YStack, Text, Button, Form, Label, Input } from 'tamagui';
 import { useEffect, useState } from 'react';
 import { useFonts } from 'expo-font';
+import axios from 'axios';
 
 type SignInScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
-  'SignIn'
->;
+  'SignIn'>;
 
 type Props = {
   navigation: SignInScreenNavigationProp;
@@ -23,6 +23,7 @@ export default function SignInScreen({ navigation }: Props) {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const API_URL = 'http://localhost:3000/auth'
 
   useEffect(() => {
     if (loaded) {
@@ -32,11 +33,26 @@ export default function SignInScreen({ navigation }: Props) {
       SplashScreen.hideAsync();
     }
   }, [loaded, error]);
-
+  
   if (!loaded && !error) {
     return null;
   }
   
+  const onFormSubmit = async () => {
+    console.log(username, password, 'submitted');
+    try {      
+      const res = await axios({
+        method: 'post',
+        url: `${API_URL}/signIn`,
+        data: { username, password }
+      });
+      console.log(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
   return (    
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/welcomeScreen.jpg')}>
           <YStack
@@ -54,6 +70,7 @@ export default function SignInScreen({ navigation }: Props) {
             >
               <Form
               gap="$3"
+              onSubmit={() => onFormSubmit()}
               >
                 <Text
                   fontSize={35}
@@ -99,23 +116,24 @@ export default function SignInScreen({ navigation }: Props) {
                   onChangeText={setPassword}
                   size="$3"
                   flex={1}></Input>
-                </XStack>                 
-                <Button
-                size="$3"
-                backgroundColor="#FF8A01"
-                  onPress={() => navigation.navigate('AppDrawer')}>
-                  <Text 
-                    color="#fff"
-                    fontFamily="MedievalSharp-Regular" 
-                    fontSize={16}
-                  >Sign In</Text>
-                </Button>
+                </XStack> 
+                <Form.Trigger asChild>
+                  <Button
+                  size="$3"
+                  backgroundColor="#FF8A01"
+                    onPress={() => navigation.navigate('AppDrawer')}>
+                    <Text 
+                      color="#fff"
+                      fontFamily="MedievalSharp-Regular" 
+                      fontSize={16}>
+                        Sign In</Text>
+                  </Button>
+                </Form.Trigger>              
                 <Button 
                 size="$3"
                 variant="outlined"
                 borderColor="#FF8A01"                
-                  onPress={() => navigation.navigate('SignUp')}
-                >
+                onPress={() => navigation.navigate('SignUp')}>
                   <Text 
                     color="#FFF"
                     fontFamily="MedievalSharp-Regular"

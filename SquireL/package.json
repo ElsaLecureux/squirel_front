@@ -23,6 +23,7 @@
     "@tamagui/babel-plugin": "^1.112.12",
     "@tamagui/config": "^1.112.12",
     "@tamagui/image": "^1.112.22",
+    "axios": "^1.7.7",
     "babel-plugin-module-resolver": "^5.0.2",
     "expo": "^51.0.36",
     "expo-font": "~12.0.10",
