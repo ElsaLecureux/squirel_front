@@ -4,6 +4,8 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import PuzzleScreen from '../screens/PuzzleScreen/puzzleScreen';
 import DrawingGameScreen from '../screens/DrawingGameScreen/DrawingGameScreen';
 import PlayroomScreen from '../screens/PlayRoomScreen/PlayroomScreen';
+import LookAndFindScreen from '../screens/LookAndFindScreen/LookAndFindScreen';
+import LibraryScreen from '../screens/LibraryScreen/LibraryScreen';
 
 const Stack = createNativeStackNavigator<PlayroomStackParamList>();
 
@@ -32,6 +34,16 @@ export default function PlayroomStack ({navigation}: Props) {
             <Stack.Screen 
               name="DrawingGame" 
               component={ DrawingGameScreen }
+              
+            />
+            <Stack.Screen 
+              name="LookAndFind" 
+              component={ LookAndFindScreen }
+              
+            />
+            <Stack.Screen 
+              name="Library" 
+              component={ LibraryScreen }
               
             />
           </Stack.Navigator>

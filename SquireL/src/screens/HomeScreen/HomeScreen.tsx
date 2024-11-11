@@ -1,5 +1,9 @@
-import { Text, ImageBackground, StyleSheet, TouchableOpacity  } from 'react-native';
+import { Text, ImageBackground, StyleSheet } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
+
+import { Button, Image } from 'tamagui';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faGamepad } from '@fortawesome/free-solid-svg-icons/faGamepad'; 
 
 type HomeScreenNavigationProp = StackNavigationProp<
   HomeStackParamList,
@@ -14,21 +18,23 @@ export default function HomeScreen({ navigation }: Props) {
 
   return (    
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/homeScreen.jpg')}>
-        <TouchableOpacity
+        <Button
+          chromeless
           onPress={() => navigation.getParent()?.navigate('PlayroomStack', {screen: 'Playroom'})}
           >
-            <Text>Go to Playroom</Text>
-          </TouchableOpacity>           
-        <TouchableOpacity
+            <FontAwesomeIcon icon={faGamepad} style={{color: "#ff8a01",}} />
+          </Button>           
+        <Button
+          chromeless
           onPress={() => navigation.navigate('Memory')}
           >
-            <Text>Memory Game</Text>
-          </TouchableOpacity>
-        <TouchableOpacity  
-          onPress={() => navigation.getParent()?.navigate('Profile')}
-        > 
-          <Text>Profile</Text>         
-        </TouchableOpacity> 
+             <Image
+           source={{
+            uri:require('../../assets/icons/poker-cards.png'), 
+            width: 20,
+            height: 20}}
+           ></Image>       
+          </Button>
       </ImageBackground>    
   );
 }
@@ -36,9 +42,11 @@ export default function HomeScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
     pageContainer: {
     flex: 1,
-    backgroundColor: '#fff',
+   
     alignItems: 'center',
     justifyContent: 'flex-start',
     flexDirection: 'row',
+    width: '100%',
+    height: '100%',
   }
 });

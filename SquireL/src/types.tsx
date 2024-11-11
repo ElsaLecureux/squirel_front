@@ -16,6 +16,8 @@ type PlayroomStackParamList = {
     Playroom: undefined;
     Puzzle: undefined;
     DrawingGame: undefined;
+    LookAndFind: undefined;
+    Library: undefined;
 };
 
 type HomeStackParamList = {

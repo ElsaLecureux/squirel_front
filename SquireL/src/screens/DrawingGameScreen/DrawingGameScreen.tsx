@@ -1,13 +1,40 @@
-import { View, StyleSheet, Text } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { YStack, Text, XStack, Image } from 'tamagui';
+
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faPersonDigging } from '@fortawesome/free-solid-svg-icons/faPersonDigging'; 
 
 export default function DrawingGameScreen() {
 
   return (    
-      <View style={styles.pageContainer}>
-        <Text style={styles.title}>
-            Drawings Game...
+    <YStack 
+    gap={15}
+    style={styles.pageContainer}>
+      <XStack
+      alignContent='center'
+      gap={15}>
+        <Text
+        color={'#FF8A01'}
+        fontSize={30}>
+            Drawing Game
         </Text>
-      </View>    
+        <Image
+           source={{
+            uri:require('../../assets/icons/color-palette.png'), 
+            width: 50,
+            height: 50}}
+           ></Image>    
+      </XStack>        
+      <XStack
+      alignItems='center'
+      gap={15}>
+          <Text
+          fontSize={18}>
+          ... work in progress
+          </Text>
+         <FontAwesomeIcon icon={faPersonDigging} style={{color: "#000"}}  size={40}/>
+      </XStack>
+    </YStack>       
   );
 }
 
@@ -16,8 +43,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'flex-start',
-    flexDirection: 'row',
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%',
     },
     title: {
       flex: 1
