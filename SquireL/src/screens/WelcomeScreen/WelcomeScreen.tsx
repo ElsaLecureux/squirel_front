@@ -7,7 +7,7 @@ import { MedievalSharp_400Regular } from '@expo-google-fonts/medievalsharp';
 import { useEffect } from 'react';
 import { Image } from 'react-native';
 
-import { Button, Stack, Text, YStack, XStack } from 'tamagui';
+import { Button, Text, YStack, XStack } from 'tamagui';
 
 type WelcomeScreenNavigationProp = StackNavigationProp<RootStackParamList,'Welcome'>;
 
@@ -85,6 +85,8 @@ const styles = StyleSheet.create({
   pageContainer: {
     flex: 1,
     backgroundColor: '#000000',
+    width: '100%',
+    height: '100%',
   },
   titleWelcomePage: {
     width: '82%',

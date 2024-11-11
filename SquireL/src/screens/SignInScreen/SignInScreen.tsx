@@ -38,6 +38,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-start',
     flexDirection: 'row',
+    width: '100%',
+    height: '100%',
   },
   container: {
     flex: 0.5,
