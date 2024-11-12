@@ -23,6 +23,8 @@ export default function SignInScreen({ navigation }: Props) {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [showErrorMessage, setShowErrorMessage] = useState(false);
   const API_URL = 'http://localhost:3000/auth'
 
   useEffect(() => {
@@ -33,23 +35,41 @@ export default function SignInScreen({ navigation }: Props) {
       SplashScreen.hideAsync();
     }
   }, [loaded, error]);
+
+  useEffect(()=> {
+    setShowErrorMessage(true);
+    setTimeout(() => {
+      setShowErrorMessage(false);
+    }, 3000);
+  }, [errorMessage])
   
   if (!loaded && !error) {
     return null;
   }
   
   const onFormSubmit = async () => {
-    console.log(username, password, 'submitted');
-    try {      
-      const res = await axios({
+      await axios({
         method: 'post',
         url: `${API_URL}/signIn`,
         data: { username, password }
-      });
-      console.log(res.data);
-    } catch (error) {
-      console.log(error);
-    }
+      })
+      .then(function (response) {
+        console.log(response.data.message);
+      if (response.data.message === 'user connected'){
+        navigation.navigate('AppDrawer')
+      }
+      })
+      .catch(function (error) {
+        if (error) {
+          if (error.response) {
+            const errorMessage = error.response.data.message;
+            console.log('Server response error:', errorMessage);
+            setErrorMessage(errorMessage);
+          }
+        } else {
+          console.log('An unexpected error occurred:', error);
+        }
+      });   
   }
 
 
@@ -120,15 +140,21 @@ export default function SignInScreen({ navigation }: Props) {
                 <Form.Trigger asChild>
                   <Button
                   size="$3"
-                  backgroundColor="#FF8A01"
-                    onPress={() => navigation.navigate('AppDrawer')}>
+                  backgroundColor="#FF8A01">
                     <Text 
                       color="#fff"
                       fontFamily="MedievalSharp-Regular" 
                       fontSize={16}>
                         Sign In</Text>
                   </Button>
-                </Form.Trigger>              
+                </Form.Trigger> 
+                {showErrorMessage ?  
+                <Text
+                flex={1}
+                alignContent='center'
+                color="#FF8A01">
+                  {errorMessage}
+                </Text>  : null }          
                 <Button 
                 size="$3"
                 variant="outlined"
