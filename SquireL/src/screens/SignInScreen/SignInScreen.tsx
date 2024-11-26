@@ -140,6 +140,7 @@ export default function SignInScreen({ navigation }: Props) {
                     <Input
                     value= {username}
                     onChangeText={setUsername}
+                    autoCapitalize="none"
                     size="$3"
                     flex={1}
                     ></Input>
@@ -160,6 +161,9 @@ export default function SignInScreen({ navigation }: Props) {
                   <Input
                   value={password}
                   onChangeText={setPassword}
+                  secureTextEntry
+                  autoCorrect={false}
+                  autoComplete="off"
                   size="$3"
                   flex={1}></Input>
                 </XStack> 
