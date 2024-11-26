@@ -1,8 +1,9 @@
-import { ImageBackground, StyleSheet} from 'react-native';
+import { Platform, ImageBackground, StyleSheet} from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as SplashScreen from 'expo-splash-screen';
 import { MedievalSharp_400Regular } from '@expo-google-fonts/medievalsharp';
 import { XStack, YStack, Text, Button, Form, Label, Input } from 'tamagui';
+import * as SecureStore from 'expo-secure-store';
 import { useEffect, useState } from 'react';
 import { useFonts } from 'expo-font';
 import axios from 'axios';
@@ -20,12 +21,12 @@ export default function SignInScreen({ navigation }: Props) {
   const [loaded, error] = useFonts({
     'MedievalSharp-Regular': MedievalSharp_400Regular,
   });
-
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [showErrorMessage, setShowErrorMessage] = useState(false);
-  const API_URL = 'http://localhost:3000/auth'
+  const [isMessageVisible, setIsMessageVisible] = useState(false);
+  const [host, setHost] = useState('');
+  const API_URL = `http://${host}:3000/auth/signIn`;
 
   useEffect(() => {
     if (loaded) {
@@ -35,41 +36,66 @@ export default function SignInScreen({ navigation }: Props) {
       SplashScreen.hideAsync();
     }
   }, [loaded, error]);
-
-  useEffect(()=> {
-    setShowErrorMessage(true);
-    setTimeout(() => {
-      setShowErrorMessage(false);
-    }, 3000);
-  }, [errorMessage])
   
   if (!loaded && !error) {
     return null;
   }
+
+  const showErrorMessage = () => {
+    setIsMessageVisible(true)
+      setTimeout(() => {
+        setIsMessageVisible(false);
+        setErrorMessage('');
+      }, 3000);
+  }
   
   const onFormSubmit = async () => {
-      await axios({
-        method: 'post',
-        url: `${API_URL}/signIn`,
-        data: { username, password }
-      })
-      .then(function (response) {
-        console.log(response.data.message);
-      if (response.data.message === 'user connected'){
-        navigation.navigate('AppDrawer')
+    if(password === '') {
+      setErrorMessage('Password should not be empty');
+      showErrorMessage();
+    }
+    if(username === '') {
+      setErrorMessage('Username should not be empty');
+      showErrorMessage();
+    }
+    if(password !== '' && username !== ''){
+      if (Platform.OS === 'ios' || Platform.OS === 'android') {
+        setHost('10.117.60.67');
+      } else if (Platform.OS === 'web') {
+        setHost('localhost');
       }
-      })
-      .catch(function (error) {
-        if (error) {
-          if (error.response) {
-            const errorMessage = error.response.data.message;
-            console.log('Server response error:', errorMessage);
-            setErrorMessage(errorMessage);
+      setUsername(username.trim());
+      setPassword(password.trim());
+        await axios({
+          method: 'post',
+          url: `${API_URL}`,
+          data: { username, password }
+        })
+        .then( async function (response) {
+          if (Platform.OS === 'ios' || Platform.OS === 'android') {
+            await SecureStore.setItemAsync('access_token', response.data.access_token);
+            const access_token = await SecureStore.getItemAsync('access_token');
+            setHost('');
+          } else if (Platform.OS === 'web') {
+            localStorage.setItem('access_token', response.data.access_token);
+            setHost('');
           }
-        } else {
-          console.log('An unexpected error occurred:', error);
-        }
-      });   
+            navigation.navigate('AppDrawer')
+          })
+          .catch(function (error) {
+            if (error) {
+              if (error.response) {
+                const message = error.response.data.message;
+                setErrorMessage(message);
+                showErrorMessage();
+              }
+            } else {
+              console.log('An unexpected error occurred:', error);
+              setErrorMessage('An unexpected error occurred');
+              showErrorMessage();
+            }
+          }); 
+    }    
   }
 
 
@@ -147,14 +173,7 @@ export default function SignInScreen({ navigation }: Props) {
                       fontSize={16}>
                         Sign In</Text>
                   </Button>
-                </Form.Trigger> 
-                {showErrorMessage ?  
-                <Text
-                flex={1}
-                alignContent='center'
-                color="#FF8A01">
-                  {errorMessage}
-                </Text>  : null }          
+                </Form.Trigger>  
                 <Button 
                 size="$3"
                 variant="outlined"
@@ -180,8 +199,30 @@ export default function SignInScreen({ navigation }: Props) {
                 </Text>
               </Button>
           </YStack>
-          <YStack 
-            flex={1}>            
+          <YStack
+          flex={0.5}>
+          </YStack>
+          <YStack
+            flex={0.5}>
+              { isMessageVisible ?
+              <XStack
+                borderRadius={10}
+                justifyContent="center"
+                alignItems="center"
+                borderColor='orange'
+                borderWidth={2}
+                paddingTop={10}   
+                paddingBottom={10} 
+                paddingLeft={5}   
+                paddingRight={5}
+                margin={10}>
+                <Text
+                  fontSize={12}
+                  color="#fff">
+                    {errorMessage}
+                </Text>
+              </XStack> :
+              null }           
           </YStack>
       </ImageBackground>    
   );

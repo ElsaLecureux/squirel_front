@@ -1,7 +1,7 @@
 import './gesture-handler';
 
 import { TamaguiProvider, createTamagui } from '@tamagui/core'
-import { config } from '@tamagui/config/v3'
+import { config } from '@tamagui/config/v3';
 
 import { StyleSheet, Platform } from 'react-native';
 import * as ScreenOrientation from 'expo-screen-orientation';
@@ -50,11 +50,11 @@ export default function App() {
 
   return (    
     <TamaguiProvider config={tamaguiConfig}>
-      <NavigationContainer >
-        { isLoading ? <LoadingScreen/> :
-          <RootStack/>
-        }
-      </NavigationContainer>
+        <NavigationContainer >
+          { isLoading ? <LoadingScreen/> :
+            <RootStack/>
+          }
+        </NavigationContainer>
     </TamaguiProvider>
   );
 }
