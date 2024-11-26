@@ -64,8 +64,16 @@ export default function SignInScreen({ navigation }: Props) {
       } else if (Platform.OS === 'web') {
         setHost('localhost');
       }
-      setUsername(username.trim());
-      setPassword(password.trim());
+      //prevent from script attach or javascript attack
+      setPassword(password.replace(/<script.*?>.*?<\/script>/g, '')
+              .replace(/javascript:/g, '')
+              .replace(/[<>]/g, ''));
+      setUsername(username.replace(/<script.*?>.*?<\/script>/g, '')
+              .replace(/javascript:/g, '')
+              .replace(/[<>]/g, ''));
+      //trim accidentals spaces
+      setPassword((password.trim()));
+      setUsername((username.trim()));
         await axios({
           method: 'post',
           url: `${API_URL}`,
@@ -141,6 +149,7 @@ export default function SignInScreen({ navigation }: Props) {
                     value= {username}
                     onChangeText={setUsername}
                     autoCapitalize="none"
+                    maxLength={30}
                     size="$3"
                     flex={1}
                     ></Input>
@@ -162,6 +171,7 @@ export default function SignInScreen({ navigation }: Props) {
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry
+                  maxLength={30}
                   autoCorrect={false}
                   autoComplete="off"
                   size="$3"
