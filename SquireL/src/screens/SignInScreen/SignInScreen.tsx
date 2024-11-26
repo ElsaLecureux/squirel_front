@@ -214,10 +214,8 @@ export default function SignInScreen({ navigation }: Props) {
               </Button>
           </YStack>
           <YStack
-          flex={0.5}>
-          </YStack>
-          <YStack
-            flex={0.5}>
+            alignItems='flex-end'
+            flex={1}>
               { isMessageVisible ?
               <XStack
                 borderRadius={10}
@@ -229,7 +227,7 @@ export default function SignInScreen({ navigation }: Props) {
                 paddingBottom={10} 
                 paddingLeft={5}   
                 paddingRight={5}
-                margin={10}>
+                margin="5%">
                 <Text
                   fontSize={12}
                   color="#fff">
