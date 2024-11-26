@@ -11,6 +11,18 @@ type Props = {
   navigation: SignUpScreenNavigationProp;
 };
 
+  //const emailRegex= '^[a-zA-Z0-9._-]{3,}@[a-zA-Z0-9.-]{3,}\.[a-zA-Z]{2,}$';
+  //const regexPassword = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+
+  /*onSubmit testEmail and password  if (!emailRegex.test(username)) {
+      setError('Invalid email format');
+      return;
+    }
+    if (!validateEmail(username)) {
+      setError('Invalid email format');
+      return;
+    }*/
+
 export default function SignUpScreen({ navigation }: Props) {
 
   return (    
