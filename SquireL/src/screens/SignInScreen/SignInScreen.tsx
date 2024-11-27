@@ -122,21 +122,26 @@ export default function SignInScreen({ navigation }: Props) {
             marginBottom= "3%"
             gap="$4"
             >
+              <Text
+                fontSize={35}
+                fontFamily="MedievalSharp-Regular"
+                color="#fff">
+                Welcome Back !
+              </Text>
               <Form
+              width='100%'
+              paddingRight='8%'
+              paddingLeft='8%'
               gap="$3"
               onSubmit={() => onFormSubmit()}
               >
-                <Text
-                  fontSize={35}
-                  fontFamily="MedievalSharp-Regular"
-                  color="#fff"
-                  >Welcome Back!</Text>
                   <XStack
                   gap="$3"
                   justifyContent='center'
                   alignItems='center'
                   >
-                    <Label                                   
+                    <Label
+                    htmlFor='username'                                   
                     lineHeight={16}>
                       <Text
                       fontSize={16}
@@ -146,6 +151,7 @@ export default function SignInScreen({ navigation }: Props) {
                       </Text>
                     </Label>
                     <Input
+                    id='username'
                     value= {username}
                     onChangeText={setUsername}
                     autoCapitalize="none"
@@ -158,7 +164,8 @@ export default function SignInScreen({ navigation }: Props) {
                 gap="$3"
                 justifyContent='center'
                 alignItems='center'>
-                  <Label                  
+                  <Label  
+                  htmlFor='password'                
                   lineHeight={16} > 
                     <Text 
                     fontSize={16}
@@ -168,6 +175,7 @@ export default function SignInScreen({ navigation }: Props) {
                     </Text>                    
                   </Label>
                   <Input
+                  id='password'
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry

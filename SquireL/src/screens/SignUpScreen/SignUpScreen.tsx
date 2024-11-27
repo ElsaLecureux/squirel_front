@@ -101,36 +101,45 @@ export default function SignUpScreen({ navigation }: Props) {
             backgroundColor="rgba(177, 176, 176, 0.27)"
             borderRadius={30}
             paddingTop='2%'
-            paddingBottom='2%'
+            paddingBottom='2%'  
             marginLeft='5%'
             marginTop="3%"
             marginBottom= "3%"
             gap="$4"
             >
+              <Text
+                fontSize={30}
+                fontFamily="MedievalSharp-Regular"
+                color="#fff">
+                    Join the adventure
+                </Text>
               <Form
+              width='100%'
+              paddingRight='5%'
               gap="$3"
               onSubmit={() => onFormSubmit()}
-              >
-                <Text
-                  fontSize={35}
-                  fontFamily="MedievalSharp-Regular"
-                  color="#fff"
-                  >Join the adventure</Text>
-                  <XStack
+              >                
+                <XStack
                   gap="$3"
                   justifyContent='center'
-                  alignItems='center'
-                  >
-                    <Label                                   
-                    lineHeight={16}>
-                      <Text
-                      fontSize={16}
-                      color="#fff" 
-                      fontFamily="MedievalSharp-Regular">
-                      Username
-                      </Text>
-                    </Label>
+                  alignItems='center'>
+                    <YStack
+                    width="35%"
+                    justifyContent='center'
+                    alignItems='center'>
+                      <Label                                   
+                      lineHeight={16}
+                      htmlFor='username'>
+                        <Text
+                        fontSize={16}
+                        color="#fff" 
+                        fontFamily="MedievalSharp-Regular">
+                        Username
+                        </Text>
+                      </Label>
+                    </YStack>                    
                     <Input
+                    id='username'
                     value= {username}
                     onChangeText={setUsername}
                     autoCapitalize="none"
@@ -138,14 +147,18 @@ export default function SignUpScreen({ navigation }: Props) {
                     size="$3"
                     flex={1}
                     ></Input>
-                  </XStack> 
-                  <XStack
+                </XStack> 
+                <XStack
                   gap="$3"
                   justifyContent='center'
-                  alignItems='center'
-                  >
-                    <Label                              
-                    lineHeight={16}>
+                  alignItems='center'>
+                    <YStack
+                    width="35%"
+                    justifyContent='center'
+                    alignItems='center'>
+                      <Label
+                      htmlFor='email'                              
+                      lineHeight={16}>
                       <Text
                       fontSize={16}
                       color="#fff" 
@@ -153,7 +166,9 @@ export default function SignUpScreen({ navigation }: Props) {
                       Email
                       </Text>
                     </Label>
+                    </YStack>                    
                     <Input
+                    id='email'
                     value= {email}
                     onChangeText={setEmail}
                     autoCapitalize="none"
@@ -166,16 +181,23 @@ export default function SignUpScreen({ navigation }: Props) {
                 gap="$3"
                 justifyContent='center'
                 alignItems='center'>
-                  <Label                  
-                  lineHeight={16} > 
-                    <Text 
-                    fontSize={16}
-                    color="#fff"
-                    fontFamily="MedievalSharp-Regular">
-                      Password
-                    </Text>                    
-                  </Label>
+                  <YStack
+                  width="35%"
+                  justifyContent='center'
+                  alignItems='center'>                      
+                    <Label 
+                    htmlFor='password'                 
+                    lineHeight={16} > 
+                      <Text 
+                      fontSize={16}
+                      color="#fff"
+                      fontFamily="MedievalSharp-Regular">
+                        Password
+                      </Text>                    
+                    </Label>
+                  </YStack>
                   <Input
+                  id='password'
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry
@@ -189,16 +211,23 @@ export default function SignUpScreen({ navigation }: Props) {
                 gap="$3"
                 justifyContent='center'
                 alignItems='center'>
-                  <Label                  
-                  lineHeight={16} > 
-                    <Text 
-                    fontSize={16}
-                    color="#fff"
-                    fontFamily="MedievalSharp-Regular">
-                      Confirm password
-                    </Text>                    
-                  </Label>
+                  <YStack
+                    width="35%"
+                    justifyContent='center'
+                    alignItems='center'>
+                    <Label 
+                    htmlFor='passwordConfirmation'                 
+                    lineHeight={16} > 
+                      <Text 
+                      fontSize={16}
+                      color="#fff"
+                      fontFamily="MedievalSharp-Regular">
+                        Confirm password
+                      </Text>                    
+                    </Label>
+                    </YStack>
                   <Input
+                  id='passwordConfirmation'
                   value={passwordConfirmation}
                   onChangeText={setPasswordConfirmation}
                   secureTextEntry
