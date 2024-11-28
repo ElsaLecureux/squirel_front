@@ -1,4 +1,4 @@
-import {ImageBackground, StyleSheet} from 'react-native';
+import { Platform, ImageBackground, StyleSheet} from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
@@ -58,14 +58,14 @@ export default function WelcomeScreen({ navigation }: Props) {
             paddingTop='5%'
           >
             <Button
-              size="$5"
+              size={ Platform.OS === 'web' ? "$8" : "$5" }
               variant="outlined"
-              theme="orange"
+              borderColor="#FF8A01" 
               width='auto' 
               onPress={() => navigation.navigate('SignIn')}
             >
               <Text 
-                fontSize={22} 
+                fontSize={Platform.OS === 'web' ? 38 : 24 }
                 fontFamily="MedievalSharp_400Regular" 
                 color="#FF8A01"
               >
@@ -89,8 +89,8 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   titleWelcomePage: {
-    width: '82%',
-    height: '20%',
+    width: '70%',
+    height: '16%',
     alignSelf: 'center'
   },
 });
