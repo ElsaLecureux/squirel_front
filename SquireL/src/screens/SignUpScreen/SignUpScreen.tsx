@@ -1,7 +1,13 @@
-import { ImageBackground, StyleSheet} from 'react-native';
+import { Platform, ImageBackground, StyleSheet} from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { XStack, YStack, Text, Button, Form, Label, Input } from 'tamagui';
+import { XStack, YStack, Text, Button, Form, Label, Input, Stack } from 'tamagui';
+import * as SecureStore from 'expo-secure-store';
+import axios from 'axios';
 import { useState } from 'react';
+import  UserDto from '../../Dto/UserDto'
+import { Eye, EyeOff } from '@tamagui/lucide-icons';
+import { Dimensions } from 'react-native';
+import GLOBALS from '../../config';
 
 type SignUpScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -11,111 +17,135 @@ type SignUpScreenNavigationProp = StackNavigationProp<
 type Props = {
   navigation: SignUpScreenNavigationProp;
 };
-  //const emailRegex= '^[a-zA-Z0-9._-]{3,}@[a-zA-Z0-9.-]{3,}\.[a-zA-Z]{2,}$';
-  //const regexPassword = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
 
-  /*onSubmit testEmail and password  if (!emailRegex.test(username)) {
-      setError('Invalid email format');
-      return;
-    }
-    if (!validateEmail(username)) {
-      setError('Invalid email format');
-      return;
-    }*/
+const { height } = Dimensions.get('window');
 
 export default function SignUpScreen({ navigation }: Props) {
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
+  const emailRegex= /^[a-zA-Z0-9._-]{3,}@[a-zA-Z0-9.-]{3,}\.[a-zA-Z]{2,}$/;
+  const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+
+  const [userDto, setUserDto] = useState(new UserDto('', '', ''));
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isMessageVisible, setIsMessageVisible] = useState(false);
+  const [host, setHost] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmationPasswordVisible, setConfirmationPasswordVisible] =useState(false);
+  const API_URL = `http://${host}:3000/auth/signUp`;
+
+  const showErrorMessage = () => {
+    setIsMessageVisible(true)
+      setTimeout(() => {
+        setIsMessageVisible(false);
+        setErrorMessage('');
+      }, 3000);
+  }
+
+  const handleInputChange = (field : string, value: string) => {
+    setUserDto((prevState) => ({
+      ...prevState,
+      [field]: value
+    }))
+  }
+
+  const checkInput = (type: string) => {
+    if (type === userDto.email || type === 'all') {
+      if (!emailRegex.test(userDto.email)){
+        setErrorMessage('Invalid email address. Please enter a valid email.')
+        showErrorMessage();
+      }
+    }
+    if(type === userDto.password || type === 'all') {
+      if (!passwordRegex.test(userDto.password)){
+        setErrorMessage('Password must contain at least 8 characters, one uppercase letter, one number, and one special character.')
+        showErrorMessage();
+      }
+    }
+    if(type === passwordConfirmation || type === 'all') {
+      if (userDto.password !== passwordConfirmation && userDto.password !== ''){
+        setErrorMessage('Passwords not identical')
+        showErrorMessage();
+      }
+    }
+  } 
 
   const onFormSubmit = async () => {
-    console.log('submit');
-    //todo verifier formats: email, passwords, username
-    //todo verfier passwords identiques
-    // if(password === '') {
-    //   setErrorMessage('Password should not be empty');
-    //   showErrorMessage();
-    // }
-    // if(username === '') {
-    //   setErrorMessage('Username should not be empty');
-    //   showErrorMessage();
-    // }
-    // if(password !== '' && username !== ''){
-    //   if (Platform.OS === 'ios' || Platform.OS === 'android') {
-    //     setHost('10.117.60.67');
-    //   } else if (Platform.OS === 'web') {
-    //     setHost('localhost');
-    //   }
-    //   //prevent from script attach or javascript attack
-    //   setPassword(password.replace(/<script.*?>.*?<\/script>/g, '')
-    //           .replace(/javascript:/g, '')
-    //           .replace(/[<>]/g, ''));
-    //   setUsername(username.replace(/<script.*?>.*?<\/script>/g, '')
-    //           .replace(/javascript:/g, '')
-    //           .replace(/[<>]/g, ''));
-    //   //trim accidentals spaces
-    //   setPassword((password.trim()));
-    //   setUsername((username.trim()));
-    //     await axios({
-    //       method: 'post',
-    //       url: `${API_URL}`,
-    //       data: { username, password }
-    //     })
-    //     .then( async function (response) {
-    //       if (Platform.OS === 'ios' || Platform.OS === 'android') {
-    //         await SecureStore.setItemAsync('access_token', response.data.access_token);
-    //         const access_token = await SecureStore.getItemAsync('access_token');
-    //         setHost('');
-    //       } else if (Platform.OS === 'web') {
-    //         localStorage.setItem('access_token', response.data.access_token);
-    //         setHost('');
-    //       }
-    //         navigation.navigate('AppDrawer')
-    //       })
-    //       .catch(function (error) {
-    //         if (error) {
-    //           if (error.response) {
-    //             const message = error.response.data.message;
-    //             setErrorMessage(message);
-    //             showErrorMessage();
-    //           }
-    //         } else {
-    //           console.log('An unexpected error occurred:', error);
-    //           setErrorMessage('An unexpected error occurred');
-    //           showErrorMessage();
-    //         }
-    //       }); 
-    // }    
+    checkInput('all');
+    if(userDto.password === '') {
+      setErrorMessage('Password should not be empty');
+      showErrorMessage();
+    }
+    if(userDto.username === '') {
+      setErrorMessage('Username should not be empty');
+      showErrorMessage();
+    }
+    if(userDto.email === '') {
+      setErrorMessage('Email should not be empty');
+      showErrorMessage();
+    }
+    if(userDto.password !== '' && userDto.username !== '' && userDto.email !== ''){
+      if (Platform.OS === 'ios' || Platform.OS === 'android') {
+        setHost('10.117.60.67');
+      } else if (Platform.OS === 'web') {
+        setHost('localhost');
+      }
+      await axios({
+        method: 'post',
+        url: `${API_URL}`,
+        data: { ...userDto }
+      })
+      .then( async function (response) {
+        if (Platform.OS === 'ios' || Platform.OS === 'android') {
+          await SecureStore.setItemAsync('access_token', response.data.access_token);
+          const access_token = await SecureStore.getItemAsync('access_token');
+          setHost('');
+        } else if (Platform.OS === 'web') {
+          localStorage.setItem('access_token', response.data.access_token);
+          setHost('');
+        }
+          navigation.navigate('AppDrawer')
+        })
+        .catch(function (error) {
+          if (error) {
+            if (error.response) {
+              const message = error.response.data.message;
+              setErrorMessage(message);
+              showErrorMessage();
+            }
+          } else {
+            console.log('An unexpected error occurred:', error);
+            setErrorMessage('An unexpected error occurred');
+            showErrorMessage();
+          }
+      }); 
+    }    
   }
 
   return (    
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/welcomeScreen.jpg')}>
          <YStack
-            flex={1.2}
+            flex={Platform.OS === 'web' ? 0.3 : 1.2} 
             justifyContent="center"
             alignItems="center"
             backgroundColor="rgba(177, 176, 176, 0.27)"
             borderRadius={30}
             paddingTop='2%'
             paddingBottom='2%'  
-            marginLeft='5%'
+            marginLeft={Platform.OS === 'web' ? '15%' : '5%'} 
             marginTop="3%"
             marginBottom= "3%"
-            gap="$4"
+            gap={GLOBALS.gap_5}         
             >
               <Text
-                fontSize={30}
+                fontSize={GLOBALS.fontSize_3}
                 fontFamily="MedievalSharp-Regular"
                 color="#fff">
                     Join the adventure
                 </Text>
               <Form
               width='100%'
-              paddingRight='5%'
+              paddingRight='8%'
               gap="$3"
               onSubmit={() => onFormSubmit()}
               >                
@@ -124,14 +154,13 @@ export default function SignUpScreen({ navigation }: Props) {
                   justifyContent='center'
                   alignItems='center'>
                     <YStack
-                    width="35%"
+                    width="40%"
                     justifyContent='center'
                     alignItems='center'>
                       <Label                                   
-                      lineHeight={16}
                       htmlFor='username'>
                         <Text
-                        fontSize={16}
+                        fontSize={Platform.OS === 'web' ? 25 : 16 }
                         color="#fff" 
                         fontFamily="MedievalSharp-Regular">
                         Username
@@ -140,27 +169,27 @@ export default function SignUpScreen({ navigation }: Props) {
                     </YStack>                    
                     <Input
                     id='username'
-                    value= {username}
-                    onChangeText={setUsername}
+                    value= {userDto.username}
+                    onChangeText={(text)=>handleInputChange('username', text)}
                     autoCapitalize="none"
                     maxLength={30}
-                    size="$3"
                     flex={1}
-                    ></Input>
+                    size={ Platform.OS === 'web' ? "$5" : "$3" }
+                    style={{ fontSize: 11 }}/>
                 </XStack> 
                 <XStack
                   gap="$3"
                   justifyContent='center'
                   alignItems='center'>
                     <YStack
-                    width="35%"
+                    width="40%"
                     justifyContent='center'
                     alignItems='center'>
                       <Label
                       htmlFor='email'                              
                       lineHeight={16}>
                       <Text
-                      fontSize={16}
+                      fontSize={Platform.OS === 'web' ? 25 : 16 }
                       color="#fff" 
                       fontFamily="MedievalSharp-Regular">
                       Email
@@ -169,96 +198,124 @@ export default function SignUpScreen({ navigation }: Props) {
                     </YStack>                    
                     <Input
                     id='email'
-                    value= {email}
-                    onChangeText={setEmail}
+                    value= {userDto.email}
+                    onChangeText={(text)=>handleInputChange('email', text)}
                     autoCapitalize="none"
                     maxLength={30}
-                    size="$3"
+                    onBlur={() => checkInput(userDto.email)}
                     flex={1}
-                    ></Input>
+                    size={ Platform.OS === 'web' ? "$5" : "$3" }
+                    style={{ fontSize: 11 }}>
+                    </Input>
                   </XStack>                    
                 <XStack 
                 gap="$3"
                 justifyContent='center'
                 alignItems='center'>
                   <YStack
-                  width="35%"
+                  width="40%"
                   justifyContent='center'
                   alignItems='center'>                      
                     <Label 
                     htmlFor='password'                 
                     lineHeight={16} > 
                       <Text 
-                      fontSize={16}
+                      fontSize={Platform.OS === 'web' ? 25 : 16 }
                       color="#fff"
                       fontFamily="MedievalSharp-Regular">
                         Password
                       </Text>                    
                     </Label>
                   </YStack>
+                  <XStack
+                  flex={1}>
                   <Input
                   id='password'
-                  value={password}
-                  onChangeText={setPassword}
-                  secureTextEntry
+                  value={userDto.password}
+                  onChangeText={(text)=>handleInputChange('password', text)}
+                  secureTextEntry={!passwordVisible}
                   maxLength={30}
                   autoCorrect={false}
                   autoComplete="off"
-                  size="$3"
-                  flex={1}></Input>
+                  onBlur={() => checkInput(userDto.password)}
+                  flex={1}
+                  size={ Platform.OS === 'web' ? "$5" : "$3" }
+                    style={{ fontSize: 11 }}/>
+                  <Button
+                  size={ Platform.OS === 'web' ? "$5" : "$3" }
+                  position= "absolute"
+                  right="0" 
+                  onPress={() => setPasswordVisible(!passwordVisible)}
+                  icon={passwordVisible ? Eye : EyeOff }/>
+                  </XStack>
                 </XStack> 
                 <XStack 
                 gap="$3"
                 justifyContent='center'
                 alignItems='center'>
-                  <YStack
-                    width="35%"
+                  <Stack
+                    width="40%"
                     justifyContent='center'
                     alignItems='center'>
                     <Label 
                     htmlFor='passwordConfirmation'                 
                     lineHeight={16} > 
                       <Text 
-                      fontSize={16}
+                      fontSize={Platform.OS === 'web' ? 25 : 16 }
                       color="#fff"
                       fontFamily="MedievalSharp-Regular">
                         Confirm password
                       </Text>                    
                     </Label>
-                    </YStack>
-                  <Input
-                  id='passwordConfirmation'
-                  value={passwordConfirmation}
-                  onChangeText={setPasswordConfirmation}
-                  secureTextEntry
-                  maxLength={30}
-                  autoCorrect={false}
-                  autoComplete="off"
-                  size="$3"
-                  flex={1}></Input>
+                  </Stack>
+                  <XStack
+                  flex={1}>
+                    <Input
+                    id='passwordConfirmation'
+                    value={passwordConfirmation}
+                    onChangeText={setPasswordConfirmation}
+                    secureTextEntry={!confirmationPasswordVisible}
+                    maxLength={30}
+                    autoCorrect={false}
+                    autoComplete="off"
+                    flex={1}
+                    onBlur={() => checkInput(passwordConfirmation)}
+                    size={ Platform.OS === 'web' ? "$5" : "$3" }
+                    style={{ fontSize: 11 }}/>                    
+                  <Button
+                  position= "absolute"
+                  size={ Platform.OS === 'web' ? "$5" : "$3" }
+                  right="0" 
+                  onPress={() => setConfirmationPasswordVisible(!confirmationPasswordVisible)}
+                  icon={confirmationPasswordVisible ? Eye : EyeOff }/>
+                  </XStack>
                 </XStack> 
                 <XStack
+                paddingTop={Platform.OS === 'web' ? GLOBALS.padding_3 : null }
                 justifyContent='space-around'>
                   <Form.Trigger asChild>
-                    <Button
-                    size="$3"
+                    <XStack
+                    paddingLeft='8%'>
+                    <Button                    
+                    size={ Platform.OS === 'web' ? "$5" : "$3" }
                     backgroundColor="#FF8A01">
                       <Text 
                         color="#fff"
                         fontFamily="MedievalSharp-Regular" 
-                        fontSize={16}>
+                        fontSize={Platform.OS === 'web' ? 25 : 16 }>
                           Register</Text>
                     </Button>
+                    </XStack>
                   </Form.Trigger>  
-                  <Button 
-                  size="$3"
+                  <Button
+                  size={ Platform.OS === 'web' ? "$5" : "$3" }
                   variant="outlined"
-                  borderColor="#FF8A01"                
+                  borderColor="#FF8A01"             
                   onPress={() => navigation.navigate('SignIn')}>
                     <Text 
                       color="#FFF"
                       fontFamily="MedievalSharp-Regular"
-                      fontSize={16}
+                      fontSize={Platform.OS === 'web' ? 25 : 16 }
                       >Back to Sign In</Text>
                   </Button>
                 </XStack>                

@@ -7,6 +7,7 @@ import * as SecureStore from 'expo-secure-store';
 import { useEffect, useState } from 'react';
 import { useFonts } from 'expo-font';
 import axios from 'axios';
+import GLOBALS from '../../config';
 
 type SignInScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -110,20 +111,19 @@ export default function SignInScreen({ navigation }: Props) {
   return (    
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/welcomeScreen.jpg')}>
           <YStack
-            flex={1.2}
+            flex={Platform.OS === 'web' ? 0.3 : 1.2} 
             justifyContent="center"
             alignItems="center"
             backgroundColor="rgba(177, 176, 176, 0.27)"
             borderRadius={30}
             paddingTop='2%'
             paddingBottom='2%'
-            marginLeft='5%'
+            marginLeft={Platform.OS === 'web' ? '15%' : '5%'} 
             marginTop="3%"
             marginBottom= "3%"
-            gap="$4"
-            >
+            gap={GLOBALS.gap_5}>
               <Text
-                fontSize={35}
+                fontSize={GLOBALS.fontSize_3}
                 fontFamily="MedievalSharp-Regular"
                 color="#fff">
                 Welcome Back !
@@ -140,23 +140,27 @@ export default function SignInScreen({ navigation }: Props) {
                   justifyContent='center'
                   alignItems='center'
                   >
+                    <YStack
+                    width="40%"
+                    justifyContent='center'
+                    alignItems='center'>
                     <Label
-                    htmlFor='username'                                   
-                    lineHeight={16}>
+                    htmlFor='username'>                                   
                       <Text
-                      fontSize={16}
+                      fontSize={Platform.OS === 'web' ? 25 : 16 }
                       color="#fff" 
                       fontFamily="MedievalSharp-Regular">
                       Username
                       </Text>
                     </Label>
+                    </YStack>
                     <Input
                     id='username'
                     value= {username}
                     onChangeText={setUsername}
                     autoCapitalize="none"
                     maxLength={30}
-                    size="$3"
+                    size={ Platform.OS === 'web' ? "$5" : "$3" }
                     flex={1}
                     ></Input>
                   </XStack>                  
@@ -164,16 +168,20 @@ export default function SignInScreen({ navigation }: Props) {
                 gap="$3"
                 justifyContent='center'
                 alignItems='center'>
-                  <Label  
-                  htmlFor='password'                
-                  lineHeight={16} > 
-                    <Text 
-                    fontSize={16}
-                    color="#fff"
-                    fontFamily="MedievalSharp-Regular">
-                      Password
-                    </Text>                    
-                  </Label>
+                   <YStack
+                    width="40%"
+                    justifyContent='center'
+                    alignItems='center'>
+                    <Label  
+                      htmlFor='password'>                
+                      <Text 
+                      fontSize={Platform.OS === 'web' ? 25 : 16 }
+                      color="#fff"
+                      fontFamily="MedievalSharp-Regular">
+                        Password
+                      </Text>                    
+                    </Label>
+                  </YStack>
                   <Input
                   id='password'
                   value={password}
@@ -182,39 +190,39 @@ export default function SignInScreen({ navigation }: Props) {
                   maxLength={30}
                   autoCorrect={false}
                   autoComplete="off"
-                  size="$3"
+                  size={ Platform.OS === 'web' ? "$5" : "$3" }
                   flex={1}></Input>
                 </XStack> 
                 <Form.Trigger asChild>
                   <Button
-                  size="$3"
+                  size={ Platform.OS === 'web' ? "$5" : "$3" }
                   backgroundColor="#FF8A01">
                     <Text 
                       color="#fff"
                       fontFamily="MedievalSharp-Regular" 
-                      fontSize={16}>
+                      fontSize={Platform.OS === 'web' ? 25 : 16 }>
                         Sign In</Text>
                   </Button>
                 </Form.Trigger>  
                 <Button 
-                size="$3"
+                size={ Platform.OS === 'web' ? "$5" : "$3" }
                 variant="outlined"
                 borderColor="#FF8A01"                
                 onPress={() => navigation.navigate('SignUp')}>
                   <Text 
                     color="#FFF"
                     fontFamily="MedievalSharp-Regular"
-                    fontSize={16}
+                    fontSize={Platform.OS === 'web' ? 25 : 16 }
                     >Don't have an account? Sign up</Text>
                 </Button>
               </Form>              
               <Button
-                size="$3"
+                size={ Platform.OS === 'web' ? "$5" : "$3" }
                 chromeless
               >
                 <Text
                    fontFamily="MedievalSharp-Regular"
-                   fontSize={14}
+                   fontSize={Platform.OS === 'web' ? 25 : 16 }
                    color="#fff"                   
                 >
                   Forgot password?
@@ -252,6 +260,7 @@ const styles = StyleSheet.create({
   pageContainer: {
     flex: 1,
     backgroundColor: '#fff',
+    alignItems: 'center',
     justifyContent: 'flex-start',
     flexDirection: 'row',
     width: '100%',

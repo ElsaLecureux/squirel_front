@@ -1,9 +1,9 @@
 import './gesture-handler';
 
-import { TamaguiProvider, createTamagui } from '@tamagui/core'
-import { config } from '@tamagui/config/v3';
+import { TamaguiProvider } from '@tamagui/core'
+import config from './tamagui.config';
 
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet, Platform, useColorScheme } from 'react-native';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useEffect, useState } from 'react';
 
@@ -12,20 +12,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import LoadingScreen from './src/screens/LoadingScreen';
 import RootStack from './src/routes/RootStack';
 
-import { useFonts } from 'expo-font'
-
-const tamaguiConfig = createTamagui(config);
-
-type Conf = typeof tamaguiConfig
-declare module '@tamagui/core' {
-interface TamaguiCustomConfig extends Conf {}
-};
-
+import { useFonts } from 'expo-font';
 
 export default function App() {
 
   const [isLoading, setIsloading] = useState(true);
-  
+  const colorScheme = useColorScheme()
 
   async function changeScreenOrientation() {
     await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE).then(() => setTimeout(() => {setIsloading(false)}, 2000));
@@ -49,12 +41,12 @@ export default function App() {
   }  
 
   return (    
-    <TamaguiProvider config={tamaguiConfig}>
-        <NavigationContainer >
-          { isLoading ? <LoadingScreen/> :
-            <RootStack/>
-          }
-        </NavigationContainer>
+    <TamaguiProvider config={config} defaultTheme={colorScheme!}>
+      <NavigationContainer >
+        { isLoading ? <LoadingScreen/> :
+          <RootStack/>
+        }
+      </NavigationContainer>
     </TamaguiProvider>
   );
 }
