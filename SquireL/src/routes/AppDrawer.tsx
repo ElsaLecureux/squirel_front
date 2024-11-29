@@ -1,6 +1,5 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { DrawerNavigationProp  } from '@react-navigation/drawer';
-import { useNavigation } from '@react-navigation/native';
 
 import HomeStack from './HomeStack';
 import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
@@ -12,11 +11,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faHouse } from '@fortawesome/free-solid-svg-icons/faHouse';
 import { faUser } from '@fortawesome/free-solid-svg-icons/faUser';
 import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons/faArrowRightFromBracket';
-import { Platform } from 'react-native';
-import * as SecureStore from 'expo-secure-store';
 
 import { Button, XStack, YStack } from 'tamagui';
 import { StackNavigationProp } from '@react-navigation/stack';
+import CustomDrawerContent from '../components/customeMenu';
+import signOut from '../constants/signOut';
 
 const Drawer = createDrawerNavigator<AppDrawerParamList>();
 
@@ -29,32 +28,7 @@ type Props = {
 };
 
 export default function AppDrawer ({navigation}: Props) {
-  const navigate = useNavigation();
 
-  const signOut = async () => {
-    if (Platform.OS === 'web'){
-      localStorage.removeItem('access_token');
-      if (!localStorage.getItem('access_token')){
-          //message grace au error message pour dire au revoir
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'Welcome' }],
-          })
-      }
-      //message pour prevenir que log out failed
-    }
-    try {
-      await SecureStore.deleteItemAsync('access_token'); 
-      //message grace au error message pour dire au revoir   
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Welcome' }],
-      })
-    } catch (error) {
-      // utiliser message error
-     console.log('Something went wrong and log out failed');
-    };
-  }
 
   const renderHeaderRight = (currentRoute: string | undefined) => {
     if (currentRoute !== 'Home') {
@@ -87,16 +61,7 @@ export default function AppDrawer ({navigation}: Props) {
         <XStack
           marginRight='3%'
           marginTop='3%'
-          gap={12}
-        >
-          <Button
-          size="$2"
-          height={40}
-          variant="outlined"
-          borderColor="#ff8a01" 
-          onPress={() => signOut()}>
-            <FontAwesomeIcon icon={faArrowRightFromBracket} style={{color: "#ff8a01",}} size={25}/>  
-          </Button>
+          gap={12} >         
           <Button
           size="$2"
           height={40}
@@ -105,7 +70,16 @@ export default function AppDrawer ({navigation}: Props) {
           onPress={() => navigation.navigate('Profile')}>
             <FontAwesomeIcon icon={faUser} style={{color: "#953990",}} size={25}/>  
           </Button>
+          <Button
+          size="$2"
+          height={40}
+          variant="outlined"
+          borderColor="#ff8a01" 
+          onPress={() => signOut(navigation)}>
+            <FontAwesomeIcon icon={faArrowRightFromBracket} style={{color: "#ff8a01",}} size={25}/>  
+          </Button>
         </XStack>
+        
         
       )
     }
@@ -113,7 +87,14 @@ export default function AppDrawer ({navigation}: Props) {
   };
 
         return (
-          <Drawer.Navigator initialRouteName="HomeStack" screenOptions={{ headerTransparent: true }}>
+          <Drawer.Navigator initialRouteName="HomeStack" screenOptions={{ 
+            headerTransparent: true, 
+            drawerStyle: {
+              backgroundColor: 'transparent',
+              alignItems: 'center',
+            } 
+          }}
+            drawerContent={(props) => <CustomDrawerContent {...props } />}>
             <Drawer.Screen 
               name="HomeStack" 
               component={ HomeStack }
