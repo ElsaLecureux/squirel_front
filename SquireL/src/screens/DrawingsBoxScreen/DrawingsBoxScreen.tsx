@@ -19,11 +19,10 @@ export default function DrawingsBoxScreen() {
               Drawings Box
           </Text>
           <Image
-           source={{
-            uri:require('../../assets/icons/treasure-chest.png'), 
-            width: 50,
-            height: 50}}
-           ></Image>    
+           source={require('../../assets/icons/treasure-chest.png')}
+            width= {50}
+            height= {50}
+           ></Image>
         </XStack>        
         <XStack
         alignItems='center'

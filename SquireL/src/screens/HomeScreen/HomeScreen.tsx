@@ -28,12 +28,11 @@ export default function HomeScreen({ navigation }: Props) {
           chromeless
           onPress={() => navigation.navigate('Memory')}
           >
-             <Image
-           source={{
-            uri:require('../../assets/icons/poker-cards.png'), 
-            width: 20,
-            height: 20}}
-           ></Image>       
+          <Image
+          source={require('../../assets/icons/poker-cards.png')}
+          width= {40}
+          height= {40}
+           ></Image>         
           </Button>
       </ImageBackground>    
   );

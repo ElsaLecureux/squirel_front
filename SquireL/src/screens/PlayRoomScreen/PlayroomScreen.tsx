@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPuzzlePiece } from '@fortawesome/free-solid-svg-icons/faPuzzlePiece';
 import { faHeadphones } from '@fortawesome/free-solid-svg-icons/faHeadphones';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons/faMagnifyingGlass';
+//import treasureChest from '../../assets/icons/treasure-chest.png';
 
 
 type PlayroomScreenNavigationProp = StackNavigationProp<
@@ -12,7 +13,6 @@ type PlayroomScreenNavigationProp = StackNavigationProp<
   'Playroom'
 >;
 
-const treasureChest = require('../../assets/icons/treasure-chest.png');
 
 type Props = {
   navigation: PlayroomScreenNavigationProp;
@@ -35,10 +35,9 @@ export default function PlayroomScreen({ navigation }: Props) {
           onPress={() => navigation.navigate('DrawingGame')}
           >
            <Image
-           source={{
-            uri:require('../../assets/icons/color-palette.png'), 
-            width: 20,
-            height: 20,}}
+           source={require('../../assets/icons/color-palette.png')}
+            width= {40}
+            height= {40}
            ></Image>           
         </Button>
         <Button 
@@ -47,10 +46,9 @@ export default function PlayroomScreen({ navigation }: Props) {
           onPress={() => navigation.getParent()?.navigate('DrawingsBox')}
           > 
            <Image
-           source={{
-            uri:require('../../assets/icons/treasure-chest.png'), 
-            width: 20,
-            height: 20,}}
+          source={require('../../assets/icons/treasure-chest.png')}
+          width= {40}
+          height= {40}
            ></Image>       
         </Button>
         <Button 

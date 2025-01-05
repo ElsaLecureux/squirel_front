@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+
 import WelcomeScreen from '../screens/WelcomeScreen/WelcomeScreen';
 import SignInScreen from '../screens/SignInScreen/SignInScreen';
 import SignUpScreen from '../screens/SignUpScreen/SignUpScreen';
@@ -8,11 +9,19 @@ import AppDrawer from './AppDrawer';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+const isToken = () => {
+    // next check if token present and if not expired
+    // reflechir à une variable globale ou a redux
+    return true;
+    //else (no else)
+    //return false
+}
+
 export default function RootStack () {
 
     return (
 
-    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Welcome" >
+    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={isToken ? "AppDrawer" : "Welcome"} >
         <Stack.Screen name="Welcome" component={WelcomeScreen}/>
         <Stack.Screen name="SignIn" component={SignInScreen}/>
         <Stack.Screen name="SignUp" component={SignUpScreen}/>
