@@ -14,41 +14,37 @@ const CustomDrawerContent = (props: any) => {
 
     <DrawerContentScrollView {...props}>
       <DrawerItem
-          style={styles.drawerItem}
-          label={() => (
-            <YStack marginLeft="$2">
-              <Image source={require('../assets/images/homeMenu.jpg')} style={styles.imageMenu}/>
-            </YStack>
+        style={styles.drawerItem}
+        label={() => (
+          <YStack>
+            <Image source={require('../assets/images/homeMenu.jpg')} style={styles.imageMenu}/>
+          </YStack>
           )}
           onPress={() => props.navigation.navigate('HomeStack', { screen: 'Home' })}/>
-         <DrawerItem
-         style={styles.drawerItem}
-          label={() => (
-            <YStack marginLeft="$2">
-              <Image source={require('../assets/images/playroomMenu.jpg')} style={styles.imageMenu}/>
-            </YStack>
-          )}
-          onPress={() => props.navigation.navigate('PlayroomStack', { screen: 'PlayRoom' })}
-        />
-         <DrawerItem
-         style={styles.drawerItem}
-          label={() => (
-            <YStack marginLeft="$2">
-              <Text>Profile</Text>
-            </YStack>
-          )}
-          icon={() => <FontAwesomeIcon icon={faGamepad} size={20} color="#ffa500" />}
-          onPress={() => props.navigation.navigate('AppDrawer', { screen: 'Profile' })}
-        />
-        <DrawerItem
+      <DrawerItem
         style={styles.drawerItem}
-          label={() => (
-            <YStack marginLeft="$2">
-              <Text>Log Out</Text>
-            </YStack>
+        label={() => (
+          <YStack>
+            <Image source={require('../assets/images/playroomMenu.jpg')} style={styles.imageMenu}/>
+          </YStack>
           )}
-          icon={() => <FontAwesomeIcon icon={faArrowRightFromBracket} size={20} color="#ff6347" />}
-          onPress={() => signOut(props.navigation)}
+          onPress={() => props.navigation.navigate('PlayroomStack', { screen: 'PlayRoom' })}/>
+      <DrawerItem
+        style={styles.drawerItem}
+        label={() => (
+          <YStack>
+            <Image source={require('../assets/images/profileMenu.jpg')} style={styles.imageMenu}/>
+          </YStack>
+          )}
+        onPress={() => props.navigation.navigate('AppDrawer', { screen: 'Profile' })} />
+      <DrawerItem
+        style={styles.drawerItem}
+        label={() => (
+          <YStack style= {styles.iconContainer}>
+            <FontAwesomeIcon icon={faArrowRightFromBracket} size={35} color="#ff6347"/>
+          </YStack>
+          )}
+        onPress={() => signOut(props.navigation)}
         />
     </DrawerContentScrollView>
     );
@@ -58,7 +54,7 @@ const CustomDrawerContent = (props: any) => {
   const styles = StyleSheet.create({
     drawerItem: {
       height: 120,
-      width: 120,
+      width: 200,
       justifyContent: 'center',
       alignItems: 'center'
     },
@@ -66,6 +62,12 @@ const CustomDrawerContent = (props: any) => {
     height: 100,
       width: 100,
       borderRadius:50
+    },
+    iconContainer:{
+      height: 100,
+      width: 100,
+      justifyContent: 'center',
+      alignItems: 'center'
     }
   });
 

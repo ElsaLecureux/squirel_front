@@ -36,8 +36,8 @@ export default function PlayroomScreen({ navigation }: Props) {
           >
            <Image
            source={require('../../assets/icons/color-palette.png')}
-            width= {20}
-            height= {20}
+            width= {40}
+            height= {40}
            ></Image>           
         </Button>
         <Button 
@@ -47,8 +47,8 @@ export default function PlayroomScreen({ navigation }: Props) {
           > 
            <Image
           source={require('../../assets/icons/treasure-chest.png')}
-          width= {20}
-          height= {20}
+          width= {40}
+          height= {40}
            ></Image>       
         </Button>
         <Button 
