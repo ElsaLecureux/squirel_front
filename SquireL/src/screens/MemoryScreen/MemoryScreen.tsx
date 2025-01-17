@@ -1,7 +1,8 @@
-import { ImageBackground, StyleSheet } from 'react-native';
+import { ImageBackground, StyleSheet, Modal, Alert, Pressable } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { YStack, Text, XStack, Image, Card, Button, View } from 'tamagui';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import CardModel from '../../models/Card';
 
 type MemoryScreenNavigationProp = StackNavigationProp<
   HomeStackParamList,
@@ -14,16 +15,83 @@ type Props = {
 
 export default function MemoryScreen({ navigation }: Props) {
 
-  const [visibleCards, setVisibleCards] = useState<boolean[]>([]);
+  const cards: CardModel[] = [
+    new CardModel(1, 'panda', 'path', true),
+    new CardModel(2,'tiger', 'path',true),
+    new CardModel(3, 'sea turtle', 'path', true),
+    new CardModel(4, 'eagle', 'path', false),
+    new CardModel(5, 'bonobo', 'path', true),
+    new CardModel(6, 'sei whale', 'path', true),
+    new CardModel(7, 'cat', 'path', false),
+    new CardModel(8, 'dog', 'path', false),
+  ];
+
+  const [playingCards,setPlayingCards] = useState<CardModel[]>([]);
+  //when cardsWon.length == 12 game is won!
+  const [cardsWon, setCardsWon] = useState<number[]>([]);
+  const [cardPlayed, setCardPlayed] = useState<CardModel[]>([]);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const shuffleCards= (cards : CardModel[]) => {
+    for (let i = cards.length - 1; i > 0; i--)
+    {
+      const j= Math.floor(Math.random() * (i+1));
+      [cards[i], cards[j]] = [cards[j], cards[i]];
+    }
+    return cards;
+  };
+
+  const [visibleCards, setVisibleCards] = useState<boolean[]>([false, false, false, false, false, false, false, false, false, false, false, false]);
 
   const flipCards = (id: number) => {
-    console.log("flipped!", id)
-    setVisibleCards((prev) => {
-      const cardsSet = [...prev];
-      cardsSet[id] = !cardsSet[id]
-      return cardsSet;
-    });
+    if(cardPlayed.length < 2){
+      setVisibleCards((prev) => {
+        const cardsSet = [...prev];
+        cardsSet[id] = !cardsSet[id]
+        return cardsSet;
+      });
+      const cardToSave = playingCards.find(card => card.id === id);
+      if(cardToSave){
+        setCardPlayed((prev) => [...prev, cardToSave]);
+      }
+    }
   }
+
+  const checkIfWonSet = () =>{ 
+    if (cardPlayed[0].name === cardPlayed[1].name){
+      setCardsWon((prev) => {
+        const cardsSet = [...prev, cardPlayed[0].id, cardPlayed[1].id];
+        return cardsSet;
+      });
+      setModalVisible(true);
+      setCardPlayed([]);
+    } else {
+      setTimeout(() =>{      
+        setVisibleCards((prev) => {
+          const cardsSet = [...prev];
+          cardsSet[cardPlayed[0].id] = !cardsSet[cardPlayed[0].id];
+          cardsSet[cardPlayed[1].id] = !cardsSet[cardPlayed[1].id];
+          return cardsSet;
+        });
+        setCardPlayed([]);
+      },2000)
+    }
+  }
+
+  //create random playing cards
+  useEffect(()=> {
+    let shuffledCards = shuffleCards(cards.slice());
+    shuffledCards = shuffledCards.slice(0, 6);
+    let duplicateCards = [...shuffledCards, ...shuffledCards];
+    duplicateCards = duplicateCards.map((card, index )=> new CardModel(index, card.name, card.image, card.endangered));
+    setPlayingCards(shuffleCards(duplicateCards));
+  }, [])
+
+  useEffect(()=> {
+    if(cardPlayed.length === 2){
+    checkIfWonSet();
+    }
+  }, [cardPlayed])
 
   return (    
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/memoryGame.jpeg')}>
@@ -42,131 +110,51 @@ export default function MemoryScreen({ navigation }: Props) {
                 width= {50}
                 height= {50}
               ></Image>    
-          </XStack>        
+          </XStack> 
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              Alert.alert('Modal has been closed.');
+              setModalVisible(!modalVisible);
+            }}>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>You won this set, good job!</Text>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => setModalVisible(!modalVisible)}>
+                  <Text style={styles.textStyle}>Close</Text>
+                </Pressable>
+              </View>
+            </View>
+          </Modal>       
           <XStack
-          alignItems='center'
+          style={styles.cardsSet}
           gap={15}>
-              <Card elevate bordered
-                key={1}
-                animation="bouncy"
-                style={styles.cardStyle}>
-                <Button onPress={ () => flipCards(1)} style={styles.cardStyle}>
-                  <View
-                  style={visibleCards[1] ? styles.invisible : styles.faceB }>
-                    <Image 
-                    source={require('../../assets/images/dragonCard.jpg')}
-                    width={90}
-                  height={100}></Image>
-                  </View>
-                  <View
-                  style={visibleCards[1] ? styles.faceA : styles.invisible}>
-                    <Text alignSelf='center' fontSize={40}>
-                      1
-                    </Text>
-                  </View>  
-                </Button>              
-                </Card>
+            {
+              playingCards.map(card=>(
                 <Card elevate bordered
-                key='2'
+                key={card.id}
                 animation="bouncy"
                 style={styles.cardStyle}>
-                <Button onPress={ () => flipCards(2)} style={styles.cardStyle}>
-                  <View
-                  style={visibleCards[2] ? styles.invisible : styles.faceB }>
-                    <Image 
-                    source={require('../../assets/images/dragonCard.jpg')}
-                    width={90}
-                  height={100}></Image>
-                  </View>
-                  <View
-                  style={visibleCards[2] ? styles.faceA : styles.invisible}>
-                    <Text alignSelf='center' fontSize={40}>
-                      2
-                    </Text>
-                  </View>  
-                </Button>              
+                  <Button onPress={ () => flipCards(card.id)} style={styles.cardStyle}>
+                    <View
+                    style={visibleCards[card.id] ? styles.invisible : styles.faceB }>
+                      <Image 
+                      source={require('../../assets/images/dragonCard.jpg')}
+                      width={90}
+                    height={100}></Image>
+                    </View>
+                    <View
+                    style={visibleCards[card.id] ? styles.faceA : styles.invisible}>
+                      <Text alignSelf='center' fontSize={20}>{card.name}</Text>
+                    </View>  
+                  </Button>              
                 </Card>
-                <Card elevate bordered
-                key={3}
-                animation="bouncy"
-                style={styles.cardStyle}>
-                <Button onPress={ () => flipCards(3)} style={styles.cardStyle}>
-                  <View
-                  style={visibleCards[3] ? styles.invisible : styles.faceB }>
-                    <Image 
-                    source={require('../../assets/images/dragonCard.jpg')}
-                    width={90}
-                  height={100}></Image>
-                  </View>
-                  <View
-                  style={visibleCards[3] ? styles.faceA : styles.invisible}>
-                    <Text alignSelf='center' fontSize={40}>
-                      3
-                    </Text>
-                  </View>  
-                </Button>              
-                </Card>
-                <Card elevate bordered
-                key={4}
-                animation="bouncy"
-                style={styles.cardStyle}>
-                <Button onPress={ () => flipCards(4)} style={styles.cardStyle}>
-                  <View
-                  style={visibleCards[4] ? styles.invisible : styles.faceB }>
-                    <Image 
-                    source={require('../../assets/images/dragonCard.jpg')}
-                    width={90}
-                  height={100}></Image>
-                  </View>
-                  <View
-                  style={visibleCards[4] ? styles.faceA : styles.invisible}>
-                    <Text alignSelf='center' fontSize={40}>
-                      4
-                    </Text>
-                  </View>  
-                </Button>              
-                </Card>
-                <Card elevate bordered
-                key={5}
-                animation="bouncy"
-                style={styles.cardStyle}>
-                <Button onPress={ () => flipCards(5)} style={styles.cardStyle}>
-                  <View
-                  style={visibleCards[5] ? styles.invisible : styles.faceB }>
-                    <Image 
-                    source={require('../../assets/images/dragonCard.jpg')}
-                    width={90}
-                  height={100}></Image>
-                  </View>
-                  <View
-                  style={visibleCards[5] ? styles.faceA : styles.invisible}>
-                    <Text alignSelf='center' fontSize={40}>
-                      5
-                    </Text>
-                  </View>  
-                </Button>              
-                </Card>
-                <Card elevate bordered
-                key={6}
-                animation="bouncy"
-                style={styles.cardStyle}>
-                <Button onPress={ () => flipCards(6)} style={styles.cardStyle}>
-                  <View
-                  style={visibleCards[6] ? styles.invisible : styles.faceB }>
-                    <Image 
-                    source={require('../../assets/images/dragonCard.jpg')}
-                    width={90}
-                  height={100}></Image>
-                  </View>
-                  <View
-                  style={visibleCards[6] ? styles.faceA : styles.invisible}>
-                    <Text alignSelf='center' fontSize={40}>
-                      6
-                    </Text>
-                  </View>  
-                </Button>              
-                </Card>
-          </XStack>
+              ))}
+          </XStack> 
         </YStack>
       </ImageBackground>    
   );
@@ -182,23 +170,65 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingTop: '5%',
   },
+  cardsSet:{
+    flexWrap:'wrap',
+    alignItems:'center',
+    width: '50%',
+  },
   invisible: {
     display: 'none',
   },
   cardStyle: {
-    flex: 1,
     backgroundColor: '#fff',
-    width: 105,
-    height: 150,
+    width: 125,
+    height: 175,
   },
   faceB: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   faceA: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  centeredView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
   }
 });
