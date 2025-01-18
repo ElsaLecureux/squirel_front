@@ -31,6 +31,7 @@ export default function MemoryScreen({ navigation }: Props) {
   const [cardsWon, setCardsWon] = useState<number[]>([]);
   const [cardPlayed, setCardPlayed] = useState<CardModel[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [visibleCards, setVisibleCards] = useState<boolean[]>([false, false, false, false, false, false, false, false, false, false, false, false]);
 
   const shuffleCards= (cards : CardModel[]) => {
     for (let i = cards.length - 1; i > 0; i--)
@@ -41,10 +42,8 @@ export default function MemoryScreen({ navigation }: Props) {
     return cards;
   };
 
-  const [visibleCards, setVisibleCards] = useState<boolean[]>([false, false, false, false, false, false, false, false, false, false, false, false]);
-
   const flipCards = (id: number) => {
-    if(cardPlayed.length < 2){
+    if(cardPlayed.length < 2 && visibleCards[id] == false){
       setVisibleCards((prev) => {
         const cardsSet = [...prev];
         cardsSet[id] = !cardsSet[id]
@@ -112,7 +111,7 @@ export default function MemoryScreen({ navigation }: Props) {
               ></Image>    
           </XStack> 
           <Modal
-            animationType="slide"
+            animationType="fade"
             transparent={true}
             visible={modalVisible}
             onRequestClose={() => {
@@ -139,19 +138,20 @@ export default function MemoryScreen({ navigation }: Props) {
                 key={card.id}
                 animation="bouncy"
                 style={styles.cardStyle}>
-                  <Button onPress={ () => flipCards(card.id)} style={styles.cardStyle}>
-                    <View
-                    style={visibleCards[card.id] ? styles.invisible : styles.faceB }>
-                      <Image 
-                      source={require('../../assets/images/dragonCard.jpg')}
-                      width={90}
-                    height={100}></Image>
-                    </View>
-                    <View
+                  <View
+                  style={visibleCards[card.id] ? styles.invisible : styles.faceB }>
+                    <Button onPress={ () => flipCards(card.id)} style={styles.buttonCardStyle}>
+                      <Image
+                      style={styles.backImage}
+                      source={require('../../assets/images/memoryBackCard.jpg')}/>
+                    </Button>              
+                  </View>
+                  <View
                     style={visibleCards[card.id] ? styles.faceA : styles.invisible}>
+                    <Button onPress={ () => flipCards(card.id)} style={styles.cardStyle}>
                       <Text alignSelf='center' fontSize={20}>{card.name}</Text>
+                    </Button>
                     </View>  
-                  </Button>              
                 </Card>
               ))}
           </XStack> 
@@ -183,13 +183,21 @@ const styles = StyleSheet.create({
     width: 125,
     height: 175,
   },
+  buttonCardStyle: {
+    width: '100%',
+    height: '100%',
+  },
   faceB: {
     justifyContent: 'center',
     alignItems: 'center',
+    height: '100%',
+    width: '100%',
   },
   faceA: {
     justifyContent: 'center',
     alignItems: 'center',
+    height: '100%',
+    width: '100%',
   },
   centeredView: {
     flex: 1,
@@ -230,5 +238,12 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
+  },
+  backImage: {
+    borderRadius:10,
+    borderWidth: 4, 
+    width:125,
+    height:175,
+    borderColor: '#ff8a01',
   }
 });
