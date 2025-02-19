@@ -4,7 +4,7 @@ import { Text, XStack, Image, View } from 'tamagui';
 import { useEffect, useState } from 'react';
 import CardModel from '../../models/Card';
 import CustomModal from '@/src/components/CustomModal/CustomModal';
-import { cards, imageMap } from '../../utils/memoryCards';
+import { cards, imageMap, iconMap } from '../../utils/memoryCards';
 
 type MemoryScreenNavigationProp = StackNavigationProp<
   HomeStackParamList,
@@ -17,7 +17,6 @@ type Props = {
 
 export default function MemoryScreen({ navigation }: Props) {
 
-
   const [playingCards,setPlayingCards] = useState<CardModel[]>([]);
   //when cardsWon.length == 12 game is won!
   const [cardsWon, setCardsWon] = useState<number[]>([]);
@@ -25,7 +24,6 @@ export default function MemoryScreen({ navigation }: Props) {
   const [cardPlayed, setCardPlayed] = useState<CardModel[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [visibleCards, setVisibleCards] = useState<boolean[]>([false, false, false, false, false, false, false, false, false, false, false, false]);
-  const [disabled, setDisabled] = useState<boolean[]>([false, false, false, false, false, false, false, false, false, false, false, false]);
 
   const shuffleCards= (cards : CardModel[]) => {
     for (let i = cards.length - 1; i > 0; i--)
@@ -37,11 +35,6 @@ export default function MemoryScreen({ navigation }: Props) {
   };
 
   const flipCards = (id: number) => {
-    setDisabled((prev) => {
-      const cardsSet = [...prev];
-      cardsSet[id] = !cardsSet[id]
-      return cardsSet;
-    });
     if(cardPlayed.length < 2 && visibleCards[id] == false){
       setVisibleCards((prev) => {
         const cardsSet = [...prev];
@@ -56,9 +49,6 @@ export default function MemoryScreen({ navigation }: Props) {
   }
 
   const checkIfWonSet = () =>{ 
-    setDisabled((prev) => {
-      return new Array(prev.length).fill(true);
-    });
     if (cardPlayed[0].name === cardPlayed[1].name){
       setCardsWon((prev) => {
         const cardsSet = [...prev, cardPlayed[0].id, cardPlayed[1].id];
@@ -67,9 +57,6 @@ export default function MemoryScreen({ navigation }: Props) {
       setCard(cardPlayed[1]);
       setModalVisible(true);
       setCardPlayed([]);
-      setDisabled((prev) => {
-        return new Array(prev.length).fill(false);
-      });
     } else {
       setTimeout(() =>{      
         setVisibleCards((prev) => {
@@ -79,9 +66,6 @@ export default function MemoryScreen({ navigation }: Props) {
           return cardsSet;
         });
         setCardPlayed([]);
-        setDisabled((prev) => {
-          return new Array(prev.length).fill(false);
-        });
       },2000)
     }
   }
@@ -91,16 +75,15 @@ export default function MemoryScreen({ navigation }: Props) {
     let shuffledCards = shuffleCards(cards.slice());
     shuffledCards = shuffledCards.slice(0, 6);
     let duplicateCards = [...shuffledCards, ...shuffledCards];
-    duplicateCards = duplicateCards.map((card, index )=> new CardModel(index, card.name, card.image, card.funFact, card.habitat, card.region, card.size, card.weight, card.speed, card.endangered));
+    duplicateCards = duplicateCards.map((card, index )=> new CardModel(index, card.name, card.image, card.funFact, card.habitat, card.region, card.size, card.weight, card.speed, card.food, card.endangered, card.icon));
     setPlayingCards(shuffleCards(duplicateCards));
   }, [])
 
   useEffect(()=> {
     if(cardPlayed.length === 2){
-    //todo correct disable cards 
     checkIfWonSet();
     }
-  }, [cardPlayed, disabled])
+  }, [cardPlayed])
 
   return (    
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/memoryGame.jpeg')}>
@@ -132,7 +115,7 @@ export default function MemoryScreen({ navigation }: Props) {
                 key={card.id}
                 animation="bouncy"
                 style={styles.cardStyle}>
-                  <TouchableOpacity onPress={ () => flipCards(card.id)} disabled={disabled[card.id]}>
+                  <TouchableOpacity onPress={ () => flipCards(card.id)} activeOpacity={1} /*disabled={disabled[card.id]}*/>
                   <View
                     style={visibleCards[card.id] ? styles.invisible : styles.faceB }>
                         <Image
@@ -141,13 +124,19 @@ export default function MemoryScreen({ navigation }: Props) {
                     </View>
                     <View
                       style={visibleCards[card.id] ? styles.faceA : styles.invisible}>
-                        <Image
-                        style={styles.backImage}
-                        source={imageMap[card.image]}>
-                        </Image>
-                        <Text style={styles.textCard} alignSelf='center' fontSize={20}>{card.name}</Text>
+                        <View 
+                        style={styles.animalImageContainer}>
+                          <Image
+                          style={styles.animalImage}
+                          source={imageMap[card.image]}>
+                          </Image>
+                        </View>
+                        <View
+                        style={styles.textContainer}>
+                          <Text style={styles.textCard} alignSelf='center' fontSize={20}>{card.name}</Text>
+                        </View> 
                       </View>  
-                    </TouchableOpacity>              
+                    </TouchableOpacity>        
                 </View>
               ))}
           </XStack> 
@@ -183,40 +172,52 @@ const styles = StyleSheet.create({
     display: 'none',
   },
   cardStyle: {
-    width: 125,
-    height: 175,
+    width: 140,
+    height: 200,
   },
   faceB: {
-    width: 125,
-    height: 175,
+    width: 140,
+    height: 200,
     justifyContent: 'center',
     alignItems: 'center',
-    flex: 1
-  },
-  faceA: {
-    width: 125,
-    height: 175,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flex: 1
-  },
-  backImage: {
-    flex: 1,
-    width: 125,
-    height: 175,
     borderRadius:10,
     borderWidth: 4,
     borderColor: '#ff8a01',
   },
-  animalImage: {
-    flex: 4,
+  faceA: {
+    width: 140,
+    height: 200,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius:10,
     borderWidth: 4,
     borderColor: '#ff8a01',
   },
-  textCard: {
-    flex: 1,
-    borderWidth: 4,
+  animalImageContainer: {
+    flex: 4,
+    width: '100%',
     backgroundColor: '#ff8a01',
+  },
+  textContainer: {
+    flex: 1,
+    width: '100%',
+    backgroundColor: '#ff8a01',
+  },
+  backImage: {
+    height: '100%',
+    width: '100%',
+  },
+  animalImage: {
+    height: '100%',
+    width: '100%',
+    resizeMode: 'stretch',
+    borderRadius:10,
+  },
+  textCard: {
+    height: '100%',
+    color: 'white',
+    textTransform: 'uppercase',
+    alignContent: 'center'
   }
 });
