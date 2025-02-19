@@ -1,8 +1,10 @@
-import { ImageBackground, StyleSheet, Modal, Alert, Pressable } from 'react-native';
+import { ImageBackground, StyleSheet, TouchableOpacity } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { YStack, Text, XStack, Image, Card, Button, View } from 'tamagui';
+import { Text, XStack, Image, View } from 'tamagui';
 import { useEffect, useState } from 'react';
 import CardModel from '../../models/Card';
+import CustomModal from '@/src/components/CustomModal/CustomModal';
+import { cards, imageMap } from '../../utils/memoryCards';
 
 type MemoryScreenNavigationProp = StackNavigationProp<
   HomeStackParamList,
@@ -15,23 +17,15 @@ type Props = {
 
 export default function MemoryScreen({ navigation }: Props) {
 
-  const cards: CardModel[] = [
-    new CardModel(1, 'panda', 'path', true),
-    new CardModel(2,'tiger', 'path',true),
-    new CardModel(3, 'sea turtle', 'path', true),
-    new CardModel(4, 'eagle', 'path', false),
-    new CardModel(5, 'bonobo', 'path', true),
-    new CardModel(6, 'sei whale', 'path', true),
-    new CardModel(7, 'cat', 'path', false),
-    new CardModel(8, 'dog', 'path', false),
-  ];
 
   const [playingCards,setPlayingCards] = useState<CardModel[]>([]);
   //when cardsWon.length == 12 game is won!
   const [cardsWon, setCardsWon] = useState<number[]>([]);
+  const [card, setCard] = useState<CardModel>();
   const [cardPlayed, setCardPlayed] = useState<CardModel[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [visibleCards, setVisibleCards] = useState<boolean[]>([false, false, false, false, false, false, false, false, false, false, false, false]);
+  const [disabled, setDisabled] = useState<boolean[]>([false, false, false, false, false, false, false, false, false, false, false, false]);
 
   const shuffleCards= (cards : CardModel[]) => {
     for (let i = cards.length - 1; i > 0; i--)
@@ -43,6 +37,11 @@ export default function MemoryScreen({ navigation }: Props) {
   };
 
   const flipCards = (id: number) => {
+    setDisabled((prev) => {
+      const cardsSet = [...prev];
+      cardsSet[id] = !cardsSet[id]
+      return cardsSet;
+    });
     if(cardPlayed.length < 2 && visibleCards[id] == false){
       setVisibleCards((prev) => {
         const cardsSet = [...prev];
@@ -57,13 +56,20 @@ export default function MemoryScreen({ navigation }: Props) {
   }
 
   const checkIfWonSet = () =>{ 
+    setDisabled((prev) => {
+      return new Array(prev.length).fill(true);
+    });
     if (cardPlayed[0].name === cardPlayed[1].name){
       setCardsWon((prev) => {
         const cardsSet = [...prev, cardPlayed[0].id, cardPlayed[1].id];
         return cardsSet;
       });
+      setCard(cardPlayed[1]);
       setModalVisible(true);
       setCardPlayed([]);
+      setDisabled((prev) => {
+        return new Array(prev.length).fill(false);
+      });
     } else {
       setTimeout(() =>{      
         setVisibleCards((prev) => {
@@ -73,6 +79,9 @@ export default function MemoryScreen({ navigation }: Props) {
           return cardsSet;
         });
         setCardPlayed([]);
+        setDisabled((prev) => {
+          return new Array(prev.length).fill(false);
+        });
       },2000)
     }
   }
@@ -82,22 +91,21 @@ export default function MemoryScreen({ navigation }: Props) {
     let shuffledCards = shuffleCards(cards.slice());
     shuffledCards = shuffledCards.slice(0, 6);
     let duplicateCards = [...shuffledCards, ...shuffledCards];
-    duplicateCards = duplicateCards.map((card, index )=> new CardModel(index, card.name, card.image, card.endangered));
+    duplicateCards = duplicateCards.map((card, index )=> new CardModel(index, card.name, card.image, card.funFact, card.habitat, card.region, card.size, card.weight, card.speed, card.endangered));
     setPlayingCards(shuffleCards(duplicateCards));
   }, [])
 
   useEffect(()=> {
     if(cardPlayed.length === 2){
+    //todo correct disable cards 
     checkIfWonSet();
     }
-  }, [cardPlayed])
+  }, [cardPlayed, disabled])
 
   return (    
       <ImageBackground style={styles.pageContainer} source={require('../../assets/images/memoryGame.jpeg')}>
-         <YStack 
-          gap={15}>
           <XStack
-            alignContent='center'
+            style={styles.pageTitle}
             gap={15}>
             <Text
             color={'#953990'}
@@ -110,140 +118,105 @@ export default function MemoryScreen({ navigation }: Props) {
                 height= {50}
               ></Image>    
           </XStack> 
-          <Modal
-            animationType="fade"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              Alert.alert('Modal has been closed.');
-              setModalVisible(!modalVisible);
-            }}>
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <Text style={styles.modalText}>You won this set, good job!</Text>
-                <Pressable
-                  style={[styles.button, styles.buttonClose]}
-                  onPress={() => setModalVisible(!modalVisible)}>
-                  <Text style={styles.textStyle}>Close</Text>
-                </Pressable>
-              </View>
-            </View>
-          </Modal>       
+          <CustomModal
+          setModalVisible= {setModalVisible}
+          modalVisible= {modalVisible}
+          card = {card}>
+          </CustomModal>       
           <XStack
           style={styles.cardsSet}
           gap={15}>
             {
               playingCards.map(card=>(
-                <Card elevate bordered
+                <View
                 key={card.id}
                 animation="bouncy"
                 style={styles.cardStyle}>
+                  <TouchableOpacity onPress={ () => flipCards(card.id)} disabled={disabled[card.id]}>
                   <View
-                  style={visibleCards[card.id] ? styles.invisible : styles.faceB }>
-                    <Button onPress={ () => flipCards(card.id)} style={styles.buttonCardStyle}>
-                      <Image
-                      style={styles.backImage}
-                      source={require('../../assets/images/memoryBackCard.jpg')}/>
-                    </Button>              
-                  </View>
-                  <View
-                    style={visibleCards[card.id] ? styles.faceA : styles.invisible}>
-                    <Button onPress={ () => flipCards(card.id)} style={styles.cardStyle}>
-                      <Text alignSelf='center' fontSize={20}>{card.name}</Text>
-                    </Button>
-                    </View>  
-                </Card>
+                    style={visibleCards[card.id] ? styles.invisible : styles.faceB }>
+                        <Image
+                        style={styles.backImage}
+                        source={require('../../assets/images/memoryBackCard.jpg')}/>
+                    </View>
+                    <View
+                      style={visibleCards[card.id] ? styles.faceA : styles.invisible}>
+                        <Image
+                        style={styles.backImage}
+                        source={imageMap[card.image]}>
+                        </Image>
+                        <Text style={styles.textCard} alignSelf='center' fontSize={20}>{card.name}</Text>
+                      </View>  
+                    </TouchableOpacity>              
+                </View>
               ))}
           </XStack> 
-        </YStack>
       </ImageBackground>    
   );
 }
 
 const styles = StyleSheet.create({
     pageContainer: { 
-    flex: 1,
-    backgroundColor: '#fff',
+    alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row',
+    flexDirection: 'column',
     height: '100%',
     width: '100%',
     paddingTop: '5%',
+    gap: 4,
+  },
+  pageTitle:{
+     flex: 1,
+  },
+  button:{
+    flex: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0)',
   },
   cardsSet:{
+    flex: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
     flexWrap:'wrap',
-    alignItems:'center',
     width: '50%',
   },
   invisible: {
     display: 'none',
   },
   cardStyle: {
-    backgroundColor: '#fff',
     width: 125,
     height: 175,
   },
-  buttonCardStyle: {
-    width: '100%',
-    height: '100%',
-  },
   faceB: {
+    width: 125,
+    height: 175,
     justifyContent: 'center',
     alignItems: 'center',
-    height: '100%',
-    width: '100%',
+    flex: 1
   },
   faceA: {
+    width: 125,
+    height: 175,
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    height: '100%',
-    width: '100%',
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
+    flex: 1
   },
   backImage: {
+    flex: 1,
+    width: 125,
+    height: 175,
     borderRadius:10,
-    borderWidth: 4, 
-    width:125,
-    height:175,
+    borderWidth: 4,
     borderColor: '#ff8a01',
+  },
+  animalImage: {
+    flex: 4,
+    borderWidth: 4,
+    borderColor: '#ff8a01',
+  },
+  textCard: {
+    flex: 1,
+    borderWidth: 4,
+    backgroundColor: '#ff8a01',
   }
 });
