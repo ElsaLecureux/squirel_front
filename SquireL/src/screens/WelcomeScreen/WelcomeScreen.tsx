@@ -8,6 +8,8 @@ import { useEffect } from 'react';
 import { Image } from 'react-native';
 
 import { Button, Text, YStack, XStack } from 'tamagui';
+import { jwtDecode } from "jwt-decode";
+import * as SecureStore from 'expo-secure-store';
 
 type WelcomeScreenNavigationProp = StackNavigationProp<RootStackParamList,'Welcome'>;
 
@@ -32,6 +34,25 @@ export default function WelcomeScreen({ navigation }: Props) {
 
   if (!loaded && !error) {
     return null;
+  }
+
+  const checkIfSignedIn = async () => {
+    let token: string | null = '';
+    if(Platform.OS === 'web') {
+      token = localStorage.getItem('access_token');
+    } else if (Platform.OS === 'ios' || Platform.OS === 'android') {
+      token =  await SecureStore.getItemAsync('access_token');
+    }
+    if (token){
+      const decodedToken = jwtDecode(token);
+      if(decodedToken.exp != undefined && decodedToken.exp > Date.now()/1000) {
+        navigation.navigate('AppDrawer');
+        return;
+      }
+      navigation.navigate('SignIn')
+    } else {
+      navigation.navigate('SignIn')
+    }
   }
 
   return (
@@ -62,7 +83,7 @@ export default function WelcomeScreen({ navigation }: Props) {
               variant="outlined"
               borderColor="#FF8A01" 
               width='auto' 
-              onPress={() => navigation.navigate('SignIn')}
+              onPress={() => checkIfSignedIn()}
             >
               <Text 
                 fontSize={Platform.OS === 'web' ? 38 : 24 }
