@@ -1,5 +1,7 @@
 import './gesture-handler';
 
+import { UserProvider } from './src/context/UserContext';
+
 import { TamaguiProvider } from '@tamagui/core'
 import config from './tamagui.config';
 
@@ -40,13 +42,15 @@ export default function App() {
     return null
   }  
 
-  return (    
+  return ( 
     <TamaguiProvider config={config} defaultTheme={colorScheme!}>
+      <UserProvider>   
       <NavigationContainer >
         { isLoading ? <LoadingScreen/> :
           <RootStack/>
         }
       </NavigationContainer>
+    </UserProvider>
     </TamaguiProvider>
   );
 }

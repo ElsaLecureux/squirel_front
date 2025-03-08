@@ -1,6 +1,7 @@
 import { Platform, ImageBackground, StyleSheet } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Text, YStack, XStack } from 'tamagui';
+import { useUser } from '../../context/UserContext';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPersonDigging } from '@fortawesome/free-solid-svg-icons/faPersonDigging';
@@ -22,6 +23,7 @@ export default function ProfileScreen({ navigation }: Props) {
   const [host, setHost] = useState('');
   const API_URL = `http://${host}:3000/userPlayGame`;
   const [isReady, setIsReady] = useState(false);
+  const { userId } = useUser();
 
   useEffect(() => {
     if (Platform.OS === 'ios' || Platform.OS === 'android') {
@@ -36,16 +38,17 @@ export default function ProfileScreen({ navigation }: Props) {
     if (!isReady) return; 
     //add get infos user
     const getUserWonGames = async () =>  {
-      const userId = 4;
+      const Id = userId;
+      console.log(userId);
       const infos = await axios({
         method: 'get',
-        url: `${API_URL}/${userId}`,
+        url: `${API_URL}/${Id}`,
       }).then(
         
       )
       console.log(infos)
     }
-    getGamesWonUser();
+    getUserWonGames();
    }, [isReady, host]);
 
   return (    
