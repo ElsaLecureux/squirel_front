@@ -1,7 +1,11 @@
- type UserDto = {
+export default class UserDto {
     username: string;
     email: string;
     password: string;
-}
 
-export default UserDto;
+    constructor(username: string, email: string, password: string){
+        this.username = username;
+        this.email= email;
+        this.password= password;
+    }
+} 
