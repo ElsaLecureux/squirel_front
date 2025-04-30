@@ -1,3 +1,4 @@
+//todo change class to type and delete constructor?
 export default class Card {
     id: number;
     name: string;

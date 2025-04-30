@@ -1,77 +1,37 @@
-import Card from '@/src/models/Card';
-import { iconMap } from '@/src/utils/memoryCards';
-import { Modal, Text, Button, StyleSheet } from 'react-native';
-import { Image, XStack, YStack, View } from 'tamagui';
-import { imageMap } from '../../utils/memoryCards';
+import { Modal, StyleSheet } from 'react-native';
+import { YStack, View } from 'tamagui';
+import { PropsWithChildren } from 'react';
 
-type Props = {
-    card: Card |undefined;
-    modalVisible: boolean;
-    setModalVisible : Function;
-}
+type ModalProps = {
+  modalVisible: boolean;
+  setModalVisible: (visible: boolean) => void;
+  style_modal: boolean;
+};
 
-const CustomModal = (props : Props) => {
+
+const CustomModal = ({ modalVisible, setModalVisible, style_modal, children }: PropsWithChildren<ModalProps>) => {
 
     return(
-        <Modal
-        animationType="fade"
-        transparent={true}
-        visible={props.modalVisible}
-        onRequestClose={() => {
-            props.setModalVisible(!props.modalVisible);
-        }}>
-             <View style={styles.centeredView}>
-                <YStack style={styles.modalView}>
-                    <XStack style={styles.cardFirstHalf}>
-                        <View>
-                            <Image
-                            style={styles.image}
-                            source={imageMap[props.card?.image]}/>
-                        </View>
-                        <YStack>
-                            <Text style={styles.modalText}>
-                            Name: {props.card?.name}
-                            </Text>
-                            <Text style={styles.modalText}>
-                            Size: {props.card?.size}
-                            </Text>
-                            <Text style={styles.modalText}>
-                            Weight: {props.card?.weight}
-                            </Text>
-                            <Text style={styles.modalText}>
-                            Speed: {props.card?.speed}
-                            </Text>
-                            <Text style={styles.modalText}>
-                            Endangered: {props.card?.endangered ? 'yes' : 'no'}
-                            </Text>
-                        </YStack>
-                    </XStack>
-                    <YStack style={styles.cardSecondHalf}>
-                        <Text style={styles.modalText}>
-                            Food: {props.card?.food}
-                        </Text>
-                        <Text style={styles.modalText}>
-                            Habitat: {props.card?.habitat}
-                        </Text>
-                        <Text style={styles.modalText}>
-                            Region: {props.card?.region}
-                        </Text>
-                        <Text style={styles.modalText}>
-                            Fun fact: {props.card?.funFact}
-                        </Text>
-                    </YStack>                   
-                    <Button
-                        title="Close"
-                        onPress={() => props.setModalVisible(false)}
-                        //style={styles.button}
-                    />
-                </YStack>
-            </View>  
-        </Modal>
+            <Modal
+            animationType="fade"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+                setModalVisible(!modalVisible);
+            }}>
+                <View style={ style_modal? styles.bottomView: styles.centeredView }>
+                    <YStack style={styles.modalView}> 
+                        { children }
+                    </YStack>
+                </View>  
+            </Modal>
     )  
 } 
 
 const styles = StyleSheet.create({
+    modalContainer:{
+        flex: 1,
+    },
     centeredView: {
         flex: 1,
         justifyContent: 'center',
@@ -79,12 +39,7 @@ const styles = StyleSheet.create({
         marginTop: 22,
     },
     modalView: {
-        height: 600,
-        width: 400,
-        margin: 20,
-        backgroundColor: '#ff8a01',
         borderRadius: 20,
-        padding: 35,
         alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: {
@@ -95,35 +50,12 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
     },
-    cardFirstHalf: {
-        backgroundColor: '#ff8a01',
-        flex: 2
+    bottomView: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'flex-end'
     },
-    cardSecondHalf: {
-        backgroundColor: '#ff8a01',
-        flex: 1
-    },
-    image: {
-        width: 150,
-        height: 280,
-    },
-    button: {
-        borderRadius: 20,
-        padding: 10,
-        elevation: 2,
-    },
-    buttonClose: {
-        backgroundColor: '#2196F3',
-    },
-    textStyle: {
-        color: 'white',
-        fontWeight: 'bold',
-        textAlign: 'center',
-    },
-    modalText: {
-        marginBottom: 15,
-        textAlign: 'center',
-    },
+
 });
 
 export default CustomModal;

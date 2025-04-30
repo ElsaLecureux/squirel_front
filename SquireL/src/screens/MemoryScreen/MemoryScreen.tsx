@@ -1,10 +1,12 @@
 import { ImageBackground, StyleSheet, TouchableOpacity } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { Text, XStack, Image, View } from 'tamagui';
+import { Text, XStack, Image, View, YStack, Button } from 'tamagui';
+import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { useEffect, useState } from 'react';
 import CardModel from '../../models/Card';
 import CustomModal from '@/src/components/CustomModal/CustomModal';
-import { cards, imageMap, iconMap } from '../../utils/memoryCards';
+import { cards, imageMap } from '../../utils/memoryCards';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 
 type MemoryScreenNavigationProp = StackNavigationProp<
   HomeStackParamList,
@@ -24,6 +26,7 @@ export default function MemoryScreen({ navigation }: Props) {
   const [cardPlayed, setCardPlayed] = useState<CardModel[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [visibleCards, setVisibleCards] = useState<boolean[]>([false, false, false, false, false, false, false, false, false, false, false, false]);
+  const style_modal_bottom = false;
 
   const shuffleCards= (cards : CardModel[]) => {
     for (let i = cards.length - 1; i > 0; i--)
@@ -102,9 +105,52 @@ export default function MemoryScreen({ navigation }: Props) {
               ></Image>    
           </XStack> 
           <CustomModal
+          style_modal = {style_modal_bottom}
           setModalVisible= {setModalVisible}
-          modalVisible= {modalVisible}
-          card = {card}>
+          modalVisible= {modalVisible} >
+            <XStack style={styles.modalView}>
+            <YStack style={styles.cardFirstHalf}>
+                  <View>
+                      <Image
+                      style={styles.image}
+                      source={imageMap[card?.image]}/>
+                  </View>
+                  <YStack>
+                      <Text style={styles.modalText}>
+                      Name: {card?.name}
+                      </Text>
+                      <Text style={styles.modalText}>
+                      Size: {card?.size}
+                      </Text>
+                      <Text style={styles.modalText}>
+                      Weight: {card?.weight}
+                      </Text>
+                      <Text style={styles.modalText}>
+                      Speed: {card?.speed}
+                      </Text>
+                      <Text style={styles.modalText}>
+                      Endangered: {card?.endangered ? 'yes' : 'no'}
+                      </Text>
+                  </YStack>
+              </YStack>
+              <YStack style={styles.cardSecondHalf}>
+                  <Text style={styles.modalText}>
+                      Food: {card?.food}
+                  </Text>
+                  <Text style={styles.modalText}>
+                      Habitat: {card?.habitat}
+                  </Text>
+                  <Text style={styles.modalText}>
+                      Region: {card?.region}
+                  </Text>
+                  <Text style={styles.modalText}>
+                      Fun fact: {card?.funFact}
+                  </Text>
+              </YStack>    
+            </XStack> 
+            <Button size="$2" style={styles.modalCloseButton}onPress={() => setModalVisible(false)}>
+                <FontAwesomeIcon icon={faXmark} style={{color: '#fff'}} />
+            </Button>       
           </CustomModal>       
           <XStack
           style={styles.cardsSet}
@@ -219,5 +265,51 @@ const styles = StyleSheet.create({
     color: 'white',
     textTransform: 'uppercase',
     alignContent: 'center'
-  }
+  },
+  cardFirstHalf: {
+    backgroundColor: '#ff8a01',
+    flex: 2
+},
+cardSecondHalf: {
+    backgroundColor: '#ff8a01',
+    flex: 1
+},
+image: {
+    width: 150,
+    height: 280,
+},
+buttonClose: {
+    backgroundColor: '#2196F3',
+},
+textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+},
+modalView: {
+  height: 600,
+  width: 400,
+  backgroundColor: '#ff8a01',
+  borderRadius: 20,
+  padding: 35,
+  alignItems: 'center',
+  // shadowColor: '#000',
+  // shadowOffset: {
+  //     width: 0,
+  //     height: 2,
+  // },
+  // shadowOpacity: 0.25,
+  // shadowRadius: 4,
+  // elevation: 5,
+},
+modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+},
+modalCloseButton:{
+  position: 'absolute',
+  top: 0,
+  right: 0,
+  backgroundColor: '#ff8a01'
+}
 });

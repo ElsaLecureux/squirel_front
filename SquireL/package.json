@@ -9,6 +9,7 @@
     "web": "DARK_MODE=media expo start --web"
   },
   "dependencies": {
+    "@apollo/client": "^3.13.6",
     "@expo-google-fonts/medievalsharp": "^0.2.3",
     "@expo/metro-runtime": "~4.0.0",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
@@ -24,6 +25,7 @@
     "@tamagui/config": "^1.112.12",
     "@tamagui/image": "^1.112.12",
     "@tamagui/lucide-icons": "^1.112.12",
+    "@tamagui/tabs": "^1.126.3",
     "axios": "^1.7.7",
     "babel-plugin-module-resolver": "^5.0.2",
     "expo": "^52.0.11",
@@ -33,10 +35,12 @@
     "expo-secure-store": "^14.0.0",
     "expo-splash-screen": "~0.29.13",
     "expo-status-bar": "~2.0.0",
+    "graphql": "^16.10.0",
     "jwt-decode": "^4.0.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-native": "0.76.3",
+    "react-native-dotenv": "^3.4.11",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-reanimated": "^3.16.1",
     "react-native-responsive-dimensions": "^3.1.1",
@@ -45,6 +49,7 @@
     "react-native-svg": "^15.8.0",
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.19.13",
+    "react-native-webview": "^13.13.5",
     "tamagui": "^1.112.12"
   },
   "devDependencies": {
