@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+cardSize{
+    cardHeight: 175;
+    cardWidth: 125
+} 
+

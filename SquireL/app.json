@@ -3,7 +3,7 @@
     "name": "SquireL",
     "slug": "SquireL",
     "version": "1.0.0",
-    "orientation": "landscape",
+    "orientation": "portait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
@@ -11,9 +11,13 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "requireFullScreen": true
+      "requireFullScreen": true,
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -21,11 +25,27 @@
         "backgroundColor": "#ffffff"
       }
     },
+    "androidNavigationBar": {
+      "visible": "sticky-immersive"
+    },
     "plugins": [
       [
         "expo-screen-orientation",
         {
           "initialOrientation": "LANDSCAPE"
+        }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": ["node_modules/@expo-google-fonts/inter/Inter_900Black.ttf"]
+        }
+      ],
+      [
+        "expo-secure-store",
+        {
+          "configureAndroidBackup": true,
+          "faceIDPermission": "Allow $(PRODUCT_NAME) to access your Face ID biometric data."
         }
       ]
     ],
