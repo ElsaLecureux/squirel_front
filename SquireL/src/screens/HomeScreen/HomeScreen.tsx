@@ -1,7 +1,7 @@
 import { Animated, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-import { Button, Image } from 'tamagui';
+import { Image } from 'tamagui';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faGamepad } from '@fortawesome/free-solid-svg-icons/faGamepad'; 
 import { useRef, useEffect } from 'react';
@@ -56,18 +56,20 @@ export default function HomeScreen({ navigation }: Props) {
 
   return (    
     <ImageBackground 
+      testID="background-image-home"
       style={styles.pageContainer} 
       source={require('../../assets/images/homeScreen.jpg')}
     >
-      <Button
-        chromeless
+      <TouchableOpacity
         onPress={() => navigation.getParent()?.navigate('PlayroomStack', {screen: 'Playroom'})}
+        accessibilityLabel="goTo"
       >
         <FontAwesomeIcon icon={faGamepad} style={{color: "#ff8a01"}} />
-      </Button>           
+      </TouchableOpacity>           
       <TouchableOpacity 
         style={styles.woodenSign}
         onPress={() => navigation.navigate('Memory')}
+        accessibilityLabel="goToMemoryButton"
       >
         <Animated.View style={{ transform: [{ translateY }] }}>
           <Image
