@@ -6,7 +6,8 @@
     "start": "expo start",
     "android": "DARK_MODE=media expo start --android",
     "ios": "DARK_MODE=media expo start --ios",
-    "web": "DARK_MODE=media expo start --web"
+    "web": "DARK_MODE=media expo start --web",
+    "build": "expo export --web && expo build:android && expo build:ios"
   },
   "dependencies": {
     "@apollo/client": "^3.13.6",
