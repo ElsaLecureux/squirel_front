@@ -1,9 +1,12 @@
-version: '1.0'
+version: '3.8'
 
 services:
   frontend:
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: squirel-frontend
     ports:
-      - "80:80"
+      - "8080:80"
     env_file:
       - .env
