@@ -1,6 +1,7 @@
 import './gesture-handler';
 
 import { UserProvider } from './src/context/UserContext';
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
 import { TamaguiProvider } from '@tamagui/core'
 import config from './tamagui.config';
@@ -15,8 +16,20 @@ import LoadingScreen from './src/screens/LoadingScreen';
 import RootStack from './src/routes/RootStack';
 
 import { useFonts } from 'expo-font';
+import { TOKEN_API_RADIO_FRANCE } from '@env';
 
 export default function App() {
+
+  const TOKEN_RADIO_FRANCE= process.env.TOKEN_API_RADIO_FRANCE;
+  const URL_API_RADIO_FRANCE = `https://openapi.radiofrance.fr/v1/graphql`;
+
+  const client = new ApolloClient({
+    uri: `${URL_API_RADIO_FRANCE}`,
+    cache: new InMemoryCache(),
+    headers: {
+      'x-token': `${TOKEN_RADIO_FRANCE}`
+    }
+  });
 
   const [isLoading, setIsloading] = useState(true);
   const colorScheme = useColorScheme()
@@ -44,13 +57,15 @@ export default function App() {
 
   return ( 
     <TamaguiProvider config={config} defaultTheme={colorScheme!}>
-      <UserProvider>   
-      <NavigationContainer >
-        { isLoading ? <LoadingScreen/> :
-          <RootStack/>
-        }
-      </NavigationContainer>
-    </UserProvider>
+      <ApolloProvider client={client}>
+        <UserProvider>   
+          <NavigationContainer >
+            { isLoading ? <LoadingScreen/> :
+              <RootStack/>
+            }
+          </NavigationContainer>
+         </UserProvider>
+      </ApolloProvider>
     </TamaguiProvider>
   );
 }
@@ -60,4 +75,3 @@ const styles = StyleSheet.create({
     flex: 1,
   }
 });
-

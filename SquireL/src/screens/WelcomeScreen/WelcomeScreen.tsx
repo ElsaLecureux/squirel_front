@@ -1,11 +1,10 @@
-import { Platform, ImageBackground, StyleSheet} from 'react-native';
+import { Platform, ImageBackground, StyleSheet, Image } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { MedievalSharp_400Regular } from '@expo-google-fonts/medievalsharp';
 
 import { useEffect } from 'react';
-import { Image } from 'react-native';
 
 import { Button, Text, YStack, XStack } from 'tamagui';
 import { jwtDecode } from "jwt-decode";
