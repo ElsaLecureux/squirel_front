@@ -8,6 +8,9 @@ import { useEffect, useState } from 'react';
 import { useFonts } from 'expo-font';
 import axios from 'axios';
 import GLOBALS from '../../config';
+import { jwtDecode } from "jwt-decode";
+import { useUser } from '../../context/UserContext';
+
 
 type SignInScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -18,6 +21,8 @@ type Props = {
 };
 
 export default function SignInScreen({ navigation }: Props) {
+  
+  const { setUserId } = useUser();
 
   const [loaded, error] = useFonts({
     'MedievalSharp-Regular': MedievalSharp_400Regular,
@@ -75,18 +80,22 @@ export default function SignInScreen({ navigation }: Props) {
       //trim accidentals spaces
       setPassword((password.trim()));
       setUsername((username.trim()));
-        await axios({
+      await axios({
           method: 'post',
           url: `${API_URL}`,
           data: { username, password }
         })
         .then( async function (response) {
+          const decoded_token = jwtDecode(response.data.access_token);
+          if (decoded_token?.sub){
+            setUserId(decoded_token.sub)
+          }          
           if (Platform.OS === 'ios' || Platform.OS === 'android') {
             await SecureStore.setItemAsync('access_token', response.data.access_token);
             const access_token = await SecureStore.getItemAsync('access_token');
             setHost('');
           } else if (Platform.OS === 'web') {
-            localStorage.setItem('access_token', response.data.access_token);
+            localStorage.setItem('access_token', response.data.access_token);            
             setHost('');
           }
             navigation.navigate('AppDrawer')

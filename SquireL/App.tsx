@@ -1,5 +1,6 @@
 import './gesture-handler';
 
+import { UserProvider } from './src/context/UserContext';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
 import { TamaguiProvider } from '@tamagui/core'
@@ -54,14 +55,16 @@ export default function App() {
     return null
   }  
 
-  return (    
+  return ( 
     <TamaguiProvider config={config} defaultTheme={colorScheme!}>
       <ApolloProvider client={client}>
-        <NavigationContainer >
-          { isLoading ? <LoadingScreen/> :
-            <RootStack/>
-          }
-        </NavigationContainer>
+        <UserProvider>   
+          <NavigationContainer >
+            { isLoading ? <LoadingScreen/> :
+              <RootStack/>
+            }
+          </NavigationContainer>
+         </UserProvider>
       </ApolloProvider>
     </TamaguiProvider>
   );

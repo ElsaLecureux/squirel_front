@@ -7,6 +7,7 @@ type Props = {
   };
 
  const signOut = async (navigation: any) => {
+
     if (Platform.OS === 'web'){
       localStorage.removeItem('access_token');
       if (!localStorage.getItem('access_token')){

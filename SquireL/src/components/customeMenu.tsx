@@ -6,10 +6,13 @@ import { YStack, Text, Image } from 'tamagui';
 import { faHouse } from '@fortawesome/free-solid-svg-icons/faHouse';
 import { faUser } from '@fortawesome/free-solid-svg-icons/faUser';
 import { faGamepad } from '@fortawesome/free-solid-svg-icons/faGamepad'; 
-import signOut from '../constants/signOut';
+import signout from '../constants/signOut';
+import { useUser } from "../context/UserContext";
 
 const CustomDrawerContent = (props: any) => {
     
+    const { signOut } = useUser();
+
     return(
 
     <DrawerContentScrollView {...props}>
@@ -44,7 +47,7 @@ const CustomDrawerContent = (props: any) => {
             <FontAwesomeIcon icon={faArrowRightFromBracket} size={35} color="#ff6347"/>
           </YStack>
           )}
-        onPress={() => signOut(props.navigation)}
+        onPress={() => [signout(props.navigation),  signOut()]}
         />
     </DrawerContentScrollView>
     );
