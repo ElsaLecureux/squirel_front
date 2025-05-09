@@ -34,26 +34,26 @@ export default function LibraryScreen() {
   ];
   const [podcastSelected, setPodcastSelected] = useState(0);
   const GET_SHOW_BY_URL = gql`
-  query GetShowByUrl($url: String!) {
-    showByUrl(url: $url) {
-      title
-      standFirst
-      diffusionsConnection {
-        edges {
-          node {
-            id
-            title
-            published_date
-            podcastEpisode {
-              playerUrl
+    query GetShowByUrl($url: String!) {
+      showByUrl(url: $url) {
+        title
+        standFirst
+        diffusionsConnection {
+          edges {
+            node {
+              id
               title
+              published_date
+              podcastEpisode {
+                playerUrl
+                title
+              }
             }
           }
         }
       }
     }
-  }
-`;
+  `;
 
 
 type node = {
@@ -67,7 +67,6 @@ type node = {
 
   const [modalVisible, setModalVisible] = useState(false);
 
-  
   const [episodeInfos, setEpisodeInfos] = useState({
     id: '', 
     title: '', 
@@ -100,7 +99,7 @@ type node = {
     setPodcastSelected(podcastId)
   }
 
-  //todo add condition to add podcast to list only if playerUrl is available: 404 in console: in networK?
+  //todo fix playerUrl issue on some episode
 
   return (
     <ImageBackground source={require('../../assets/images/libraryScreen.png')} style={styles.pageContainer}>
@@ -194,7 +193,7 @@ type node = {
                   />
                 )
             }
-            <Button size="$2" style={styles.modalCloseButton}onPress={() => setModalVisible(false)}>
+            <Button size="$2" style={styles.modalCloseButton} onPress={() => setModalVisible(false)}>
               <FontAwesomeIcon icon={faXmark} style={{color: '#fff'}} />
             </Button>
         </CustomModal>
