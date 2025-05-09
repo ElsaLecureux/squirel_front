@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import { Button, Text, YStack, XStack } from 'tamagui';
 import { jwtDecode } from "jwt-decode";
 import * as SecureStore from 'expo-secure-store';
+import { useUser } from '../../context/UserContext';
 
 type WelcomeScreenNavigationProp = StackNavigationProp<RootStackParamList,'Welcome'>;
 
@@ -18,6 +19,7 @@ type Props = {
 
 export default function WelcomeScreen({ navigation }: Props) {
 
+  const { setUserId } = useUser();
   const [loaded, error] = useFonts({
     MedievalSharp_400Regular,
   });
@@ -44,9 +46,10 @@ export default function WelcomeScreen({ navigation }: Props) {
     }
     if (token){
       const decodedToken = jwtDecode(token);
-      if(decodedToken.exp != undefined && decodedToken.exp > Date.now()/1000) {
+      if(decodedToken.exp != undefined && decodedToken.exp > Date.now()/1000 && decodedToken.sub) {
+        setUserId(decodedToken.sub)
         navigation.navigate('AppDrawer');
-        return;
+        return; 
       }
       navigation.navigate('SignIn')
     } else {

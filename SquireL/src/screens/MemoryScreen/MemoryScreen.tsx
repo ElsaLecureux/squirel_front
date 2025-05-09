@@ -109,29 +109,29 @@ export default function MemoryScreen({ navigation }: Props) {
           setModalVisible= {setModalVisible}
           modalVisible= {modalVisible} >
             <XStack style={styles.modalView}>
-            <YStack style={styles.cardFirstHalf}>
-                  <View>
-                      <Image
-                      style={styles.image}
-                      source={imageMap[card?.image]}/>
-                  </View>
-                  <YStack>
-                      <Text style={styles.modalText}>
-                      Name: {card?.name}
-                      </Text>
-                      <Text style={styles.modalText}>
-                      Size: {card?.size}
-                      </Text>
-                      <Text style={styles.modalText}>
-                      Weight: {card?.weight}
-                      </Text>
-                      <Text style={styles.modalText}>
-                      Speed: {card?.speed}
-                      </Text>
-                      <Text style={styles.modalText}>
-                      Endangered: {card?.endangered ? 'yes' : 'no'}
-                      </Text>
-                  </YStack>
+              <YStack style={styles.cardFirstHalf}>
+                <View>
+                    <Image
+                    style={styles.image}
+                    source={imageMap[card?.image]}/>
+                </View>
+                <YStack>
+                    <Text style={styles.modalText}>
+                    Name: {card?.name}
+                    </Text>
+                    <Text style={styles.modalText}>
+                    Size: {card?.size}
+                    </Text>
+                    <Text style={styles.modalText}>
+                    Weight: {card?.weight}
+                    </Text>
+                    <Text style={styles.modalText}>
+                    Speed: {card?.speed}
+                    </Text>
+                    <Text style={styles.modalText}>
+                    Endangered: {card?.endangered ? 'yes' : 'no'}
+                    </Text>
+                </YStack>
               </YStack>
               <YStack style={styles.cardSecondHalf}>
                   <Text style={styles.modalText}>
