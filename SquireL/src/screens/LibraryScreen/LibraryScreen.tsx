@@ -108,7 +108,7 @@ type node = {
         <Text
           fontSize={40}
           color={"#fff"}
-          fontFamily="MedievalSharp-Regular"
+          fontFamily="MysteryQuest_400Regular"
           style={styles.pageTitle}>
               AudioBooks Library
         </Text>
@@ -124,7 +124,7 @@ type node = {
         <Tabs.List>
         { podcasts.map((podcast)=> (
           <Tabs.Tab key={podcast.id} value={podcast.id.toString()} onPress={() => changeSelectedPodcast(podcast.id)}>
-             <Text>{podcast.name}</Text>
+             <Text fontFamily="BubblegumSans_400Regular">{podcast.name}</Text>
           </Tabs.Tab>
         ))}
         </Tabs.List>
@@ -135,12 +135,14 @@ type node = {
           <Tabs.Content style={styles.scrollerView} value={podcast.id.toString()}>
           <YStack style={styles.podcastTitlesContainer}>
             <Text
+            fontFamily="BubblegumSans_400Regular"
             alignSelf='center'
             fontSize={40}
             color={"#fff"}>
                 {data?.showByUrl.title}
             </Text>
             <Text
+            fontFamily="BubblegumSans_400Regular"
             alignSelf='center'
             fontSize={30}
             color={"#fff"}>
@@ -159,7 +161,8 @@ type node = {
                         <Image style={styles.episodeImage} source={podcast.image}>
 
                         </Image>
-                        <Text fontSize={15} style={styles.episodeTitle}>
+                        <Text
+                        style={styles.episodeTitle}>
                           {node.title}
                         </Text>
                       </XStack>
@@ -178,20 +181,20 @@ type node = {
           setModalVisible= {setModalVisible}
           modalVisible= {modalVisible} >
             {    
-                  Platform.OS === 'web' ? (
-                  <iframe
-                  style={styles.playerWeb}
+              Platform.OS === 'web' ? (
+              <iframe
+              style={styles.playerWeb}
+              key={episodeInfos.id}
+              frameBorder="0"
+              title={episodeInfos.podcastEpisode.title}
+              src={episodeInfos.podcastEpisode.playerUrl}
+              />
+              ) : (
+                <WebView
                   key={episodeInfos.id}
-                  frameBorder="0"
-                  title={episodeInfos.podcastEpisode.title}
-                  src={episodeInfos.podcastEpisode.playerUrl}
-                  />
-                ) : (
-                  <WebView
-                    key={episodeInfos.id}
-                    source={{ uri: episodeInfos.podcastEpisode.playerUrl }}
-                  />
-                )
+                  source={{ uri: episodeInfos.podcastEpisode.playerUrl }}
+                />
+              )
             }
             <Button size="$2" style={styles.modalCloseButton} onPress={() => setModalVisible(false)}>
               <FontAwesomeIcon icon={faXmark} style={{color: '#fff'}} />
@@ -259,8 +262,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   episodeTitle: {
+    fontFamily: "BubblegumSans_400Regular",
+    fontSize: 20,
     color: '#fff',
-    fontSize: 23,
   },
   episodeImage: {
     width: 160,

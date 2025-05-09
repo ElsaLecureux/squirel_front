@@ -17,10 +17,13 @@ import RootStack from './src/routes/RootStack';
 
 import { useFonts } from 'expo-font';
 import { TOKEN_API_RADIO_FRANCE } from '@env';
+import { BubblegumSans_400Regular } from '@expo-google-fonts/bubblegum-sans';
+import { MysteryQuest_400Regular } from '@expo-google-fonts/mystery-quest';
+import { MedievalSharp_400Regular } from '@expo-google-fonts/medievalsharp';
 
 export default function App() {
 
-  const TOKEN_RADIO_FRANCE= process.env.TOKEN_API_RADIO_FRANCE;
+  const TOKEN_RADIO_FRANCE= TOKEN_API_RADIO_FRANCE;
   const URL_API_RADIO_FRANCE = `https://openapi.radiofrance.fr/v1/graphql`;
 
   const client = new ApolloClient({
@@ -38,6 +41,12 @@ export default function App() {
     await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE).then(() => setTimeout(() => {setIsloading(false)}, 2000));
   }
 
+    const [loaded, error] = useFonts({
+    MedievalSharp_400Regular,
+    MysteryQuest_400Regular,
+    BubblegumSans_400Regular,
+  });
+
   useEffect(() => {
     if (Platform.OS !== 'web') {
     changeScreenOrientation();
@@ -45,11 +54,6 @@ export default function App() {
       setIsloading(false);
     }
   },[]);
-
-  const [loaded] = useFonts({
-    Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
-    InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
-  })
 
   if (!loaded) {
     return null

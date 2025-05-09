@@ -29,7 +29,7 @@ export default function SignUpScreen({ navigation }: Props) {
   const emailRegex= /^[a-zA-Z0-9._-]{3,}@[a-zA-Z0-9.-]{3,}\.[a-zA-Z]{2,}$/;
   const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
 
-  const [userDto, setUserDto] = useState(new UserDto('', '', ''));
+  const [userDto, setUserDto] = useState<UserDto>({username: '', email: '', password: ''});
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isMessageVisible, setIsMessageVisible] = useState(false);

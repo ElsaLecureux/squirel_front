@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@apollo/client": "^3.13.6",
+    "@expo-google-fonts/bubblegum-sans": "^0.3.0",
     "@expo-google-fonts/medievalsharp": "^0.2.3",
+    "@expo-google-fonts/mystery-quest": "^0.3.0",
     "@expo/metro-runtime": "~4.0.0",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-brands-svg-icons": "^6.6.0",

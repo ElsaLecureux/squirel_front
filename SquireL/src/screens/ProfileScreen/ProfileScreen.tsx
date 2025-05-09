@@ -1,6 +1,6 @@
 import { Platform, ImageBackground, StyleSheet, Image } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { Text, YStack, XStack, View, Button } from 'tamagui';
+import { Text, YStack, XStack, View, Button, Stack, Form, Label, Input } from 'tamagui';
 import { useUser } from '../../context/UserContext';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -10,6 +10,7 @@ import UserInfosDto from '@/src/Dto/UserInfosDto';
 import UserPlayGameFullDto from '@/src/Dto/UserPlayGameFullDto';
 import CustomModal from '@/src/components/CustomModal/CustomModal';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
+import UserDto from '@/src/Dto/UserDto';
 
 
 type ProfileScreenNavigationProp = StackNavigationProp<
@@ -30,6 +31,7 @@ export default function ProfileScreen({ navigation }: Props) {
   const [userInfo, setUserInfo] = useState<UserInfosDto>();
   const [userPlayGame, setUserPlayGame] = useState<UserPlayGameFullDto[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [userDto, setUserDto] = useState<UserDto>({username: '', email: '', password: ''});
   const style_modal_bottom = false;
 
   useEffect(() => {
@@ -70,6 +72,17 @@ export default function ProfileScreen({ navigation }: Props) {
   const changeInfosButton = () => {
     setModalVisible(true)
   }
+
+  const handleInputChange = (field : string, value: string) => {
+    setUserDto((prevState) => ({
+      ...prevState,
+      [field]: value
+    }))
+  }
+
+  const onFormSubmit = () => {
+    console.log("submitted")
+  }
     
   if (!isReady) return (
   <View>
@@ -82,64 +95,205 @@ export default function ProfileScreen({ navigation }: Props) {
          <YStack 
           gap={15}>
           <XStack
+            justifyContent='center'
             alignContent='center'
-            gap={15}>
+            marginBottom={40}>
             <Text
-            color={'#fff'}
+            fontFamily="MysteryQuest_400Regular"
+            style={styles.title}
             fontSize={30}>
                 Welcome {userInfo?.username}!
             </Text>
           </XStack>
-          <YStack
-            alignItems='center'
+          <XStack
+          gap={25}>
+            <Stack
+            style={styles.containerAvatar}>
+              <Image style={styles.avatar} source={require('../../assets/images/avatar1.png')}/>
+            </Stack>
+            <YStack
+            justifyContent='center'
             gap={15}>
-            <Text
+              <Text
+                fontFamily="BubblegumSans_400Regular"
+                color={'#fff'}
+                fontSize={20}>
+                    Username: {userInfo?.username}
+              </Text>
+              <Text
+              fontFamily="BubblegumSans_400Regular"
               color={'#fff'}
               fontSize={20}>
-                  Username: {userInfo?.username}
-            </Text>
+                    Email: {userInfo?.email}
+              </Text>
+            </YStack>
+          </XStack>
+          <XStack gap={15}
+          alignItems='center'> 
             <Text
-              color={'#fff'}
-              fontSize={20}>
-                  email: {userInfo?.email}
-            </Text>
-            <Text fontSize={20} color={'#fff'}>Your Trophie(s):</Text>
-            <XStack gap={15}> 
-            {
-              userPlayGame.map((game) => (
-                  <XStack
-                  gap={15}
-                  key={game.gameid}>
+            fontFamily="BubblegumSans_400Regular"
+            fontSize={20}
+            color={'#fff'}>
+                Trophies:
+              </Text>
+              {
+                userPlayGame.map((game) => (
+                <XStack
+                gap={15}
+                key={game.gameid}>
                     { (game.avatar && game.numberoftimewon > 0) ? 
-                    <Image style={styles.avatar} source={{ uri: `${game.avatar.replace(/[\r\n]+/g, "")}` }}/>
+                    <XStack
+                    style={styles.containerTrophy}>
+                      <Image key={game.avatar} style={styles.trophy} source={{ uri: `${game.avatar.replace(/[\r\n]+/g, "")}` }}/>
+                    </XStack>
                     : ''
                     }
                     { (game.avatarGold && game.numberoftimewon >= 5) ?
-                    <Image style={styles.avatar} source={{ uri: `${game.avatarGold.replace(/[\r\n]+/g, "")}` }}/>
+                    <XStack
+                    style={styles.containerTrophyGolden}>
+                      <Image key={game.avatarGold} style={styles.trophy} source={{ uri: `${game.avatarGold.replace(/[\r\n]+/g, "")}` }}/>
+                    </XStack>
                     : ''}
-                  </XStack>)
-              )
-            } 
-            </XStack>
+                </XStack>))
+              } 
+          </XStack>
+          <YStack
+            alignItems="center">
+            <Button
+              size="$5"
+              variant="outlined"
+              borderColor="#FF8A01"
+              onPress={() => changeInfosButton()}>
+                <Text
+                fontFamily="BubblegumSans_400Regular"
+                color={'#fff'}
+                fontSize={18}>
+                  Change infos
+                </Text>             
+            </Button>
           </YStack>
-          <Button
-            size={ Platform.OS === 'web' ? "$8" : "$5" }
-            variant="outlined"
-            borderColor="#FF8A01" 
-            width='auto' 
-            onPress={() => changeInfosButton()}>
-              Change my infos              
-          </Button>
           <CustomModal
           style_modal = {style_modal_bottom}
           setModalVisible= {setModalVisible}
           modalVisible= {modalVisible} >
-            <XStack style={styles.modalView}>
-              {userInfo?.username}
-              <Button size="$2" style={styles.modalCloseButton} onPress={() => setModalVisible(false)}>
-                <FontAwesomeIcon icon={faXmark} style={{color: '#fff'}} />
-              </Button> 
-            </XStack>
+            <Form
+              width='100%'
+              paddingRight='8%'
+              paddingLeft='8%'
+              style={styles.modalView}
+              gap="$3"
+              onSubmit={() => onFormSubmit()}>
+              <XStack
+                gap="$3"
+                justifyContent='center'
+                alignItems='center'>
+                <YStack
+                  width="40%"
+                  justifyContent='center'
+                  alignItems='center'>
+                    <Label
+                    htmlFor='username'                              
+                    lineHeight={16}>
+                    <Text
+                    fontSize={Platform.OS === 'web' ? 25 : 16 }
+                    color="#fff" 
+                    fontFamily="MedievalSharp-Regular">
+                    Username
+                    </Text>
+                  </Label>
+                 </YStack> 
+                <Input
+                  id='username'
+                  placeholder= {userInfo?.username}
+                  value= {userDto.username}
+                  onChangeText={(text)=>handleInputChange('username', text)}
+                  autoCapitalize="none"
+                  maxLength={30}
+                  size={ Platform.OS === 'web' ? "$5" : "$3" }
+                  flex={1}/>
+                </XStack> 
+                   <XStack
+                  gap="$3"
+                  justifyContent='center'
+                  alignItems='center'>
+                    <YStack
+                    width="40%"
+                    justifyContent='center'
+                    alignItems='center'>
+                      <Label
+                      htmlFor='email'                              
+                      lineHeight={16}>
+                      <Text
+                      fontSize={Platform.OS === 'web' ? 25 : 16 }
+                      color="#fff" 
+                      fontFamily="MedievalSharp-Regular">
+                      Email
+                      </Text>
+                    </Label>
+                    </YStack>                    
+                    <Input
+                    id='email'
+                    value= {userDto.email}
+                    placeholder= {userInfo?.email}
+                    onChangeText={(text)=>handleInputChange('email', text)}
+                    autoCapitalize="none"
+                    maxLength={150}
+                    flex={1}
+                    size={ Platform.OS === 'web' ? "$5" : "$3" }>
+                    </Input>
+                  </XStack>                             
+                <XStack 
+                gap="$3"
+                justifyContent='center'
+                alignItems='center'>
+                    <YStack
+                    width="40%"
+                    justifyContent='center'
+                    alignItems='center'>
+                    <Label  
+                      htmlFor='password'>                
+                      <Text 
+                      fontSize={Platform.OS === 'web' ? 25 : 16 }
+                      color="#fff"
+                      fontFamily="MedievalSharp-Regular">
+                        Password
+                      </Text>                    
+                    </Label>
+                  </YStack>
+                  <Input
+                  id='password'
+                  value= {userDto.password}
+                  onChangeText={(text)=>handleInputChange('password', text)}
+                  secureTextEntry
+                  maxLength={30}
+                  autoCorrect={false}
+                  autoComplete="off"
+                  size={ Platform.OS === 'web' ? "$5" : "$3" }
+                  flex={1}></Input>
+                </XStack> 
+                <XStack gap={30}>
+                  <Form.Trigger asChild>
+                    <Button
+                    size={ Platform.OS === 'web' ? "$5" : "$3" }
+                    backgroundColor="#FFF">
+                      <Text 
+                        color="#FF8A01"
+                        fontFamily="MedievalSharp-Regular" 
+                        fontSize={Platform.OS === 'web' ? 25 : 16 }>
+                          Save
+                      </Text>
+                    </Button>
+                  </Form.Trigger>  
+                  <Button  size={ Platform.OS === 'web' ? "$5" : "$3" } style={styles.modalCloseButton} onPress={() => setModalVisible(false)}>
+                    <Text 
+                      color="#FF8A01"
+                      fontFamily="MedievalSharp-Regular" 
+                      fontSize={Platform.OS === 'web' ? 25 : 16 }>
+                        Close 
+                      </Text>
+                  </Button> 
+                </XStack>
+            </Form>
           </CustomModal>
         </YStack>
       </ImageBackground>    
@@ -149,7 +303,6 @@ export default function ProfileScreen({ navigation }: Props) {
 const styles = StyleSheet.create({
     pageContainer: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
@@ -157,24 +310,51 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   title: {
-    color: '#FF8A01'
+    color: '#ffa358',
   },
+  containerAvatar: {
+    borderColor: '#FF8A01',
+    borderRadius: 20,
+    borderWidth: 4,
+    height: 120,
+    width: 120,
+    },
   avatar: {
-    height: 40,
-    width: 40
+    height: '100%',
+    width: '100%',
+    borderRadius: 20,
+  },
+  containerTrophy: {
+    borderColor: '#FF8A01',
+    borderRadius: 15,
+    padding: 4,
+    borderWidth: 2,
+    height: 50,
+    width: 50,
+  },
+  containerTrophyGolden: {
+    borderColor: '#D4AF37',
+    borderRadius: 15,
+    padding: 4,
+    borderWidth: 2,
+    height: 50,
+    width: 50,
+  },
+  trophy: {
+    height: '100%',
+    width: '100%',
+    borderRadius: 15,
   },
   modalView: {
-  height: 600,
+  height: 400,
   width: 400,
   backgroundColor: '#ff8a01',
   borderRadius: 20,
   padding: 35,
-  alignItems: 'center'
+  alignItems: 'center',
+  justifyContent: 'center'
   },
   modalCloseButton:{
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    backgroundColor: '#ff8a01'
+    backgroundColor: '#fff'
   }
 });
