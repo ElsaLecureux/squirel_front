@@ -3,13 +3,11 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { Text, YStack, XStack, View, Button, Stack, Form, Label, Input } from 'tamagui';
 import { useUser } from '../../context/UserContext';
 
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import UserInfosDto from '@/src/Dto/UserInfosDto';
 import UserPlayGameFullDto from '@/src/Dto/UserPlayGameFullDto';
 import CustomModal from '@/src/components/CustomModal/CustomModal';
-import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import UserDto from '@/src/Dto/UserDto';
 
 
@@ -31,8 +29,10 @@ export default function ProfileScreen({ navigation }: Props) {
   const [userInfo, setUserInfo] = useState<UserInfosDto>();
   const [userPlayGame, setUserPlayGame] = useState<UserPlayGameFullDto[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [userDto, setUserDto] = useState<UserDto>({username: '', email: '', password: ''});
+  const [userDto, setUserDto] = useState<UserDto>({username: '', email: '', password: '', newPassword: undefined});
   const style_modal_bottom = false;
+  const [errorMessage, setErrorMessage] = useState<string>();
+  const [confirmPassword, setConfirmPassword] = useState<string>();
 
   useEffect(() => {
     if (Platform.OS === 'ios' || Platform.OS === 'android') {
@@ -56,6 +56,7 @@ export default function ProfileScreen({ navigation }: Props) {
       console.log("infosUser:", dataUser.data)
       if(dataUser){
         setUserInfo({...dataUser.data})
+        setUserDto({...dataUser.data})
       }
     }
     const getUserWonGames = async () =>  {
@@ -73,15 +74,77 @@ export default function ProfileScreen({ navigation }: Props) {
     setModalVisible(true)
   }
 
-  const handleInputChange = (field : string, value: string) => {
-    setUserDto((prevState) => ({
+   const handleInputChange = (field : string, value: string) => {
+    if(field === "confirmPassword") { setConfirmPassword(value) }
+    else {
+      setUserDto((prevState) => ({
+        ...prevState,
+        [field]: value
+         }))
+      } 
+    }
+  const handleNewPassword = () => {
+      setUserDto((prevState) => ({
       ...prevState,
-      [field]: value
-    }))
+      newPassword: undefined,
+    }));
+      setErrorMessage('The new passwords must be identicals')
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 3000);
+      setConfirmPassword("");
   }
 
-  const onFormSubmit = () => {
-    console.log("submitted")
+  const checkIfPasswordNotEmpty = () => {
+    if (userDto.password === '') {
+      setErrorMessage('Password is required!');
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 3000);
+      return false
+    } else {
+      return true
+    }
+  }
+
+  const onFormSubmit = async () => {
+    if(confirmPassword !== userDto.newPassword) {
+      handleNewPassword();
+    }
+    if (checkIfPasswordNotEmpty() && confirmPassword === userDto.newPassword) {
+      try {
+        const response = await axios({
+        method: 'put',
+        url: `${API_URL}/users/${userId}`,
+        data: { ...userDto }
+        })
+        console.log(response.status);
+        if (response.status === 200) {
+          setErrorMessage('New informations saved')
+          setTimeout(() => {
+          setErrorMessage('');
+          }, 3000);
+        }
+      } catch (error : any) {
+        console.log(error.response.status);
+        if(error.response.status === 400) {
+          setErrorMessage('Password must contains 8 characters, 1 uppercase, 1 lowercase and a special character!');
+          setTimeout(() => {
+          setErrorMessage('');
+          }, 3000);
+        } else if (error.response.status === 401) {
+          setErrorMessage('Wrong password!');
+          setTimeout(() => {
+          setErrorMessage('');
+          }, 3000);
+        } else {
+          setErrorMessage("An unexpected thing happened, the new informations couldn't be saved");
+          setTimeout(() => {
+          setErrorMessage('');
+          }, 3000);
+        }
+      }
+    }
   }
     
   if (!isReady) return (
@@ -146,14 +209,14 @@ export default function ProfileScreen({ navigation }: Props) {
                     style={styles.containerTrophy}>
                       <Image key={game.avatar} style={styles.trophy} source={{ uri: `${game.avatar.replace(/[\r\n]+/g, "")}` }}/>
                     </XStack>
-                    : ''
+                    : null
                     }
                     { (game.avatarGold && game.numberoftimewon >= 5) ?
                     <XStack
                     style={styles.containerTrophyGolden}>
                       <Image key={game.avatarGold} style={styles.trophy} source={{ uri: `${game.avatarGold.replace(/[\r\n]+/g, "")}` }}/>
                     </XStack>
-                    : ''}
+                    : null}
                 </XStack>))
               } 
           </XStack>
@@ -165,7 +228,7 @@ export default function ProfileScreen({ navigation }: Props) {
               borderColor="#FF8A01"
               onPress={() => changeInfosButton()}>
                 <Text
-                fontFamily="BubblegumSans_400Regular"
+                fontFamily="MysteryQuest_400Regular"
                 color={'#fff'}
                 fontSize={18}>
                   Change infos
@@ -183,36 +246,94 @@ export default function ProfileScreen({ navigation }: Props) {
               style={styles.modalView}
               gap="$3"
               onSubmit={() => onFormSubmit()}>
-              <XStack
-                gap="$3"
-                justifyContent='center'
-                alignItems='center'>
-                <YStack
-                  width="40%"
+              <YStack gap="$3">
+                <XStack
+                  gap="$3"
                   justifyContent='center'
                   alignItems='center'>
-                    <Label
-                    htmlFor='username'                              
-                    lineHeight={16}>
-                    <Text
-                    fontSize={Platform.OS === 'web' ? 25 : 16 }
-                    color="#fff" 
-                    fontFamily="MedievalSharp-Regular">
-                    Username
-                    </Text>
-                  </Label>
-                 </YStack> 
-                <Input
-                  id='username'
-                  placeholder= {userInfo?.username}
-                  value= {userDto.username}
-                  onChangeText={(text)=>handleInputChange('username', text)}
-                  autoCapitalize="none"
-                  maxLength={30}
-                  size={ Platform.OS === 'web' ? "$5" : "$3" }
-                  flex={1}/>
+                  <YStack
+                    width="40%"
+                    justifyContent='center'
+                    alignItems='center'>
+                      <Label
+                      htmlFor='username'                              
+                      lineHeight={16}>
+                      <Text
+                      fontSize={Platform.OS === 'web' ? 25 : 16 }
+                      color="#fff" 
+                      fontFamily="BubblegumSans_400Regular">
+                      Username
+                      </Text>
+                    </Label>
+                  </YStack> 
+                  <Input
+                    id='username'
+                    value= {userDto.username}
+                    onChangeText={(text)=>handleInputChange('username', text)}
+                    autoCapitalize="none"
+                    maxLength={30}
+                    size={ Platform.OS === 'web' ? "$5" : "$3" }
+                    flex={1}/>
                 </XStack> 
-                   <XStack
+                <XStack
+                    gap="$3"
+                    justifyContent='center'
+                    alignItems='center'>
+                      <YStack
+                      width="40%"
+                      justifyContent='center'
+                      alignItems='center'>
+                        <Label
+                        htmlFor='email'                              
+                        lineHeight={16}>
+                        <Text
+                        fontSize={Platform.OS === 'web' ? 25 : 16 }
+                        color="#fff" 
+                        fontFamily="BubblegumSans_400Regular">
+                        Email
+                        </Text>
+                      </Label>
+                      </YStack>                    
+                      <Input
+                      id='email'
+                      value= {userDto.email}
+                      onChangeText={(text)=>handleInputChange('email', text)}
+                      autoCapitalize="none"
+                      maxLength={150}
+                      flex={1}
+                      size={ Platform.OS === 'web' ? "$5" : "$3" }>
+                      </Input>
+                </XStack>                             
+                <XStack 
+                  gap="$3"
+                  justifyContent='center'
+                  alignItems='center'>
+                      <YStack
+                      width="40%"
+                      justifyContent='center'
+                      alignItems='center'>
+                      <Label  
+                        htmlFor='password'>                
+                        <Text 
+                        fontSize={Platform.OS === 'web' ? 25 : 16 }
+                        color="#fff"
+                        fontFamily="BubblegumSans_400Regular">
+                          Password
+                        </Text>
+                      </Label>
+                    </YStack>
+                    <Input
+                    id='password'
+                    value= {userDto.password}
+                    onChangeText={(text)=>handleInputChange('password', text)}
+                    secureTextEntry
+                    maxLength={30}
+                    autoCorrect={false}
+                    autoComplete="off"
+                    size={ Platform.OS === 'web' ? "$5" : "$3" }
+                    flex={1}></Input>
+                </XStack> 
+                <XStack 
                   gap="$3"
                   justifyContent='center'
                   alignItems='center'>
@@ -220,50 +341,20 @@ export default function ProfileScreen({ navigation }: Props) {
                     width="40%"
                     justifyContent='center'
                     alignItems='center'>
-                      <Label
-                      htmlFor='email'                              
-                      lineHeight={16}>
-                      <Text
-                      fontSize={Platform.OS === 'web' ? 25 : 16 }
-                      color="#fff" 
-                      fontFamily="MedievalSharp-Regular">
-                      Email
-                      </Text>
-                    </Label>
-                    </YStack>                    
-                    <Input
-                    id='email'
-                    value= {userDto.email}
-                    placeholder= {userInfo?.email}
-                    onChangeText={(text)=>handleInputChange('email', text)}
-                    autoCapitalize="none"
-                    maxLength={150}
-                    flex={1}
-                    size={ Platform.OS === 'web' ? "$5" : "$3" }>
-                    </Input>
-                  </XStack>                             
-                <XStack 
-                gap="$3"
-                justifyContent='center'
-                alignItems='center'>
-                    <YStack
-                    width="40%"
-                    justifyContent='center'
-                    alignItems='center'>
                     <Label  
-                      htmlFor='password'>                
+                      htmlFor='newPassword'>                
                       <Text 
-                      fontSize={Platform.OS === 'web' ? 25 : 16 }
+                      fontSize={ Platform.OS === 'web' ? 25 : 16 }
                       color="#fff"
-                      fontFamily="MedievalSharp-Regular">
-                        Password
-                      </Text>                    
+                      fontFamily="BubblegumSans_400Regular">
+                         New password
+                      </Text>
                     </Label>
                   </YStack>
                   <Input
-                  id='password'
-                  value= {userDto.password}
-                  onChangeText={(text)=>handleInputChange('password', text)}
+                  id='newPassword'
+                  value= {userDto.newPassword}
+                  onChangeText={(text)=>handleInputChange('newPassword', text)}
                   secureTextEntry
                   maxLength={30}
                   autoCorrect={false}
@@ -271,14 +362,48 @@ export default function ProfileScreen({ navigation }: Props) {
                   size={ Platform.OS === 'web' ? "$5" : "$3" }
                   flex={1}></Input>
                 </XStack> 
-                <XStack gap={30}>
+                <XStack 
+                  gap="$3"
+                  justifyContent='center'
+                  alignItems='center'>
+                    <YStack
+                    width="40%"
+                    justifyContent='center'
+                    alignItems='center'>
+                    <Label  
+                      htmlFor='newPasswordConfirmation'>                
+                      <Text 
+                      fontSize={Platform.OS === 'web' ? 25 : 16 }
+                      color="#fff"
+                      fontFamily="BubblegumSans_400Regular">
+                          Confirm new password
+                      </Text>
+                    </Label>
+                  </YStack>
+                    <Input
+                    id='newPasswordConfirmation'
+                    value= {confirmPassword}
+                    onChangeText={(text)=>handleInputChange('confirmPassword', text)}
+                    secureTextEntry
+                    maxLength={30}
+                    autoCorrect={false}
+                    autoComplete="off"
+                    size={ Platform.OS === 'web' ? "$5" : "$3" }
+                    flex={1}/>
+                </XStack> 
+                  { errorMessage ?
+                  <Text>
+                      {errorMessage}
+                    </Text> : null
+                  }
+                <XStack gap={30} alignItems='center' justifyContent='center'>
                   <Form.Trigger asChild>
                     <Button
                     size={ Platform.OS === 'web' ? "$5" : "$3" }
                     backgroundColor="#FFF">
                       <Text 
                         color="#FF8A01"
-                        fontFamily="MedievalSharp-Regular" 
+                        fontFamily="MysteryQuest_400Regular" 
                         fontSize={Platform.OS === 'web' ? 25 : 16 }>
                           Save
                       </Text>
@@ -287,12 +412,13 @@ export default function ProfileScreen({ navigation }: Props) {
                   <Button  size={ Platform.OS === 'web' ? "$5" : "$3" } style={styles.modalCloseButton} onPress={() => setModalVisible(false)}>
                     <Text 
                       color="#FF8A01"
-                      fontFamily="MedievalSharp-Regular" 
+                      fontFamily="MysteryQuest_400Regular" 
                       fontSize={Platform.OS === 'web' ? 25 : 16 }>
                         Close 
                       </Text>
                   </Button> 
                 </XStack>
+              </YStack>
             </Form>
           </CustomModal>
         </YStack>
@@ -346,8 +472,8 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   modalView: {
-  height: 400,
-  width: 400,
+  height: 500,
+  width: 600,
   backgroundColor: '#ff8a01',
   borderRadius: 20,
   padding: 35,
