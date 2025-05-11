@@ -29,7 +29,7 @@ export default function SignUpScreen({ navigation }: Props) {
   const emailRegex= /^[a-zA-Z0-9._-]{3,}@[a-zA-Z0-9.-]{3,}\.[a-zA-Z]{2,}$/;
   const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
 
-  const [userDto, setUserDto] = useState<UserDto>({username: '', email: '', password: ''});
+  const [userDto, setUserDto] = useState<UserDto>({username: '', email: '', password: '', newPassword: undefined});
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isMessageVisible, setIsMessageVisible] = useState(false);
@@ -106,7 +106,6 @@ export default function SignUpScreen({ navigation }: Props) {
           }  
         if (Platform.OS === 'ios' || Platform.OS === 'android') {
           await SecureStore.setItemAsync('access_token', response.data.access_token);
-          const access_token = await SecureStore.getItemAsync('access_token');
           setHost('');
         } else if (Platform.OS === 'web') {
           localStorage.setItem('access_token', response.data.access_token);
