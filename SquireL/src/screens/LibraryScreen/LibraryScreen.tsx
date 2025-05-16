@@ -80,7 +80,6 @@ type node = {
   const style_modal_bottom = true
 
   const useShowByUrl = (podcastSelected: Podcast) => {
-    console.log('GET_SHOW_BY_URL', GET_SHOW_BY_URL);
     const { loading, error, data } = useQuery<ShowByUrlResponse>(GET_SHOW_BY_URL, {
       variables: { url: podcastSelected.url },
     });

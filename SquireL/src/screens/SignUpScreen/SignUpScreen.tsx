@@ -90,10 +90,7 @@ export default function SignUpScreen({ navigation }: Props) {
       setErrorMessage('Email should not be empty');
       showErrorMessage();
     }
-    console.log('host: ', host);
-    console.log('API_URL: ', API_URL);
     if(userDto.password !== '' && userDto.username !== '' && userDto.email !== ''){
-      console.log('inside if for axios')
       await axios({
         method: 'post',
         url: `${API_URL}`,
@@ -121,7 +118,6 @@ export default function SignUpScreen({ navigation }: Props) {
               showErrorMessage();
             }
           } else {
-            console.log('An unexpected error occurred:', error);
             setErrorMessage('An unexpected error occurred');
             showErrorMessage();
           }
