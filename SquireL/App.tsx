@@ -10,26 +10,56 @@ import { StyleSheet, Platform, useColorScheme } from 'react-native';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useEffect, useState } from 'react';
 
-import { NavigationContainer } from '@react-navigation/native';
+import { LinkingOptions, NavigationContainer } from '@react-navigation/native';
 
 import LoadingScreen from './src/screens/LoadingScreen';
 import RootStack from './src/routes/RootStack';
 
 import { useFonts } from 'expo-font';
-import { TOKEN_API_RADIO_FRANCE } from '@env';
+import { TOKEN_API_RADIO_FRANCE, URL_API_RADIO_FRANCE } from './env';
 
 export default function App() {
 
-  const TOKEN_RADIO_FRANCE= process.env.TOKEN_API_RADIO_FRANCE;
-  const URL_API_RADIO_FRANCE = `https://openapi.radiofrance.fr/v1/graphql`;
+  const linking: LinkingOptions<RootStackParamList> = {
+  prefixes: ['http://localhost:8080', 'https://yourdomain.com'],
+  config: {
+    screens: {
+      Welcome: 'welcome',
+      SignIn: 'signin',
+      SignUp: 'signup',
+      AppDrawer: {
+        screens: {
+          HomeStack: {
+            screens: {
+              Home: 'home',
+              Memory: 'memory',
+            },
+          },
+          Profile: 'profile',
+          PlayroomStack: {
+            screens: {
+              Playroom: 'playroom',
+              Puzzle: 'puzzle',
+              DrawingGame: 'drawing-game',
+              LookAndFind: 'look-and-find',
+              Library: 'library',
+            },
+          },
+          DrawingsBox: 'drawings',
+        },
+      },
+    },
+  },
+};
 
   const client = new ApolloClient({
     uri: `${URL_API_RADIO_FRANCE}`,
     cache: new InMemoryCache(),
     headers: {
-      'x-token': `${TOKEN_RADIO_FRANCE}`
+      'x-token': `${TOKEN_API_RADIO_FRANCE}`
     }
   });
+  console.log('in app token and url radiofrance', URL_API_RADIO_FRANCE, TOKEN_API_RADIO_FRANCE)
 
   const [isLoading, setIsloading] = useState(true);
   const colorScheme = useColorScheme()
