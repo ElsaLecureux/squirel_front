@@ -1,38 +1,40 @@
 
-import { ImageBackground, Platform, StyleSheet } from 'react-native';
-import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { faCirclePlay } from '@fortawesome/free-solid-svg-icons/faCirclePlay';
+import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
+import { ImageBackground, ImageSourcePropType, Platform, StyleSheet } from 'react-native';
 
-import { useQuery, gql } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import { WebView } from 'react-native-webview';
 
-import { Text, XStack, ScrollView, Button, Image, YStack, Separator, Tabs } from 'tamagui';
-import React, { useState } from 'react';
 import { ShowByUrlResponse } from '@/src/Dto/ShowByUrlDto';
 import CustomModal from '@/src/components/CustomModal/CustomModal';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import React, { useState } from 'react';
+import { Button, Image, ScrollView, Separator, Tabs, Text, XStack, YStack } from 'tamagui';
 
 
+interface Podcast {
+  id: string,
+  name: string, 
+  image: ImageSourcePropType,
+  url: string
+}
 
 export default function LibraryScreen() {
 
-  const urlPodcasts = [
-    "https://www.radiofrance.fr/franceinter/podcasts/les-odyssees",
-    "https://www.radiofrance.fr/franceinter/podcasts/bestioles",
-    "https://www.radiofrance.fr/francemusique/podcasts/les-zinstrus"
-  ]
-  const podcasts = [
+  const podcasts: Podcast[] = [
     {
-      id: 0, name: "Les Odyssées", image: require('../../assets/images/lesOdyssees.jpg')
+      id: "odyssees", name: "Les Odyssées", image: require('../../assets/images/lesOdyssees.jpg'), url: "https://www.radiofrance.fr/franceinter/podcasts/les-odyssees"
     },
     {
-      id: 1, name: "Bestioles", image: require('../../assets/images/bestioles.jpg')
+      id: "bestioles", name: "Bestioles", image: require('../../assets/images/bestioles.jpg'), url: "https://www.radiofrance.fr/franceinter/podcasts/bestioles"
     },
     {
-      id: 2, name: "Les-Zinstrus", image: require('../../assets/images/lesZinstrus.jpg')
+      id: "zinstrus", name: "Les-Zinstrus", image: require('../../assets/images/lesZinstrus.jpg'), url: "https://www.radiofrance.fr/francemusique/podcasts/les-zinstrus"
     }
   ];
-  const [podcastSelected, setPodcastSelected] = useState(0);
+
+  const [podcastSelected, setPodcastSelected] = useState<Podcast>(podcasts[0]);
   const GET_SHOW_BY_URL = gql`
   query GetShowByUrl($url: String!) {
     showByUrl(url: $url) {
@@ -78,15 +80,16 @@ type node = {
   });
   const style_modal_bottom = true
 
-  const useShowByUrl = (podcastSelected: number, urlPodcasts: string[]) => {
+  const useShowByUrl = (podcastSelected: Podcast) => {
+    console.log('GET_SHOW_BY_URL', GET_SHOW_BY_URL);
     const { loading, error, data } = useQuery<ShowByUrlResponse>(GET_SHOW_BY_URL, {
-      variables: { url: urlPodcasts[podcastSelected] },
+      variables: { url: podcastSelected.url },
     });
   
     return { loading, error, data };
   };
 
-  const { loading, error, data } = useShowByUrl(podcastSelected, urlPodcasts);
+  const { loading, error, data } = useShowByUrl(podcastSelected);
 
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error while loading data</Text>;
@@ -96,8 +99,8 @@ type node = {
     setModalVisible(true);
   }
 
-  const changeSelectedPodcast = (podcastId: number) => {
-    setPodcastSelected(podcastId)
+  const changeSelectedPodcast = (podcast: Podcast) => {
+    setPodcastSelected({...podcast})
   }
 
   //todo add condition to add podcast to list only if playerUrl is available: 404 in console: in networK?
@@ -121,10 +124,10 @@ type node = {
        width={'100%'}
        alignItems='center'
        justifyContent='center'
-       defaultValue="1">
+       defaultValue="odyssees">
         <Tabs.List>
         { podcasts.map((podcast)=> (
-          <Tabs.Tab key={podcast.id} value={podcast.id.toString()} onPress={() => changeSelectedPodcast(podcast.id)}>
+          <Tabs.Tab key={podcast.id} value={podcast.id} onPress={() => changeSelectedPodcast(podcast)}>
              <Text>{podcast.name}</Text>
           </Tabs.Tab>
         ))}
@@ -133,7 +136,7 @@ type node = {
           <ScrollView
           backgroundColor="rgba(255, 255, 255, 0)"
           style={styles.scrollerView} key={podcast.id} >
-          <Tabs.Content style={styles.scrollerView} value={podcast.id.toString()}>
+          <Tabs.Content style={styles.scrollerView} value={podcast.id}>
           <YStack style={styles.podcastTitlesContainer}>
             <Text
             alignSelf='center'
@@ -153,7 +156,7 @@ type node = {
           style={styles.podcastContainer}>
               {
                 data?.showByUrl.diffusionsConnection.edges.map(({ node }) => (
-                  <YStack style= {styles.episodeCardContainer} key={podcast.id}>
+                  <YStack style= {styles.episodeCardContainer} key={node.id}>
                     <Separator alignSelf="stretch" style={styles.episodeSeparator}/> 
                     <XStack style= {styles.episodeCard} >
                       <XStack style= {styles.episodeTitleContainer}>

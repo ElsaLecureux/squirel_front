@@ -6,7 +6,8 @@
     "start": "expo start",
     "android": "DARK_MODE=media expo start --android",
     "ios": "DARK_MODE=media expo start --ios",
-    "web": "DARK_MODE=media expo start --web"
+    "web": "DARK_MODE=media expo start --web",
+    "build": "npx expo export --platform web"
   },
   "dependencies": {
     "@apollo/client": "^3.13.6",
