@@ -6,7 +6,6 @@ import axios from 'axios';
 import { useState } from 'react';
 import  UserDto from '../../Dto/UserDto'
 import { Eye, EyeOff } from '@tamagui/lucide-icons';
-import { Dimensions } from 'react-native';
 import GLOBALS from '../../config';
 
 type SignUpScreenNavigationProp = StackNavigationProp<
@@ -18,14 +17,12 @@ type Props = {
   navigation: SignUpScreenNavigationProp;
 };
 
-const { height } = Dimensions.get('window');
-
 export default function SignUpScreen({ navigation }: Props) {
 
   const emailRegex= /^[a-zA-Z0-9._-]{3,}@[a-zA-Z0-9.-]{3,}\.[a-zA-Z]{2,}$/;
   const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
 
-  const [userDto, setUserDto] = useState(new UserDto('', '', ''));
+  const [userDto, setUserDto] = useState<UserDto>( {username:'', email:'', password:''});
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isMessageVisible, setIsMessageVisible] = useState(false);
@@ -71,6 +68,11 @@ export default function SignUpScreen({ navigation }: Props) {
   } 
 
   const onFormSubmit = async () => {
+    if (Platform.OS === 'ios' || Platform.OS === 'android') {
+      setHost('10.117.60.67');
+    } else if (Platform.OS === 'web') {
+      setHost('localhost');
+    }
     checkInput('all');
     if(userDto.password === '') {
       setErrorMessage('Password should not be empty');
@@ -84,12 +86,10 @@ export default function SignUpScreen({ navigation }: Props) {
       setErrorMessage('Email should not be empty');
       showErrorMessage();
     }
+    console.log('host: ', host);
+    console.log('API_URL: ', API_URL);
     if(userDto.password !== '' && userDto.username !== '' && userDto.email !== ''){
-      if (Platform.OS === 'ios' || Platform.OS === 'android') {
-        setHost('10.117.60.67');
-      } else if (Platform.OS === 'web') {
-        setHost('localhost');
-      }
+      console.log('inside if for axios')
       await axios({
         method: 'post',
         url: `${API_URL}`,
@@ -294,8 +294,6 @@ export default function SignUpScreen({ navigation }: Props) {
                 paddingTop={Platform.OS === 'web' ? GLOBALS.padding_3 : null }
                 justifyContent='space-around'>
                   <Form.Trigger asChild>
-                    <XStack
-                    paddingLeft='8%'>
                     <Button                    
                     size={ Platform.OS === 'web' ? "$5" : "$3" }
                     backgroundColor="#FF8A01">
@@ -305,21 +303,20 @@ export default function SignUpScreen({ navigation }: Props) {
                         fontSize={Platform.OS === 'web' ? 25 : 16 }>
                           Register</Text>
                     </Button>
-                    </XStack>
                   </Form.Trigger>  
-                  <Button
-                  size={ Platform.OS === 'web' ? "$5" : "$3" }
-                  variant="outlined"
-                  borderColor="#FF8A01"             
-                  onPress={() => navigation.navigate('SignIn')}>
-                    <Text 
-                      color="#FFF"
-                      fontFamily="MedievalSharp-Regular"
-                      fontSize={Platform.OS === 'web' ? 25 : 16 }
-                      >Back to Sign In</Text>
-                  </Button>
                 </XStack>                
               </Form>              
+              <Button
+              size={ Platform.OS === 'web' ? "$5" : "$3" }
+              variant="outlined"
+              borderColor="#FF8A01"             
+              onPress={() => navigation.navigate('SignIn')}>
+                <Text 
+                  color="#FFF"
+                  fontFamily="MedievalSharp-Regular"
+                  fontSize={Platform.OS === 'web' ? 25 : 16 }
+                  >Back to Sign In</Text>
+              </Button>
           </YStack>
           <YStack
             alignItems='flex-end'

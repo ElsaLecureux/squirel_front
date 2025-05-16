@@ -5,6 +5,8 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
+      args:
+        - TOKEN_API_RADIO_FRANCE=${TOKEN_API_RADIO_FRANCE}
     container_name: squirel-frontend
     ports:
       - "8080:80"

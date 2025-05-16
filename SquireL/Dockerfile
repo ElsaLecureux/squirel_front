@@ -5,7 +5,11 @@ WORKDIR /app
 COPY package*.json ./
 
 # installs the application dependencies
-RUN npm install
+RUN npm install -g expo-cli && \
+    npm install
+
+COPY tsconfig*.json ./
+COPY env.ts ./
 
 COPY . .
 
