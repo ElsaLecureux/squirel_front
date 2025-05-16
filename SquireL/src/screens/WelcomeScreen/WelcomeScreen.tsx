@@ -1,14 +1,10 @@
 import { Platform, ImageBackground, StyleSheet, Image } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
-import { MedievalSharp_400Regular } from '@expo-google-fonts/medievalsharp';
-
-import { useEffect } from 'react';
 
 import { Button, Text, YStack, XStack } from 'tamagui';
 import { jwtDecode } from "jwt-decode";
 import * as SecureStore from 'expo-secure-store';
+import { useUser } from '../../context/UserContext';
 
 type WelcomeScreenNavigationProp = StackNavigationProp<RootStackParamList,'Welcome'>;
 
@@ -18,22 +14,7 @@ type Props = {
 
 export default function WelcomeScreen({ navigation }: Props) {
 
-  const [loaded, error] = useFonts({
-    MedievalSharp_400Regular,
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    } else if (error) {
-      console.log('Error loading fonts:', error);
-      SplashScreen.hideAsync();
-    }
-  }, [loaded, error]);
-
-  if (!loaded && !error) {
-    return null;
-  }
+  const { setUserId } = useUser();
 
   const checkIfSignedIn = async () => {
     let token: string | null = null;
@@ -44,7 +25,8 @@ export default function WelcomeScreen({ navigation }: Props) {
     }
     if (token){
       const decodedToken = jwtDecode(token);
-      if(decodedToken.exp != undefined && decodedToken.exp > Date.now()/1000) {
+      if(decodedToken.exp != undefined && decodedToken.exp > Date.now()/1000 && decodedToken.sub) {
+        setUserId(decodedToken.sub)
         navigation.navigate('AppDrawer');
         return;
       }

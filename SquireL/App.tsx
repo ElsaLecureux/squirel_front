@@ -15,7 +15,11 @@ import { LinkingOptions, NavigationContainer } from '@react-navigation/native';
 import LoadingScreen from './src/screens/LoadingScreen';
 import RootStack from './src/routes/RootStack';
 
+import { BubblegumSans_400Regular } from '@expo-google-fonts/bubblegum-sans';
+import { MysteryQuest_400Regular } from '@expo-google-fonts/mystery-quest';
+import { MedievalSharp_400Regular } from '@expo-google-fonts/medievalsharp';
 import { useFonts } from 'expo-font';
+
 import { TOKEN_API_RADIO_FRANCE, URL_API_RADIO_FRANCE } from './env';
 
 export default function App() {
@@ -59,7 +63,6 @@ export default function App() {
       'x-token': `${TOKEN_API_RADIO_FRANCE}`
     }
   });
-  console.log('in app token and url radiofrance', URL_API_RADIO_FRANCE, TOKEN_API_RADIO_FRANCE)
 
   const [isLoading, setIsloading] = useState(true);
   const colorScheme = useColorScheme()
@@ -67,6 +70,12 @@ export default function App() {
   async function changeScreenOrientation() {
     await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE).then(() => setTimeout(() => {setIsloading(false)}, 2000));
   }
+
+    const [loaded, error] = useFonts({
+    MedievalSharp_400Regular,
+    MysteryQuest_400Regular,
+    BubblegumSans_400Regular,
+  });
 
   useEffect(() => {
     if (Platform.OS !== 'web') {
@@ -76,11 +85,6 @@ export default function App() {
     }
   },[]);
 
-  const [loaded] = useFonts({
-    Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
-    InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
-  })
-
   if (!loaded) {
     return null
   }  
@@ -89,7 +93,8 @@ export default function App() {
     <TamaguiProvider config={config} defaultTheme={colorScheme!}>
       <ApolloProvider client={client}>
         <UserProvider>   
-          <NavigationContainer >
+          <NavigationContainer 
+          linking={linking}>
             { isLoading ? <LoadingScreen/> :
               <RootStack/>
             }
