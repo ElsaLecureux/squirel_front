@@ -36,7 +36,7 @@ export default function WelcomeScreen({ navigation }: Props) {
   }
 
   const checkIfSignedIn = async () => {
-    let token: string | null = '';
+    let token: string | null = null;
     if(Platform.OS === 'web') {
       token = localStorage.getItem('access_token');
     } else if (Platform.OS === 'ios' || Platform.OS === 'android') {

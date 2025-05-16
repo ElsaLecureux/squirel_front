@@ -7,6 +7,8 @@ import { useState } from 'react';
 import  UserDto from '../../Dto/UserDto'
 import { Eye, EyeOff } from '@tamagui/lucide-icons';
 import GLOBALS from '../../config';
+import { jwtDecode } from "jwt-decode";
+import { useUser } from '../../context/UserContext';
 
 type SignUpScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -18,6 +20,8 @@ type Props = {
 };
 
 export default function SignUpScreen({ navigation }: Props) {
+
+  const { setUserId } = useUser();
 
   const emailRegex= /^[a-zA-Z0-9._-]{3,}@[a-zA-Z0-9.-]{3,}\.[a-zA-Z]{2,}$/;
   const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
@@ -96,6 +100,10 @@ export default function SignUpScreen({ navigation }: Props) {
         data: { ...userDto }
       })
       .then( async function (response) {
+        const decoded_token = jwtDecode(response.data.access_token);
+          if (decoded_token?.sub){
+            setUserId(decoded_token.sub)
+          }  
         if (Platform.OS === 'ios' || Platform.OS === 'android') {
           await SecureStore.setItemAsync('access_token', response.data.access_token);
           const access_token = await SecureStore.getItemAsync('access_token');
