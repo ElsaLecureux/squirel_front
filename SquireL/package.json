@@ -7,7 +7,8 @@
     "android": "DARK_MODE=media expo start --android",
     "ios": "DARK_MODE=media expo start --ios",
     "web": "DARK_MODE=media expo start --web",
-    "build": "npx expo export --platform web"
+    "build": "npx expo export --platform web",
+    "prebuild": "node -e \"require('fs').copyFileSync('.env', '.env.local', { flag: 'wx' })\""
   },
   "dependencies": {
     "@apollo/client": "^3.13.6",
@@ -30,6 +31,7 @@
     "@tamagui/lucide-icons": "^1.112.12",
     "@tamagui/tabs": "^1.126.3",
     "axios": "^1.7.7",
+    "babel-plugin-dotenv-import": "^3.0.1",
     "babel-plugin-module-resolver": "^5.0.2",
     "expo": "^52.0.11",
     "expo-font": "~13.0.1",
@@ -43,7 +45,6 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-native": "0.76.3",
-    "react-native-dotenv": "^3.4.11",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-reanimated": "^3.16.1",
     "react-native-responsive-dimensions": "^3.1.1",

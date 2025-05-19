@@ -19,8 +19,7 @@ import { BubblegumSans_400Regular } from '@expo-google-fonts/bubblegum-sans';
 import { MysteryQuest_400Regular } from '@expo-google-fonts/mystery-quest';
 import { MedievalSharp_400Regular } from '@expo-google-fonts/medievalsharp';
 import { useFonts } from 'expo-font';
-
-import { TOKEN_API_RADIO_FRANCE, URL_API_RADIO_FRANCE } from './env';
+import { TOKEN_API_RADIO_FRANCE, URL_API_RADIO_FRANCE } from '@env';
 
 export default function App() {
 

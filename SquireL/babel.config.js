@@ -20,6 +20,17 @@ module.exports = function(api) {
         disableExtraction: process.env.NODE_ENV === 'development',
       },
     ],
+    [
+      'babel-plugin-dotenv-import',
+        {
+          moduleName: '@env',
+          path: '.env',
+          blacklist: null,
+          whitelist: null,
+          safe: false,
+          allowUndefined: true,
+        },
+    ]
   ]
   };
 };

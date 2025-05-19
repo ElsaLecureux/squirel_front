@@ -53,7 +53,6 @@ export default function ProfileScreen({ navigation }: Props) {
         method: 'get',
         url: `${API_URL}/users/${userId}`,
       })
-      console.log("infosUser:", dataUser.data)
       if(dataUser){
         setUserInfo({...dataUser.data})
         setUserDto({...dataUser.data})
@@ -64,7 +63,6 @@ export default function ProfileScreen({ navigation }: Props) {
         method: 'get',
         url: `${API_URL}/userPlayGame/${userId}`,
       })
-      console.log("infosUserGame", dataGameUser)
       if(dataGameUser){
         setUserPlayGame([...dataGameUser.data])
       }
@@ -118,7 +116,6 @@ export default function ProfileScreen({ navigation }: Props) {
         url: `${API_URL}/users/${userId}`,
         data: { ...userDto }
         })
-        console.log(response.status);
         if (response.status === 200) {
           setErrorMessage('New informations saved')
           setTimeout(() => {
@@ -126,7 +123,6 @@ export default function ProfileScreen({ navigation }: Props) {
           }, 3000);
         }
       } catch (error : any) {
-        console.log(error.response.status);
         if(error.response.status === 400) {
           setErrorMessage('Password must contains 8 characters, 1 uppercase, 1 lowercase and a special character!');
           setTimeout(() => {
