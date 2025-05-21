@@ -1,7 +1,7 @@
 import { Animated, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-import { Button, Image } from 'tamagui';
+import { Button, Image, View } from 'tamagui';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faGamepad } from '@fortawesome/free-solid-svg-icons/faGamepad'; 
 import { useRef, useEffect } from 'react';
@@ -59,12 +59,14 @@ export default function HomeScreen({ navigation }: Props) {
       style={styles.pageContainer} 
       source={require('../../assets/images/homeScreen.jpg')}
     >
-      <Button
-        chromeless
+      <Image style={styles.squirrel} source={require('../../assets/images/seriousSquirrel.png')}/>
+      <View style={styles.message}>Hello</View>
+      <TouchableOpacity
+        style={styles.door}
         onPress={() => navigation.getParent()?.navigate('PlayroomStack', {screen: 'Playroom'})}
       >
-        <FontAwesomeIcon icon={faGamepad} style={{color: "#ff8a01"}} />
-      </Button>           
+        <FontAwesomeIcon icon={faGamepad} style={{ width: 120, height: 100, color: "#ff8a01" }} />
+      </TouchableOpacity>           
       <TouchableOpacity 
         style={styles.woodenSign}
         onPress={() => navigation.navigate('Memory')}
@@ -72,7 +74,7 @@ export default function HomeScreen({ navigation }: Props) {
         <Animated.View style={{ transform: [{ translateY }] }}>
           <Image
             source={require('../../assets/images/woodenSign.png')}
-            style={{ width: 80, height: 120 }}
+            style={{ width: 120, height: 160 }}
           />
         </Animated.View>
       </TouchableOpacity>
@@ -84,18 +86,46 @@ const styles = StyleSheet.create({
   pageContainer: {
     flex: 1,
     alignItems: 'flex-end',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     flexDirection: 'row',
     width: '100%',
     height: '100%',
     position: 'relative'
   },
+  door: {
+    position: 'absolute',
+    bottom: '30%',
+    right: '45%',
+    width: 120,
+    height: 100,
+    backgroundColor: 'rgba(255, 255, 255, 0)',
+  },
+  message: {
+    backgroundColor: "#ff8a01",
+    position: 'absolute',
+    bottom: '35%',
+    left: '15%',
+    color: "#fff",
+    height: 40,
+    width: 80,
+    fontSize: 30,
+    borderRadius: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  squirrel: {
+    position: 'absolute',
+    bottom: '20%',
+    left: '2%',
+    height: 300,
+    width: 300
+  },
   woodenSign: {
     position: 'absolute',
-    bottom: '15%',
-    right: '26%',
-    width: 80,
-    height: 120,
+    bottom: '8%',
+    right: '22%',
+    width: 120,
+    height: 180,
     backgroundColor: 'rgba(255, 255, 255, 0)',
   },
 });

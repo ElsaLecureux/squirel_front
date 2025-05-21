@@ -14,7 +14,7 @@ type AppDrawerParamList = {
 
 type PlayroomStackParamList = {
     Playroom: undefined;
-    Puzzle: undefined;
+    Kitchen: undefined;
     DrawingGame: undefined;
     LookAndFind: undefined;
     Library: undefined;
