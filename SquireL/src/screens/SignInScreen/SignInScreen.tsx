@@ -32,7 +32,7 @@ export default function SignInScreen({ navigation }: Props) {
   const [errorMessage, setErrorMessage] = useState('');
   const [isMessageVisible, setIsMessageVisible] = useState(false);
   const [host, setHost] = useState('');
-  const API_URL = `http://${host}:3000/auth/signIn`;
+  const API_URL = `https://squirel-backend.onrender.com/auth/signIn`;
 
   useEffect(() => {
     if (loaded) {

@@ -33,7 +33,7 @@ export default function SignUpScreen({ navigation }: Props) {
   const [host, setHost] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmationPasswordVisible, setConfirmationPasswordVisible] =useState(false);
-  const API_URL = `http://${host}:3000/auth/signUp`;
+  const API_URL = `https://squirel-backend.onrender.com/auth/signUp`;
 
   const showErrorMessage = () => {
     setIsMessageVisible(true)

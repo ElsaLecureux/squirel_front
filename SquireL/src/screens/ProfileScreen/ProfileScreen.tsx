@@ -23,7 +23,7 @@ type Props = {
 export default function ProfileScreen({ navigation }: Props) {
 
   const [host, setHost] = useState<string>();
-  const API_URL = `http://${host}:3000`;
+  const API_URL = `https://squirel-backend.onrender.com`;
   const [isReady, setIsReady] = useState(false);
   const { userId } = useUser();
   const [userInfo, setUserInfo] = useState<UserInfosDto>();
