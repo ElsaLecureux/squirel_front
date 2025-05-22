@@ -1,11 +1,11 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-import PuzzleScreen from '../screens/PuzzleScreen/puzzleScreen';
 import DrawingGameScreen from '../screens/DrawingGameScreen/DrawingGameScreen';
 import PlayroomScreen from '../screens/PlayRoomScreen/PlayroomScreen';
 import LookAndFindScreen from '../screens/LookAndFindScreen/LookAndFindScreen';
 import LibraryScreen from '../screens/LibraryScreen/LibraryScreen';
+import KitchenScreen from '../screens/KitchenScreen/KitchenScreen';
 
 const Stack = createNativeStackNavigator<PlayroomStackParamList>();
 
@@ -27,8 +27,8 @@ export default function PlayroomStack ({navigation}: Props) {
             
             />
             <Stack.Screen 
-              name="Puzzle" 
-              component={ PuzzleScreen }
+              name="Kitchen" 
+              component={ KitchenScreen }
              
             />
             <Stack.Screen 
