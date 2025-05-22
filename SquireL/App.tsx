@@ -19,9 +19,11 @@ import { BubblegumSans_400Regular } from '@expo-google-fonts/bubblegum-sans';
 import { MysteryQuest_400Regular } from '@expo-google-fonts/mystery-quest';
 import { MedievalSharp_400Regular } from '@expo-google-fonts/medievalsharp';
 import { useFonts } from 'expo-font';
-import { TOKEN_API_RADIO_FRANCE, URL_API_RADIO_FRANCE } from '@env';
 
 export default function App() {
+
+  const TOKEN_API_RADIO_FRANCE = process.env.TOKEN_API_RADIO_FRANCE;
+  const URL_API_RADIO_FRANCE = process.env.URL_API_RADIO_FRANCE;
 
   const linking: LinkingOptions<RootStackParamList> = {
   prefixes: ['http://localhost:8080', 'https://yourdomain.com'],

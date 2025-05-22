@@ -8,8 +8,7 @@
     "ios": "DARK_MODE=media expo start --ios",
     "web": "DARK_MODE=media expo start --web",
     "build": "npx expo export --platform web",
-    "prebuild": "node -e \"require('fs').copyFileSync('.env', '.env.local', require('fs').constants.COPYFILE_EXCL)\""
-  },
+    "prebuild": "node -e \"const fs=require('fs'); if (fs.existsSync('.env')) fs.copyFileSync('.env', '.env.local', fs.constants.COPYFILE_EXCL);\""
   "dependencies": {
     "@apollo/client": "^3.13.6",
     "@expo-google-fonts/bubblegum-sans": "^0.3.0",
