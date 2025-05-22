@@ -3,39 +3,15 @@ import { faCirclePlay } from '@fortawesome/free-solid-svg-icons/faCirclePlay';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { ImageBackground, ImageSourcePropType, Platform, StyleSheet } from 'react-native';
 
-import { gql, useQuery } from '@apollo/client';
+import { gql, useApolloClient } from '@apollo/client';
 import { WebView } from 'react-native-webview';
 
-import { ShowByUrlResponse } from '@/src/Dto/ShowByUrlDto';
 import CustomModal from '@/src/components/CustomModal/CustomModal';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import React, { useState } from 'react';
-import { Button, Image, ScrollView, Separator, Tabs, Text, XStack, YStack } from 'tamagui';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Button, Image, ScrollView, Separator, Spinner, Tabs, Text, XStack, YStack } from 'tamagui';
 
-
-interface Podcast {
-  id: string,
-  name: string, 
-  image: ImageSourcePropType,
-  url: string
-}
-
-export default function LibraryScreen() {
-
-  const podcasts: Podcast[] = [
-    {
-      id: "odyssees", name: "Les Odyssées", image: require('../../assets/images/lesOdyssees.jpg'), url: "https://www.radiofrance.fr/franceinter/podcasts/les-odyssees"
-    },
-    {
-      id: "bestioles", name: "Bestioles", image: require('../../assets/images/bestioles.jpg'), url: "https://www.radiofrance.fr/franceinter/podcasts/bestioles"
-    },
-    {
-      id: "zinstrus", name: "Les-Zinstrus", image: require('../../assets/images/lesZinstrus.jpg'), url: "https://www.radiofrance.fr/francemusique/podcasts/les-zinstrus"
-    }
-  ];
-
-  const [podcastSelected, setPodcastSelected] = useState<Podcast>(podcasts[0]);
-  const GET_SHOW_BY_URL = gql`
+const GET_SHOW_BY_URL = gql`
     query GetShowByUrl($url: String!) {
       showByUrl(url: $url) {
         title
@@ -57,19 +33,62 @@ export default function LibraryScreen() {
     }
   `;
 
+type Podcast = {
+  id: string,
+  name: string, 
+  image: ImageSourcePropType,
+  url: string
+}
 
-type node = {
-  id: string; 
-  title: string; 
-  published_date: string; 
-  podcastEpisode: { 
-    playerUrl: string; 
-    title: string; }
+type PodcastData = {
+  title: string;
+  standFirst: string;
+  diffusionsConnection: {
+    edges: Array<{
+      node: Episode;
+    }>;
   };
+}
+
+type PodcastDataMap = {
+  [key: string]: PodcastData | undefined;
+}
+
+type Episode = {
+  id: string;
+  title: string;
+  published_date: string;
+  podcastEpisode: {
+    playerUrl: string;
+    title: string;
+  };
+};
+
+
+export default function LibraryScreen() {
+
+  const podcasts = useMemo<Podcast[]> (
+  ()=> [
+    {
+      id: "odyssees", name: "Les Odyssées", image: require('../../assets/images/lesOdyssees.jpg'), url: "https://www.radiofrance.fr/franceinter/podcasts/les-odyssees"
+    },
+    {
+      id: "bestioles", name: "Bestioles", image: require('../../assets/images/bestioles.jpg'), url: "https://www.radiofrance.fr/franceinter/podcasts/bestioles"
+    },
+    {
+      id: "zinstrus", name: "Les-Zinstrus", image: require('../../assets/images/lesZinstrus.jpg'), url: "https://www.radiofrance.fr/francemusique/podcasts/les-zinstrus"
+    },
+    {
+      id: "caillou", name: "Professeur Caillou", image: require('../../assets/images/professeurCaillou.jpg'), url: "https://www.radiofrance.fr/franceinter/podcasts/les-aventures-du-professeur-caillou"
+    }
+  ], 
+  []
+  ); 
 
   const [modalVisible, setModalVisible] = useState(false);
-
-  const [episodeInfos, setEpisodeInfos] = useState({
+  const [loadedData, setLoadedData] = useState<PodcastDataMap>({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [episodeInfos, setEpisodeInfos] = useState<Episode>({
     id: '', 
     title: '', 
     published_date: '', 
@@ -79,29 +98,42 @@ type node = {
   });
   const style_modal_bottom = true
 
-  const useShowByUrl = (podcastSelected: Podcast) => {
-    const { loading, error, data } = useQuery<ShowByUrlResponse>(GET_SHOW_BY_URL, {
-      variables: { url: podcastSelected.url },
-    });
-  
-    return { loading, error, data };
+  //use podcasts for a loop to call the the query for each url
+ const client = useApolloClient();
+
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const results = await Promise.all(
+        podcasts.map((podcast) =>
+          client.query({
+            query: GET_SHOW_BY_URL,
+            variables: { url: podcast.url },
+            fetchPolicy: 'cache-first',
+          }).then(result => ({ id: podcast.id, data: result.data }))
+        )
+      );
+      
+      const dataMap: PodcastDataMap = {};
+      results.forEach(({ id, data }) => {
+        dataMap[id] = data.showByUrl;
+      });
+
+      setLoadedData(dataMap);
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Failed to load podcast data", error);
+    }
   };
 
-  const { loading, error, data } = useShowByUrl(podcastSelected);
+  fetchData();
+}, []);
 
-  if (loading) return <Text>Loading...</Text>;
-  if (error) return <Text>Error while loading data</Text>;
 
-  const onplay = (node: node) => {
-    setEpisodeInfos(node);
+  const onplay = (episode: Episode) => {
+    setEpisodeInfos(episode);
     setModalVisible(true);
   }
-
-  const changeSelectedPodcast = (podcast: Podcast) => {
-    setPodcastSelected({...podcast})
-  }
-
-  //todo fix playerUrl issue on some episode
 
   return (
     <ImageBackground source={require('../../assets/images/libraryScreen.png')} style={styles.pageContainer}>
@@ -120,17 +152,23 @@ type node = {
        flexDirection="column"
        flex={1}
        width={'100%'}
+       borderColor="#ff8a01"
        alignItems='center'
        justifyContent='center'
        defaultValue="odyssees">
         <Tabs.List>
         { podcasts.map((podcast)=> (
-          <Tabs.Tab key={podcast.id} value={podcast.id} onPress={() => changeSelectedPodcast(podcast)}>
+          <Tabs.Tab focusStyle={{ backgroundColor: '$orange10' }} key={podcast.id} borderColor="#ff8a01" value={podcast.id}>
              <Text fontFamily="BubblegumSans_400Regular">{podcast.name}</Text>
           </Tabs.Tab>
         ))}
         </Tabs.List>
-        { podcasts.map((podcast)=> (
+        { isLoading ? 
+          <YStack style={styles.loadingContainer}>
+            <Image width={80} height={80} source={require('../../assets/images/squirrelLogo.png')}></Image>
+            <Spinner size={'large'} color="$orange10" />
+          </YStack> :
+         podcasts.map((podcast)=> (
           <ScrollView
           backgroundColor="rgba(255, 255, 255, 0)"
           style={styles.scrollerView} key={podcast.id} >
@@ -141,21 +179,21 @@ type node = {
             alignSelf='center'
             fontSize={40}
             color={"#fff"}>
-                {data?.showByUrl.title}
+                {loadedData[podcast.id]?.title}
             </Text>
             <Text
             fontFamily="BubblegumSans_400Regular"
             alignSelf='center'
             fontSize={30}
             color={"#fff"}>
-                {data?.showByUrl.standFirst}
+                {loadedData[podcast.id]?.standFirst}
             </Text>
           </YStack>
           <YStack
           gap={15}
           style={styles.podcastContainer}>
               {
-                data?.showByUrl.diffusionsConnection.edges.map(({ node }) => (
+                loadedData[podcast.id]?.diffusionsConnection.edges.map(({ node }) => (
                   <YStack style= {styles.episodeCardContainer} key={node.id}>
                     <Separator alignSelf="stretch" style={styles.episodeSeparator}/> 
                     <XStack style= {styles.episodeCard} >
@@ -177,7 +215,8 @@ type node = {
           </YStack>
         </Tabs.Content>
         </ScrollView>
-      ))}
+      ))
+      }
         <CustomModal
           style_modal = {style_modal_bottom}
           setModalVisible= {setModalVisible}
@@ -213,6 +252,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: '100%',
     width: '100%',
+  },
+  loadingContainer:{
+    height:'95%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: '2%'
   },
   scrollerView:{
     width: '100%'
