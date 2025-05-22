@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { ImageBackground, StyleSheet } from 'react-native';
 import { YStack, Text, XStack } from 'tamagui';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
@@ -6,10 +6,9 @@ import { faPersonDigging } from '@fortawesome/free-solid-svg-icons/faPersonDiggi
 
 export default function KitchenScreen () {
 
-  return (    
-      <YStack 
-      gap={15}
-      style={styles.pageContainer}>
+  return (
+    <ImageBackground source={require('../../assets/images/kitchenScreen.png')} style={styles.pageContainer}>
+      <YStack gap={15}>
         <XStack
         alignContent='center'
         gap={15}>
@@ -29,17 +28,15 @@ export default function KitchenScreen () {
            <FontAwesomeIcon icon={faPersonDigging} style={{color: "#000"}}  size={40}/>
         </XStack>
       </YStack>    
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
     pageContainer: {
-        flex: 1,
-        backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
-        width: '100%',
-        height: '100%',        
+        width: '100%'   
       },
     title: {
     }    

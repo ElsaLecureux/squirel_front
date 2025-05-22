@@ -3,10 +3,9 @@ import { faCirclePlay } from '@fortawesome/free-solid-svg-icons/faCirclePlay';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { ImageBackground, ImageSourcePropType, Platform, StyleSheet } from 'react-native';
 
-import { gql, useApolloClient, useQuery } from '@apollo/client';
+import { gql, useApolloClient } from '@apollo/client';
 import { WebView } from 'react-native-webview';
 
-import { ShowByUrlResponse } from '@/src/Dto/ShowByUrlDto';
 import CustomModal from '@/src/components/CustomModal/CustomModal';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -159,7 +158,7 @@ useEffect(() => {
        defaultValue="odyssees">
         <Tabs.List>
         { podcasts.map((podcast)=> (
-          <Tabs.Tab key={podcast.id} borderColor="#ff8a01" value={podcast.id} onPress={() => changeSelectedPodcast(podcast)}>
+          <Tabs.Tab focusStyle={{ backgroundColor: '$orange10' }} key={podcast.id} borderColor="#ff8a01" value={podcast.id}>
              <Text fontFamily="BubblegumSans_400Regular">{podcast.name}</Text>
           </Tabs.Tab>
         ))}

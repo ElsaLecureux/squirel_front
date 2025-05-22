@@ -1,9 +1,8 @@
 import { Animated, Easing, ImageBackground, StyleSheet, TouchableOpacity} from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { Button } from 'tamagui';
+import { Image } from 'tamagui';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faHeadphones } from '@fortawesome/free-solid-svg-icons/faHeadphones';
-import { faFireBurner } from '@fortawesome/free-solid-svg-icons/faFireBurner';
 import { useEffect, useRef } from 'react';
 
 
@@ -45,9 +44,10 @@ export default function PlayroomScreen({ navigation }: Props) {
         <TouchableOpacity
           style={styles.kitchen}  
           onPress={() => navigation.getParent()?.navigate('Kitchen')}> 
-          <Animated.View style={{ transform: [{ rotate }] }}>
-              <FontAwesomeIcon icon={faFireBurner} style={{color: "#ff8a01", width: 80, height: 80}} />
-          </Animated.View>
+              <Image
+                source={require('../../assets/images/cauldron.gif')}
+                style={{ width: 100, height: 100 }}
+              />
         </TouchableOpacity>
         <TouchableOpacity 
           style={styles.headPhones}
@@ -71,9 +71,9 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   kitchen: {
-    marginLeft: 20,
-    width: 80,
-    height: 80,
+    marginLeft: 40,
+    width: 100,
+    height: 100,
     backgroundColor: 'rgba(255, 255, 255, 0)',
   }, 
   headPhones: {

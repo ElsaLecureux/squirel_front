@@ -59,13 +59,13 @@ export default function HomeScreen({ navigation }: Props) {
       style={styles.pageContainer} 
       source={require('../../assets/images/homeScreen.jpg')}
     >
-      <Image style={styles.squirrel} source={require('../../assets/images/seriousSquirrel.png')}/>
-      <View style={styles.message}>Hello</View>
       <TouchableOpacity
         style={styles.door}
-        onPress={() => navigation.getParent()?.navigate('PlayroomStack', {screen: 'Playroom'})}
-      >
-        <FontAwesomeIcon icon={faGamepad} style={{ width: 120, height: 100, color: "#ff8a01" }} />
+        onPress={() => navigation.getParent()?.navigate('PlayroomStack', {screen: 'Playroom'})}>
+         <Image
+            source={require('../../assets/images/key.gif')}
+            style={{ width: 80, height: 80 }}
+          />
       </TouchableOpacity>           
       <TouchableOpacity 
         style={styles.woodenSign}
@@ -95,9 +95,9 @@ const styles = StyleSheet.create({
   door: {
     position: 'absolute',
     bottom: '30%',
-    right: '45%',
-    width: 120,
-    height: 100,
+    right: '46%',
+    width: 80,
+    height: 80,
     backgroundColor: 'rgba(255, 255, 255, 0)',
   },
   message: {
