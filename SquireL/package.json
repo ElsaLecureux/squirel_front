@@ -18,6 +18,12 @@
       "node_modules/(?!(jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/react-native|native-base|react-native-svg|@fortawesome/react-native-fontawesome)"
     ]
   },
+  "expo": {
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    }
+  },  
   "type": "module",
   "dependencies": {
     "@apollo/client": "^3.13.6",
