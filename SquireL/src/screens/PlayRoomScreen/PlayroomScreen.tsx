@@ -40,7 +40,7 @@ export default function PlayroomScreen({ navigation }: Props) {
     }, []);
 
   return (    
-      <ImageBackground style={styles.pageContainer} source={require('../../assets/images/playroomScreen.jpg')}>
+      <ImageBackground style={styles.pageContainer} source={require('../../assets/images/playroomScreen.png')}>
         <TouchableOpacity
           style={styles.kitchen}  
           onPress={() => navigation.getParent()?.navigate('Kitchen')}> 
