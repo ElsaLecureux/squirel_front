@@ -258,8 +258,8 @@ export default function SignUpScreen({ navigation }: Props) {
                 maxLength={30}
                 autoCorrect={false}
                 autoComplete="off"
-                onBlur={() => checkInput(passwordConfirmation)}
                 flex={1}
+                onBlur={() => checkInput(passwordConfirmation)}
                 size={Platform.OS === 'web' ? '$5' : '$3'}
                 style={{ fontSize: 11 }}
               />

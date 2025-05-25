@@ -145,6 +145,21 @@ export default function ProfileScreen() {
         <Text>Loading ...</Text>
       </View>
     );
+  useEffect(() => {
+    if (!isReady) return;
+    //add get infos user
+    const getUserWonGames = async () => {
+      const Id = userId;
+      console.log(userId);
+      const infos = await axios({
+        method: 'get',
+        url: `${API_URL}/${Id}`,
+      }).then();
+      console.log(infos);
+    };
+    getUserWonGames();
+  }, [isReady, host]);
+
   return (
     <ImageBackground
       style={styles.pageContainer}
