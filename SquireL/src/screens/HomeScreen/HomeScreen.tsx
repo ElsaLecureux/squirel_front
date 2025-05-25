@@ -3,20 +3,16 @@ import { StackNavigationProp } from '@react-navigation/stack';
 
 import { Button, Image } from 'tamagui';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faGamepad } from '@fortawesome/free-solid-svg-icons/faGamepad'; 
+import { faGamepad } from '@fortawesome/free-solid-svg-icons/faGamepad';
 import { useRef, useEffect } from 'react';
 
-type HomeScreenNavigationProp = StackNavigationProp<
-  HomeStackParamList,
-  'Home'
->;
+type HomeScreenNavigationProp = StackNavigationProp<HomeStackParamList, 'Home'>;
 
 type Props = {
   navigation: HomeScreenNavigationProp;
 };
 
 export default function HomeScreen({ navigation }: Props) {
-  
   const translateY = useRef(new Animated.Value(0)).current;
 
   const startJumping = (jumps = 3) => {
@@ -45,7 +41,6 @@ export default function HomeScreen({ navigation }: Props) {
   };
 
   useEffect(() => {
-
     startJumping(3);
 
     const interval = setInterval(() => {
@@ -54,21 +49,18 @@ export default function HomeScreen({ navigation }: Props) {
     return () => clearInterval(interval);
   }, []);
 
-  return (    
-    <ImageBackground 
-      style={styles.pageContainer} 
+  return (
+    <ImageBackground
+      style={styles.pageContainer}
       source={require('../../assets/images/homeScreen.jpg')}
     >
       <Button
         chromeless
-        onPress={() => navigation.getParent()?.navigate('PlayroomStack', {screen: 'Playroom'})}
+        onPress={() => navigation.getParent()?.navigate('PlayroomStack', { screen: 'Playroom' })}
       >
-        <FontAwesomeIcon icon={faGamepad} style={{color: "#ff8a01"}} />
-      </Button>           
-      <TouchableOpacity 
-        style={styles.woodenSign}
-        onPress={() => navigation.navigate('Memory')}
-      >
+        <FontAwesomeIcon icon={faGamepad} style={{ color: '#ff8a01' }} />
+      </Button>
+      <TouchableOpacity style={styles.woodenSign} onPress={() => navigation.navigate('Memory')}>
         <Animated.View style={{ transform: [{ translateY }] }}>
           <Image
             source={require('../../assets/images/woodenSign.png')}
@@ -76,7 +68,7 @@ export default function HomeScreen({ navigation }: Props) {
           />
         </Animated.View>
       </TouchableOpacity>
-    </ImageBackground>    
+    </ImageBackground>
   );
 }
 
@@ -88,7 +80,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     height: '100%',
-    position: 'relative'
+    position: 'relative',
   },
   woodenSign: {
     position: 'absolute',

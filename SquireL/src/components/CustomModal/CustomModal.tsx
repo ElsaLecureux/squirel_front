@@ -1,11 +1,12 @@
 import Card from '@/src/models/Card';
+import Animal from '@/src/models/Animal';
 import { iconMap } from '@/src/utils/memoryCards';
 import { Modal, Text, Button, StyleSheet } from 'react-native';
 import { Image, XStack, YStack, View } from 'tamagui';
-import { imageMap } from '../../utils/memoryCards';
+import { imageMap } from '../../utils/memoryAnimals';
 
 type Props = {
-    card: Card |undefined;
+    card: Animal |undefined;
     modalVisible: boolean;
     setModalVisible : Function;
 }

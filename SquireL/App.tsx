@@ -2,10 +2,10 @@ import './gesture-handler';
 
 import { UserProvider } from './src/context/UserContext';
 
-import { TamaguiProvider } from '@tamagui/core'
+import { TamaguiProvider } from '@tamagui/core';
 import config from './tamagui.config';
 
-import { StyleSheet, Platform, useColorScheme } from 'react-native';
+import { Platform, useColorScheme } from 'react-native';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useEffect, useState } from 'react';
 
@@ -17,47 +17,39 @@ import RootStack from './src/routes/RootStack';
 import { useFonts } from 'expo-font';
 
 export default function App() {
-
-  const [isLoading, setIsloading] = useState(true);
-  const colorScheme = useColorScheme()
+  const [isLoading, setIsLoading] = useState(true);
+  const colorScheme = useColorScheme();
 
   async function changeScreenOrientation() {
-    await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE).then(() => setTimeout(() => {setIsloading(false)}, 2000));
+    await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE).then(() =>
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 2000),
+    );
   }
 
   useEffect(() => {
     if (Platform.OS !== 'web') {
-    changeScreenOrientation();
+      changeScreenOrientation();
     } else {
-      setIsloading(false);
+      setIsLoading(false);
     }
-  },[]);
+  }, []);
 
   const [loaded] = useFonts({
     Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
     InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
-  })
+  });
 
   if (!loaded) {
-    return null
-  }  
+    return null;
+  }
 
-  return ( 
+  return (
     <TamaguiProvider config={config} defaultTheme={colorScheme!}>
-      <UserProvider>   
-      <NavigationContainer >
-        { isLoading ? <LoadingScreen/> :
-          <RootStack/>
-        }
-      </NavigationContainer>
-    </UserProvider>
+      <UserProvider>
+        <NavigationContainer>{isLoading ? <LoadingScreen /> : <RootStack />}</NavigationContainer>
+      </UserProvider>
     </TamaguiProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  }
-});
-

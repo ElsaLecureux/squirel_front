@@ -1,16 +1,4 @@
-import Card from '../models/Card';
-
-// Define the type for the image map
-interface ImageMap {
-  redPanda: number;
-  tiger: number;
-  whale: number;
-  jellyfish: number;
-  gorilla: number;
-  bear: number;
-  cat: number;
-  shark: number;
-}
+import { ImageMap, Card } from '../models/Card';
 
 const iconMap: ImageMap = {
   redPanda: require('../../assets/icons/memory/redPanda.png'),
@@ -21,7 +9,7 @@ const iconMap: ImageMap = {
   bear: require('../../assets/icons/memory/bear.png'),
   cat: require('../../assets/icons/memory/cat.png'),
   shark: require('../../assets/icons/memory/shark.png'),
-}
+};
 
 // Image mapping object
 const imageMap: ImageMap = {
@@ -35,7 +23,7 @@ const imageMap: ImageMap = {
   shark: require('../../assets/images/memory/shark.jpg'),
 };
 
-const cards: Card[] = [
+const animals: Card[] = [
   {
     id: 1,
     name: 'Red Panda',
@@ -48,7 +36,7 @@ const cards: Card[] = [
     speed: '38 km/h',
     food: 'Bamboo, fruits, eggs',
     endangered: true,
-    icon: 'redPanda'
+    icon: 'redPanda',
   },
   {
     id: 2,
@@ -62,7 +50,7 @@ const cards: Card[] = [
     speed: '65 km/h',
     food: 'Meat: deer, boar',
     endangered: true,
-    icon: 'tiger'
+    icon: 'tiger',
   },
   {
     id: 3,
@@ -76,13 +64,14 @@ const cards: Card[] = [
     speed: '50 km/h',
     food: 'Tiny krill',
     endangered: true,
-    icon: 'whale'
+    icon: 'whale',
   },
   {
     id: 4,
     name: 'Jellyfish',
     image: 'jellyfish',
-    funFact: 'Some jellyfish are biologically immortal, they can revert to an earlier stage of life.',
+    funFact:
+      'Some jellyfish are biologically immortal, they can revert to an earlier stage of life.',
     habitat: 'Oceans',
     region: 'Worldwide',
     size: '1 cm - 2 m',
@@ -90,7 +79,7 @@ const cards: Card[] = [
     speed: '8 km/h',
     food: 'Tiny fish & plankton',
     endangered: false,
-    icon: 'jellyfish'
+    icon: 'jellyfish',
   },
   {
     id: 5,
@@ -104,7 +93,7 @@ const cards: Card[] = [
     speed: '40 km/h',
     food: 'Plants, fruit, and some insects',
     endangered: true,
-    icon: 'gorilla'
+    icon: 'gorilla',
   },
   {
     id: 6,
@@ -118,7 +107,7 @@ const cards: Card[] = [
     speed: '56 km/h',
     food: 'Berries & fish',
     endangered: false,
-    icon: 'bear'
+    icon: 'bear',
   },
   {
     id: 7,
@@ -132,7 +121,7 @@ const cards: Card[] = [
     speed: '48 km/h',
     food: 'Fish, meat, cat food',
     endangered: false,
-    icon: 'cat'
+    icon: 'cat',
   },
   {
     id: 8,
@@ -146,9 +135,8 @@ const cards: Card[] = [
     speed: '56 km/h',
     food: 'Seals & fish',
     endangered: true,
-    icon: 'shark'
+    icon: 'shark',
   },
 ];
 
-
-export { cards, imageMap, iconMap };
+export { animals, imageMap, iconMap };

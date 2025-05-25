@@ -1,5 +1,4 @@
 import { Platform, ImageBackground, StyleSheet } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { Text, YStack, XStack } from 'tamagui';
 import { useUser } from '../../context/UserContext';
 
@@ -9,17 +8,7 @@ import { faUser } from '@fortawesome/free-solid-svg-icons/faUser';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-type ProfileScreenNavigationProp = StackNavigationProp<
-  AppDrawerParamList,
-  'Profile'
->;
-
-type Props = {
-  navigation: ProfileScreenNavigationProp;
-};
-
-export default function ProfileScreen({ navigation }: Props) {
-
+export default function ProfileScreen() {
   const [host, setHost] = useState('');
   const API_URL = `http://${host}:3000/userPlayGame`;
   const [isReady, setIsReady] = useState(false);
@@ -35,53 +24,45 @@ export default function ProfileScreen({ navigation }: Props) {
   }, []);
 
   useEffect(() => {
-    if (!isReady) return; 
+    if (!isReady) return;
     //add get infos user
-    const getUserWonGames = async () =>  {
+    const getUserWonGames = async () => {
       const Id = userId;
       console.log(userId);
       const infos = await axios({
         method: 'get',
         url: `${API_URL}/${Id}`,
-      }).then(
-        
-      )
-      console.log(infos)
-    }
+      }).then();
+      console.log(infos);
+    };
     getUserWonGames();
-   }, [isReady, host]);
+  }, [isReady, host]);
 
-  return (    
-      <ImageBackground style={styles.pageContainer} source={require('../../assets/images/profileScreen.jpg')}>
-         <YStack 
-          gap={15}>
-          <XStack
-            alignContent='center'
-            gap={15}>
-            <Text
-            color={'#953990'}
-            fontSize={30}>
-                Profile
-            </Text>
-            <FontAwesomeIcon icon={faUser} style={{color: "#953990",}} size={40}/> 
-          </XStack>        
-          <XStack
-          alignItems='center'
-          gap={15}>
-              <Text
-              color={'#FFF'}
-              fontSize={18}>
-              ... work in progress
-              </Text>
-              <FontAwesomeIcon icon={faPersonDigging} style={{color: "#FFF",}} size={30}/> 
-          </XStack>
-        </YStack>
-      </ImageBackground>    
+  return (
+    <ImageBackground
+      style={styles.pageContainer}
+      source={require('../../assets/images/profileScreen.jpg')}
+    >
+      <YStack gap={15}>
+        <XStack alignContent="center" gap={15}>
+          <Text color={'#953990'} fontSize={30}>
+            Profile
+          </Text>
+          <FontAwesomeIcon icon={faUser} style={{ color: '#953990' }} size={40} />
+        </XStack>
+        <XStack alignItems="center" gap={15}>
+          <Text color={'#FFF'} fontSize={18}>
+            ... work in progress
+          </Text>
+          <FontAwesomeIcon icon={faPersonDigging} style={{ color: '#FFF' }} size={30} />
+        </XStack>
+      </YStack>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
-    pageContainer: {
+  pageContainer: {
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
@@ -91,6 +72,6 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   title: {
-    color: '#FF8A01'
-  }
+    color: '#FF8A01',
+  },
 });
