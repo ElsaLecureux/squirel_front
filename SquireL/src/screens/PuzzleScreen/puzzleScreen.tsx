@@ -5,24 +5,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPuzzlePiece } from '@fortawesome/free-solid-svg-icons/faPuzzlePiece';
 
 export default function PuzzleScreen() {
-
-  return (    
-      <Stack 
-      gap={15}
-      style={styles.pageContainer}>
-        <Text 
-        fontSize={24}
-        style={styles.title}>
-            Puzzle Screen
-        </Text>
-        <FontAwesomeIcon icon={faPuzzlePiece} style={{color: "#ff8a01"}} size={50} />  
-      </Stack>
-
+  return (
+    <Stack gap={15} style={styles.pageContainer}>
+      <Text fontSize={24} style={styles.title}>
+        Puzzle Screen
+      </Text>
+      <FontAwesomeIcon icon={faPuzzlePiece} style={{ color: '#ff8a01' }} size={50} />
+    </Stack>
   );
 }
 
 const styles = StyleSheet.create({
-    pageContainer: {
+  pageContainer: {
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
@@ -32,6 +26,6 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   title: {
-   color:'#FF8A01'
-  }
+    color: '#FF8A01',
+  },
 });
