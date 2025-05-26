@@ -1,5 +1,4 @@
 import { ImageBackground, StyleSheet, TouchableOpacity, Platform } from 'react-native';
-
 import { Text, XStack, Image, View, YStack, Button } from 'tamagui';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Card } from '../../models/Card';
@@ -13,19 +12,15 @@ import axios from 'axios';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { Animal } from '@/src/models/Animal';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { useUser } from '@/src/context/UserContext';
 
-//todo fix after merge with develop to get userId
-
-//todo create game with gamePlay
 //todo create a button to start another party
-//todo set gamePlay when cards are won
+//todofind why not saed in database !!Ensure your backend is receiving the right shape!!
 
 export default function MemoryScreen() {
   const [playingCards, setPlayingCards] = useState<Card[]>([]);
-  //when cardsWon.length == 12 game is won!
   const isSavingRef = useRef(false);
-  const userId = 1;
-  const [cardsWon, setCardsWon] = useState<number[]>([]);
+  const { userId } = useUser();
   const [animal, setAnimal] = useState<Animal>();
   const [cardPlayed, setCardPlayed] = useState<Card[]>([]);
   const style_modal_bottom = false;
@@ -53,13 +48,18 @@ export default function MemoryScreen() {
   };
 
   const createCardSet = () => {
-    let shuffledAnimals = shuffleAnimals(animals.slice());
-    shuffledAnimals = shuffledAnimals.slice(0, 6);
-    const duplicateAnimals = [...shuffledAnimals, ...shuffledAnimals];
-    const createdCardSet = duplicateAnimals.map((animal, index) => {
-      return createCard(index, animal.name, animal.image);
-    });
-    setPlayingCards(shuffleCards(createdCardSet));
+    if (!gamePlay) {
+      let shuffledAnimals = shuffleAnimals(animals.slice());
+      shuffledAnimals = shuffledAnimals.slice(0, 6);
+      const duplicateAnimals = [...shuffledAnimals, ...shuffledAnimals];
+      const createdCardSet = duplicateAnimals.map((animal, index) => {
+        return createCard(index, animal.name, animal.image);
+      });
+      setPlayingCards(shuffleCards(createdCardSet));
+    } else {
+      setPlayingCards(gamePlay.cards);
+      setGamePlay(null);
+    }
   };
 
   const getHost = () => {
@@ -86,15 +86,21 @@ export default function MemoryScreen() {
 
   const checkIfWonSet = () => {
     if (cardPlayed[0].name === cardPlayed[1].name) {
-      setCardsWon((prev) => {
-        const cardsSet = [...prev, cardPlayed[0].id, cardPlayed[1].id];
-        return cardsSet;
+      setPlayingCards((prev) => {
+        return prev.map((card) =>
+          card.id === cardPlayed[0].id || card.id === cardPlayed[1].id
+            ? { ...card, won: true }
+            : card,
+        );
       });
       const animalFound = animals.find((animal: Animal) => {
         return cardPlayed[1].name === animal.name;
       });
       setAnimal(animalFound);
       setAnimalCardVisible(true);
+      if (userId) {
+        setGamePlay({ userId: userId, date: '', cards: playingCards });
+      }
       setCardPlayed([]);
     } else {
       setTimeout(() => {
@@ -105,7 +111,7 @@ export default function MemoryScreen() {
           return cardsSet;
         });
         setCardPlayed([]);
-      }, 2000);
+      }, 1500);
     }
   };
 
@@ -131,21 +137,17 @@ export default function MemoryScreen() {
     }
   }, [API_URL, gamePlay]);
 
-  //load gamePlay at party starting
-  useEffect(() => {
-    const loadGamePlay = async () => {
-      try {
-        const response = await axios({
-          method: 'get',
-          url: `${API_URL}/${userId}`,
-        });
-        setGamePlay(response.data);
-      } catch (error) {
-        console.error('Failed to load game:', error);
-      }
-    };
-    loadGamePlay();
-  }, [userId]);
+  const loadGamePlay = async () => {
+    try {
+      const response = await axios({
+        method: 'get',
+        url: `${API_URL}/${userId}`,
+      });
+      setGamePlay(response.data);
+    } catch (error) {
+      console.error('Failed to load game:', error);
+    }
+  };
 
   //save when app is unfocused in mobile app
   useFocusEffect(
@@ -183,21 +185,31 @@ export default function MemoryScreen() {
 
   //create random playing cards
   useEffect(() => {
-    createCardSet();
     getHost();
+    loadGamePlay();
+    createCardSet();
   }, []);
 
   useEffect(() => {
     if (cardPlayed.length === 2) {
       checkIfWonSet();
-      if (cardsWon.length === 12) {
-        setTimeout(() => {
-          setAnimalCardVisible(false);
-        }, 2000);
+      setTimeout(() => {
+        setAnimalCardVisible(false);
+      }, 3000);
+    }
+    if (
+      playingCards.find((card) => card.won === true) &&
+      !playingCards.find((card) => card.won === false)
+    ) {
+      if (animalCardVisible === false) {
         setEndGameVisible(true);
+      } else {
+        setTimeout(() => {
+          setEndGameVisible(true);
+        }, 3000);
       }
     }
-  }, [cardPlayed, cardsWon]);
+  }, [cardPlayed, playingCards]);
 
   return (
     <ImageBackground
@@ -253,6 +265,9 @@ export default function MemoryScreen() {
         style_modal={style_modal_bottom}
       >
         END GAME!
+        <Button size="$2" style={styles.modalCloseButton} onPress={() => setEndGameVisible(false)}>
+          <FontAwesomeIcon icon={faXmark} style={{ color: '#fff' }} />
+        </Button>
       </CustomModal>
       <XStack style={styles.cardsSet} gap={15}>
         {playingCards.map((card) => (
