@@ -35,14 +35,6 @@ export default function MemoryScreen() {
   const [host, setHost] = useState('localhost');
   const API_URL = `http://${host}:3000/gamePlay`;
 
-  const shuffleCards = (cards: Card[]) => {
-    for (let i = cards.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [cards[i], cards[j]] = [cards[j], cards[i]];
-    }
-    return cards;
-  };
-
   const shuffleAnimals = (animals: Animal[]) => {
     for (let i = animals.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -51,16 +43,22 @@ export default function MemoryScreen() {
     return animals;
   };
 
+  const shuffleCards = (cards: Card[]) => {
+    for (let i = cards.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [cards[i], cards[j]] = [cards[j], cards[i]];
+    }
+    return cards;
+  };
+
   const createCardSet = () => {
     let shuffledAnimals = shuffleAnimals(animals.slice());
     shuffledAnimals = shuffledAnimals.slice(0, 6);
-    const duplicatedAnimals = [...shuffledAnimals, ...shuffledAnimals];
-    const duplicateCards = duplicatedAnimals.map((animal, index) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { image, name } = animal;
-      return createCard(index, name, image);
+    const duplicateAnimals = [...shuffledAnimals, ...shuffledAnimals];
+    const createdCardSet = duplicateAnimals.map((animal, index) => {
+      return createCard(index, animal.name, animal.image);
     });
-    setPlayingCards(shuffleCards(duplicateCards));
+    setPlayingCards(shuffleCards(createdCardSet));
   };
 
   const getHost = () => {
