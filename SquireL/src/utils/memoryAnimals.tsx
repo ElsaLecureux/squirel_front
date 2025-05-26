@@ -1,4 +1,4 @@
-import { ImageMap, Card } from '../models/Card';
+import { ImageMap, Animal } from '../models/Animal';
 
 const iconMap: ImageMap = {
   redPanda: require('../../assets/icons/memory/redPanda.png'),
@@ -23,7 +23,7 @@ const imageMap: ImageMap = {
   shark: require('../../assets/images/memory/shark.jpg'),
 };
 
-const animals: Card[] = [
+const animals: Animal[] = [
   {
     id: 1,
     name: 'Red Panda',

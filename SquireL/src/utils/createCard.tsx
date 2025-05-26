@@ -1,5 +1,5 @@
 import { Card } from '../models/Card';
 
-export function createCard(id: number, card: Omit<Card, 'id'>): Card {
-  return { id, ...card };
+export function createCard(index: number, animalName: string, animalImage: string): Card {
+  return { id: index, won: false, name: animalName, image: animalImage };
 }

@@ -3,6 +3,7 @@ import { ImageBackground, StyleSheet, TouchableOpacity, Platform } from 'react-n
 import { Text, XStack, Image, View } from 'tamagui';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Card } from '../../models/Card';
+import { Animal } from '../../models/Animal';
 import { GamePlay } from '../../types/gamePlay';
 import CustomModal from '@/src/components/CustomModal/CustomModal';
 import { animals, imageMap } from '../../utils/memoryAnimals';
@@ -22,7 +23,7 @@ export default function MemoryScreen() {
   const isSavingRef = useRef(false);
   const userId = 1;
   const [cardsWon, setCardsWon] = useState<number[]>([]);
-  const [card, setCard] = useState<Card>();
+  const [animal, setAnimal] = useState<Animal>();
   const [cardPlayed, setCardPlayed] = useState<Card[]>([]);
   const [animalCardVisible, setAnimalCardVisible] = useState(false);
   const [endGameVisible, setEndGameVisible] = useState(false);
@@ -30,6 +31,14 @@ export default function MemoryScreen() {
   const [gamePlay, setGamePlay] = useState<GamePlay | null>(null);
   const [host, setHost] = useState('localhost');
   const API_URL = `http://${host}:3000/gamePlay`;
+
+  const shuffleAnimals = (animals: Animal[]) => {
+    for (let i = animals.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [animals[i], animals[j]] = [animals[j], animals[i]];
+    }
+    return animals;
+  };
 
   const shuffleCards = (cards: Card[]) => {
     for (let i = cards.length - 1; i > 0; i--) {
@@ -40,15 +49,13 @@ export default function MemoryScreen() {
   };
 
   const createCardSet = () => {
-    let shuffledCards = shuffleCards(animals.slice());
-    shuffledCards = shuffledCards.slice(0, 6);
-    let duplicateCards = [...shuffledCards, ...shuffledCards];
-    duplicateCards = duplicateCards.map((card, index) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { id, ...cardWithoutId } = card;
-      return createCard(index, cardWithoutId);
+    let shuffledAnimals = shuffleAnimals(animals.slice());
+    shuffledAnimals = shuffledAnimals.slice(0, 6);
+    const duplicateAnimals = [...shuffledAnimals, ...shuffledAnimals];
+    const createdCardSet = duplicateAnimals.map((animal, index) => {
+      return createCard(index, animal.name, animal.image);
     });
-    setPlayingCards(shuffleCards(duplicateCards));
+    setPlayingCards(shuffleCards(createdCardSet));
   };
 
   const getHost = () => {
@@ -79,7 +86,8 @@ export default function MemoryScreen() {
         const cardsSet = [...prev, cardPlayed[0].id, cardPlayed[1].id];
         return cardsSet;
       });
-      setCard(cardPlayed[1]);
+      const animalFromCard = animals.find((animal) => cardPlayed[1].name == animal.name);
+      setAnimal(animalFromCard);
       setAnimalCardVisible(true);
       if (!gamePlay) {
       }
@@ -205,12 +213,12 @@ export default function MemoryScreen() {
       <CustomModal
         setModalVisible={setAnimalCardVisible}
         modalVisible={animalCardVisible}
-        card={card}
+        infos={userId}
       ></CustomModal>
       <CustomModal
         setModalVisible={setEndGameVisible}
         modalVisible={endGameVisible}
-        card={card}
+        animal={animal}
       ></CustomModal>
       <XStack style={styles.cardsSet} gap={15}>
         {playingCards.map((card) => (
