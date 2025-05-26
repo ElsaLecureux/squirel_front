@@ -25,7 +25,7 @@ export default function MemoryScreen() {
   const isSavingRef = useRef(false);
   const userId = 1;
   const [cardsWon, setCardsWon] = useState<number[]>([]);
-  const [animal, setAnimal] = useState<Animal>({});
+  const [animal, setAnimal] = useState<Animal>();
   const [cardPlayed, setCardPlayed] = useState<Card[]>([]);
   const style_modal_bottom = false;
   const [animalCardVisible, setAnimalCardVisible] = useState(false);
