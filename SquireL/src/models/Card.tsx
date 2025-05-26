@@ -1,6 +1,6 @@
-export interface Card {
+export type Card = {
   id: number;
   name: string;
-  won: boolean;
   image: string;
-}
+  won: boolean;
+};
