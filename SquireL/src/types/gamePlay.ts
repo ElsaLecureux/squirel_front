@@ -1,7 +1,7 @@
 import { Card } from '../models/Card';
 
 export type GamePlay = {
-  userId: number;
+  userId: string;
   date: string;
   cards: Card[];
 };
