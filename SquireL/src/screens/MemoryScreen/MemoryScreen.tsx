@@ -3,6 +3,7 @@ import { ImageBackground, StyleSheet, TouchableOpacity, Platform } from 'react-n
 import { Text, XStack, Image, View, YStack, Button } from 'tamagui';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Card } from '../../models/Card';
+import { Animal } from '../../models/Animal';
 import { GamePlay } from '../../types/gamePlay';
 import CustomModal from '@/src/components/CustomModal/CustomModal';
 import { animals, imageMap } from '../../utils/memoryAnimals';
