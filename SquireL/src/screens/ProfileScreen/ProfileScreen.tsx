@@ -11,7 +11,7 @@ import UserDto from '@/src/Dto/UserDto';
 
 export default function ProfileScreen() {
   const [host, setHost] = useState('');
-  const API_URL = `http://${host}:3000/userPlayGame`;
+  const API_URL = `http://${host}:3000`;
   const [isReady, setIsReady] = useState(false);
   const { userId } = useUser();
   const [userInfo, setUserInfo] = useState<UserInfosDto>();
