@@ -2,8 +2,6 @@ import { Animated, ImageBackground, StyleSheet, TouchableOpacity } from 'react-n
 import { StackNavigationProp } from '@react-navigation/stack';
 
 import { Image } from 'tamagui';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faGamepad } from '@fortawesome/free-solid-svg-icons/faGamepad';
 import { useRef, useEffect } from 'react';
 
 type HomeScreenNavigationProp = StackNavigationProp<HomeStackParamList, 'Home'>;
