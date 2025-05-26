@@ -61,9 +61,6 @@ export default function HomeScreen({ navigation }: Props) {
         <Image source={require('../../assets/images/key.gif')} style={{ width: 80, height: 80 }} />
       </TouchableOpacity>
       <TouchableOpacity style={styles.woodenSign} onPress={() => navigation.navigate('Memory')}>
-        <FontAwesomeIcon icon={faGamepad} style={{ color: '#ff8a01' }} />
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.woodenSign} onPress={() => navigation.navigate('Memory')}>
         <Animated.View style={{ transform: [{ translateY }] }}>
           <Image
             source={require('../../assets/images/woodenSign.png')}
