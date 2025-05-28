@@ -91,14 +91,12 @@ export default function SignInScreen({ navigation }: Props) {
         data: { username, password },
       })
         .then(async function (response) {
-          console.log('axios response');
           const decoded_token = jwtDecode(response.data.access_token);
           if (decoded_token?.sub) {
             setUserId(decoded_token.sub);
           }
           if (Platform.OS === 'ios' || Platform.OS === 'android') {
             await SecureStore.setItemAsync('access_token', response.data.access_token);
-            const access_token = await SecureStore.getItemAsync('access_token');
             setHost('');
           } else if (Platform.OS === 'web') {
             localStorage.setItem('access_token', response.data.access_token);

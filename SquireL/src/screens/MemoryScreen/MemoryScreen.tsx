@@ -1,6 +1,6 @@
 import { ImageBackground, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { Text, XStack, Image, View, YStack, Button } from 'tamagui';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Card } from '../../models/Card';
 import { Animal } from '../../models/Animal';
 import { GamePlay } from '../../types/gamePlay';
@@ -13,24 +13,26 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { Animal } from '@/src/models/Animal';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useUser } from '@/src/context/UserContext';
-
-//todo create a button to start another party
-//todofind why not saed in database !!Ensure your backend is receiving the right shape!!
+import { getHost } from '@/src/utils/getHost';
 
 export default function MemoryScreen() {
   const [playingCards, setPlayingCards] = useState<Card[]>([]);
   const isSavingRef = useRef(false);
-  const { userId } = useUser();
+  const { userId, isLoading } = useUser();
   const [animal, setAnimal] = useState<Animal>();
-  const [cardPlayed, setCardPlayed] = useState<Card[]>([]);
+  const [cardPlayed, setCardPlayed] = useState<{ card: Card; index: number }[]>([]);
+  const [dataLoading, setDataLoading] = useState(true);
   const style_modal_bottom = false;
   const [animalCardVisible, setAnimalCardVisible] = useState(false);
   const [endGameVisible, setEndGameVisible] = useState(false);
   const [visibleCards, setVisibleCards] = useState<boolean[]>(new Array(12).fill(false));
-  const [gamePlay, setGamePlay] = useState<GamePlay | null>(null);
-  const [host, setHost] = useState('localhost');
-  const API_URL = `http://${host}:3000/gamePlay`;
+  const host = getHost();
+  const [gameInitialized, setGameInitialized] = useState(false);
+  const API_URL = useMemo(() => `http://${host}:3000/gamePlay`, [host]);
 
+  //todo reset after party won and saveGamePlay with no cards
+  //todo correct endgame not showing
+  //todo refacto to have only one function accepting Animal OR Card
   const shuffleAnimals = (animals: Animal[]) => {
     for (let i = animals.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -48,66 +50,51 @@ export default function MemoryScreen() {
   };
 
   const createCardSet = () => {
-    if (!gamePlay) {
-      let shuffledAnimals = shuffleAnimals(animals.slice());
-      shuffledAnimals = shuffledAnimals.slice(0, 6);
-      const duplicateAnimals = [...shuffledAnimals, ...shuffledAnimals];
-      const createdCardSet = duplicateAnimals.map((animal, index) => {
-        return createCard(index, animal.name, animal.image);
-      });
-      setPlayingCards(shuffleCards(createdCardSet));
-    } else {
-      setPlayingCards(gamePlay.cards);
-      setGamePlay(null);
-    }
+    console.log('creating new cards');
+    let shuffledAnimals = shuffleAnimals([...animals]);
+    shuffledAnimals = shuffledAnimals.slice(0, 6);
+    const duplicateAnimals = [...shuffledAnimals, ...shuffledAnimals];
+    const createdCardSet = duplicateAnimals.map((animal, index) => {
+      return createCard(index, animal.name, animal.image);
+    });
+    return shuffleCards(createdCardSet);
   };
 
-  const getHost = () => {
-    if (Platform.OS === 'ios' || Platform.OS === 'android') {
-      setHost('10.117.60.67');
-    } else if (Platform.OS === 'web') {
-      setHost('localhost');
-    }
-  };
-
-  const flipCards = (id: number) => {
-    if (cardPlayed.length < 2 && !visibleCards[id]) {
+  const flipCards = (index: number) => {
+    if (cardPlayed.length < 2 && !visibleCards[index]) {
       setVisibleCards((prev) => {
         const cardsSet = [...prev];
-        cardsSet[id] = !cardsSet[id];
+        cardsSet[index] = true;
         return cardsSet;
       });
-      const cardToSave = playingCards.find((card) => card.id === id);
+      const cardToSave = playingCards[index];
       if (cardToSave) {
-        setCardPlayed((prev) => [...prev, cardToSave]);
+        setCardPlayed((prev) => [...prev, { card: cardToSave, index }]);
       }
     }
   };
 
   const checkIfWonSet = () => {
-    if (cardPlayed[0].name === cardPlayed[1].name) {
-      setPlayingCards((prev) => {
-        return prev.map((card) =>
-          card.id === cardPlayed[0].id || card.id === cardPlayed[1].id
-            ? { ...card, won: true }
-            : card,
-        );
-      });
+    const [firstCard, secondCard] = cardPlayed;
+    if (firstCard.card.name === secondCard.card.name) {
+      const updatedCards = playingCards.map((card) =>
+        card.id === firstCard.card.id || card.id === secondCard.card.id
+          ? { ...card, won: true }
+          : card,
+      );
       const animalFound = animals.find((animal: Animal) => {
-        return cardPlayed[1].name === animal.name;
+        return firstCard.card.name === animal.name;
       });
+      setPlayingCards(updatedCards);
       setAnimal(animalFound);
       setAnimalCardVisible(true);
-      if (userId) {
-        setGamePlay({ userId: userId, date: '', cards: playingCards });
-      }
       setCardPlayed([]);
     } else {
       setTimeout(() => {
         setVisibleCards((prev) => {
           const cardsSet = [...prev];
-          cardsSet[cardPlayed[0].id] = !cardsSet[cardPlayed[0].id];
-          cardsSet[cardPlayed[1].id] = !cardsSet[cardPlayed[1].id];
+          cardsSet[firstCard.index] = false;
+          cardsSet[secondCard.index] = false;
           return cardsSet;
         });
         setCardPlayed([]);
@@ -116,61 +103,111 @@ export default function MemoryScreen() {
   };
 
   const saveGamePlay = useCallback(async () => {
-    if (isSavingRef.current) {
+    if (!userId || isSavingRef.current) {
       return;
     }
     isSavingRef.current = true;
+
+    const currentGamePlay: GamePlay = {
+      userId,
+      date: new Date().toISOString(),
+      cards: playingCards,
+    };
+
     try {
       await fetch(API_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(gamePlay),
+        body: JSON.stringify(currentGamePlay),
         keepalive: true,
       });
-      console.log('Game saved successfully');
     } catch (error) {
       console.error('Save failed:', error);
     } finally {
       isSavingRef.current = false;
     }
-  }, [API_URL, gamePlay]);
+  }, [API_URL, playingCards]);
 
   const loadGamePlay = async () => {
+    if (!userId) return false;
     try {
-      const response = await axios({
-        method: 'get',
-        url: `${API_URL}/${userId}`,
-      });
-      setGamePlay(response.data);
+      const response = await axios.get<GamePlay>(`${API_URL}/${userId}`);
+      if (response.data) {
+        setPlayingCards(response.data.cards);
+        setVisibleCards(response.data.cards.map((card: Card) => card.won));
+        console.log('Loaded cards:', response.data.cards);
+        console.log('Loaded cards length:', response.data.cards.length);
+        console.log('First few cards:', response.data.cards.slice(0, 3));
+        return true;
+      }
     } catch (error) {
       console.error('Failed to load game:', error);
     }
+    return false;
   };
+
+  const initializeGame = async () => {
+    console.log('Initializing game, userId:', userId);
+    setDataLoading(true);
+
+    const gameLoaded = await loadGamePlay();
+
+    if (!gameLoaded) {
+      console.log('Game loaded:', gameLoaded);
+      const newCards = createCardSet();
+      setPlayingCards(newCards);
+      setVisibleCards(new Array(newCards.length).fill(false));
+    } else {
+      console.log('Using loaded game data');
+    }
+    setDataLoading(false);
+    setGameInitialized(true);
+  };
+
+  const restartGaming = () => {
+    const newCards = createCardSet();
+    setVisibleCards(new Array(newCards.length).fill(false));
+    setPlayingCards(newCards);
+    setCardPlayed([]);
+    setAnimalCardVisible(false);
+    setEndGameVisible(false);
+  };
+
+  useEffect(() => {
+    if (!gameInitialized && userId && !isLoading) {
+      initializeGame();
+    }
+  }, [isLoading, userId, gameInitialized]);
 
   //save when app is unfocused in mobile app
   useFocusEffect(
     useCallback(() => {
       return () => {
-        if (gamePlay) {
-          saveGamePlay();
-        }
+        saveGamePlay();
       };
-    }, [gamePlay]),
+    }, [saveGamePlay]),
   );
+
+  useEffect(() => {
+    console.log('PlayingCards updated:', playingCards.length);
+    console.log('VisibleCards updated:', visibleCards.length);
+    console.log(
+      'Cards match:',
+      playingCards.map((card) => `${card.id}:${card.name}`),
+    );
+  }, [playingCards, visibleCards]);
 
   useEffect(() => {
     //save when browser is closed
     const handleBeforeUnLoad = () => {
-      if (gamePlay) {
-        saveGamePlay();
-      }
+      saveGamePlay();
     };
 
     // save when switching tabs
     const handleVisibilityChange = () => {
-      if (document.hidden && gamePlay) {
+      if (document.hidden) {
         saveGamePlay();
       }
     };
@@ -181,35 +218,36 @@ export default function MemoryScreen() {
       window.removeEventListener('beforeunload', handleBeforeUnLoad);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [gamePlay, saveGamePlay]);
-
-  //create random playing cards
-  useEffect(() => {
-    getHost();
-    loadGamePlay();
-    createCardSet();
-  }, []);
+  }, [saveGamePlay]);
 
   useEffect(() => {
     if (cardPlayed.length === 2) {
       checkIfWonSet();
-      setTimeout(() => {
+    }
+  }, [cardPlayed]);
+
+  useEffect(() => {
+    if (animalCardVisible) {
+      const timer = setTimeout(() => {
         setAnimalCardVisible(false);
       }, 3000);
+      return () => clearTimeout(timer); // Cleanup timer
     }
-    if (
-      playingCards.find((card) => card.won === true) &&
-      !playingCards.find((card) => card.won === false)
-    ) {
+  }, [animalCardVisible]);
+
+  useEffect(() => {
+    if (cardPlayed.length === 2 && playingCards.every((card) => card.won)) {
       if (animalCardVisible === false) {
         setEndGameVisible(true);
+        setCardPlayed([]);
       } else {
         setTimeout(() => {
           setEndGameVisible(true);
+          setCardPlayed([]);
         }, 3000);
       }
     }
-  }, [cardPlayed, playingCards]);
+  }, [playingCards, animalCardVisible]);
 
   return (
     <ImageBackground
@@ -226,6 +264,16 @@ export default function MemoryScreen() {
           height={50}
         ></Image>
       </XStack>
+      <Button size={Platform.OS === 'web' ? '$5' : '$3'} backgroundColor="#FF8A01">
+        <Text
+          color="#fff"
+          fontFamily="MedievalSharp-Regular"
+          fontSize={Platform.OS === 'web' ? 25 : 16}
+          onPress={() => restartGaming()}
+        >
+          Restart
+        </Text>
+      </Button>
       <CustomModal
         style_modal={style_modal_bottom}
         setModalVisible={setAnimalCardVisible}
@@ -264,38 +312,44 @@ export default function MemoryScreen() {
         modalVisible={endGameVisible}
         style_modal={style_modal_bottom}
       >
-        END GAME!
+        <Text>YOU WON!</Text>
         <Button size="$2" style={styles.modalCloseButton} onPress={() => setEndGameVisible(false)}>
           <FontAwesomeIcon icon={faXmark} style={{ color: '#fff' }} />
         </Button>
       </CustomModal>
-      <XStack style={styles.cardsSet} gap={15}>
-        {playingCards.map((card) => (
-          <View key={card.id} animation="bouncy" style={styles.cardStyle}>
-            <TouchableOpacity
-              onPress={() => flipCards(card.id)}
-              activeOpacity={1} /*disabled={disabled[card.id]}*/
-            >
-              <View style={visibleCards[card.id] ? styles.invisible : styles.faceB}>
-                <Image
-                  style={styles.backImage}
-                  source={require('../../assets/images/memoryBackCard.jpg')}
-                />
-              </View>
-              <View style={visibleCards[card.id] ? styles.faceA : styles.invisible}>
-                <View style={styles.animalImageContainer}>
-                  <Image style={styles.animalImage} source={imageMap[card.image]}></Image>
+      {dataLoading || !userId ? (
+        <View>
+          <Text style={{ color: '#fff' }}>... isLoading</Text>
+        </View>
+      ) : (
+        <XStack style={styles.cardsSet} gap={15}>
+          {playingCards.map((card, index) => (
+            <View key={card.id} animation="bouncy" style={styles.cardStyle}>
+              <TouchableOpacity
+                onPress={() => flipCards(index)}
+                activeOpacity={1} /*disabled={disabled[card.id]}*/
+              >
+                <View style={visibleCards[index] ? styles.invisible : styles.faceB}>
+                  <Image
+                    style={styles.backImage}
+                    source={require('../../assets/images/memoryBackCard.jpg')}
+                  />
                 </View>
-                <View style={styles.textContainer}>
-                  <Text style={styles.textCard} alignSelf="center" fontSize={20}>
-                    {card.name}
-                  </Text>
+                <View style={visibleCards[index] ? styles.faceA : styles.invisible}>
+                  <View style={styles.animalImageContainer}>
+                    <Image style={styles.animalImage} source={imageMap[card.image]}></Image>
+                  </View>
+                  <View style={styles.textContainer}>
+                    <Text style={styles.textCard} alignSelf="center" fontSize={20}>
+                      {card.name}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-            </TouchableOpacity>
-          </View>
-        ))}
-      </XStack>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </XStack>
+      )}
     </ImageBackground>
   );
 }
