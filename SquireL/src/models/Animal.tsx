@@ -22,5 +22,5 @@ export interface Animal {
   speed: string;
   food: string;
   endangered: boolean;
-  icon: string;
+  icon: AnimalKey;
 }
