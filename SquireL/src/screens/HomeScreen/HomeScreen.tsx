@@ -3,6 +3,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 
 import { Image } from 'tamagui';
 import { useRef, useEffect } from 'react';
+import { HomeStackParamList } from '@/src/types/navigationTypes';
 
 type HomeScreenNavigationProp = StackNavigationProp<HomeStackParamList, 'Home'>;
 

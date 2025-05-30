@@ -37,19 +37,13 @@ export default function PlayroomScreen({ navigation }: Props) {
       style={styles.pageContainer}
       source={require('../../assets/images/playroomScreen.png')}
     >
-      <TouchableOpacity
-        style={styles.kitchen}
-        onPress={() => navigation.getParent()?.navigate('Kitchen')}
-      >
+      <TouchableOpacity style={styles.kitchen} onPress={() => navigation.navigate('Kitchen')}>
         <Image
           source={require('../../assets/images/cauldron.gif')}
           style={{ width: 100, height: 100 }}
         />
       </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.headPhones}
-        onPress={() => navigation.getParent()?.navigate('Library')}
-      >
+      <TouchableOpacity style={styles.headPhones} onPress={() => navigation.navigate('Library')}>
         <Animated.View style={{ transform: [{ rotate }] }}>
           <FontAwesomeIcon
             icon={faHeadphones}
