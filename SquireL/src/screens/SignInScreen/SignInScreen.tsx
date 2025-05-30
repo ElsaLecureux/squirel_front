@@ -10,6 +10,7 @@ import axios from 'axios';
 import GLOBALS from '../../config';
 import { jwtDecode } from 'jwt-decode';
 import { useUser } from '../../context/UserContext';
+import type { RootStackParamList } from '../../types/navigationTypes';
 
 type SignInScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SignIn'>;
 
@@ -17,7 +18,7 @@ type Props = {
   navigation: SignInScreenNavigationProp;
 };
 
-export default function SignInScreen({ navigation }: Props) {
+export default function SignInScreen({ navigation }: Readonly<Props>) {
   const { setUserId } = useUser();
 
   const [loaded, error] = useFonts({
@@ -102,7 +103,7 @@ export default function SignInScreen({ navigation }: Props) {
             localStorage.setItem('access_token', response.data.access_token);
             setHost('');
           }
-          navigation.navigate('AppDrawer');
+          navigation.navigate('HomeStack', { screen: 'Home' });
         })
         .catch(function (error) {
           if (error) {

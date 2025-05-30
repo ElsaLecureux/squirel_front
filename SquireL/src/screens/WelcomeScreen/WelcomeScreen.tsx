@@ -1,15 +1,12 @@
-import { Platform, ImageBackground, StyleSheet, Image } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { Platform, ImageBackground, Image } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { styles } from './WelcomeScreenStyle';
 
 import { Button, Text, YStack, XStack } from 'tamagui';
 import { useUser } from '../../context/UserContext';
-import { useEffect } from 'react';
+import type { RootStackParamList } from '../../types/navigationTypes';
 
-type WelcomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Welcome'>;
-
-type Props = {
-  navigation: WelcomeScreenNavigationProp;
-};
+type Props = NativeStackScreenProps<RootStackParamList, 'Welcome'>;
 
 export default function WelcomeScreen({ navigation }: Readonly<Props>) {
   const { checkIfSignedIn } = useUser();
@@ -17,7 +14,7 @@ export default function WelcomeScreen({ navigation }: Readonly<Props>) {
   const handleAuthCheck = async () => {
     const isSignedIn = await checkIfSignedIn();
     if (isSignedIn) {
-      navigation.navigate('AppDrawer');
+      navigation.navigate('HomeStack', { screen: 'Home' });
     } else {
       navigation.navigate('SignIn');
     }
@@ -40,7 +37,7 @@ export default function WelcomeScreen({ navigation }: Readonly<Props>) {
               variant="outlined"
               borderColor="#FF8A01"
               width="auto"
-              onPress={() => handleAuthCheck()}
+              onPress={handleAuthCheck}
             >
               <Text
                 fontSize={Platform.OS === 'web' ? 38 : 24}
@@ -57,17 +54,3 @@ export default function WelcomeScreen({ navigation }: Readonly<Props>) {
     </ImageBackground>
   );
 }
-
-const styles = StyleSheet.create({
-  pageContainer: {
-    flex: 1,
-    backgroundColor: '#000000',
-    width: '100%',
-    height: '100%',
-  },
-  titleWelcomePage: {
-    width: '70%',
-    height: '16%',
-    alignSelf: 'center',
-  },
-});
