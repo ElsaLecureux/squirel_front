@@ -210,6 +210,8 @@ export default function MemoryScreen() {
         saveGamePlay();
       }
     };
+
+     if (Platform.OS === 'web') {
     window.addEventListener('beforeunload', handleBeforeUnLoad);
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => {
@@ -217,6 +219,7 @@ export default function MemoryScreen() {
       window.removeEventListener('beforeunload', handleBeforeUnLoad);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
+  }
   }, [saveGamePlay]);
 
   useEffect(() => {

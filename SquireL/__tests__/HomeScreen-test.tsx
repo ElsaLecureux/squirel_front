@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
-import  HomeScreen from '@/src/screens/HomeScreen/HomeScreen';
+import HomeScreen from '../src/screens/HomeScreen/HomeScreen';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import type { HomeStackParamList } from '../../SquireL/src/types/navigationTypes';
 
 jest.mock('tamagui', () => {
   const React = require('react');
@@ -38,7 +38,6 @@ describe('<HomeScreen />', () => {
     jest.clearAllMocks();
   });
 
-
   test('button on Homescreen redirect to MemoryScreen', () => {
     render(<HomeScreen navigation={mockNavigation as HomeScreenNavigationProp} />);
     const button = screen.getByLabelText('goToMemoryButton');
@@ -50,6 +49,5 @@ describe('<HomeScreen />', () => {
     render(<HomeScreen navigation={mockNavigation as HomeScreenNavigationProp} />);
     const backgroundImage = screen.getByTestId('background-image-home');
     expect(backgroundImage).toBeTruthy();
-  })
-
+  });
 });
