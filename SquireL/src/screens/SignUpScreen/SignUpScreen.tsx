@@ -9,6 +9,7 @@ import { Eye, EyeOff } from '@tamagui/lucide-icons';
 import GLOBALS from '../../config';
 import { jwtDecode } from 'jwt-decode';
 import { useUser } from '../../context/UserContext';
+import type { RootStackParamList } from '../../types/navigationTypes';
 
 type SignUpScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SignUp'>;
 
@@ -16,7 +17,7 @@ type Props = {
   navigation: SignUpScreenNavigationProp;
 };
 
-export default function SignUpScreen({ navigation }: Props) {
+export default function SignUpScreen({ navigation }: Readonly<Props>) {
   const { setUserId } = useUser();
 
   const emailRegex = /^[a-zA-Z0-9._-]{3,}@[a-zA-Z0-9.-]{3,}\.[a-zA-Z]{2,}$/;

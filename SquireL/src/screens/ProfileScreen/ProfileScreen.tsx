@@ -13,7 +13,7 @@ export default function ProfileScreen() {
   const [host, setHost] = useState('');
   const API_URL = `http://${host}:3000`;
   const [isReady, setIsReady] = useState(false);
-  const { userId } = useUser();
+  const { userId, signOut } = useUser();
   const [userInfo, setUserInfo] = useState<UserInfosDto>();
   const [userPlayGame, setUserPlayGame] = useState<UserPlayGameFullDto[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -205,6 +205,11 @@ export default function ProfileScreen() {
           >
             <Text fontFamily="MysteryQuest_400Regular" color={'#fff'} fontSize={18}>
               Change infos
+            </Text>
+          </Button>
+          <Button size="$5" variant="outlined" borderColor="#FF8A01" onPress={() => signOut()}>
+            <Text fontFamily="MysteryQuest_400Regular" color={'#fff'} fontSize={18}>
+              Sign Out
             </Text>
           </Button>
         </YStack>

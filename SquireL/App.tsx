@@ -20,6 +20,7 @@ import { MysteryQuest_400Regular } from '@expo-google-fonts/mystery-quest';
 import { MedievalSharp_400Regular } from '@expo-google-fonts/medievalsharp';
 import { useFonts } from 'expo-font';
 import { TOKEN_API_RADIO_FRANCE, URL_API_RADIO_FRANCE } from '@env';
+import type { RootStackParamList } from './src/types/navigationTypes';
 
 export default function App() {
   const linking: LinkingOptions<RootStackParamList> = {
@@ -29,25 +30,18 @@ export default function App() {
         Welcome: 'welcome',
         SignIn: 'signin',
         SignUp: 'signup',
-        AppDrawer: {
+        HomeStack: {
           screens: {
-            HomeStack: {
-              screens: {
-                Home: 'home',
-                Memory: 'memory',
-              },
-            },
+            Home: 'home',
+            Memory: 'memory',
             Profile: 'profile',
-            PlayroomStack: {
-              screens: {
-                Playroom: 'playroom',
-                Puzzle: 'puzzle',
-                DrawingGame: 'drawing-game',
-                LookAndFind: 'look-and-find',
-                Library: 'library',
-              },
-            },
-            DrawingsBox: 'drawings',
+          },
+        },
+        PlayroomStack: {
+          screens: {
+            Playroom: 'playroom',
+            Kitchen: 'kitchen',
+            Library: 'library',
           },
         },
       },
@@ -94,11 +88,9 @@ export default function App() {
   return (
     <TamaguiProvider config={config} defaultTheme={colorScheme!}>
       <ApolloProvider client={client}>
-        <UserProvider>
-          <NavigationContainer linking={linking}>
-            {isLoading ? <LoadingScreen /> : <RootStack />}
-          </NavigationContainer>
-        </UserProvider>
+        <NavigationContainer linking={linking}>
+          <UserProvider>{isLoading ? <LoadingScreen /> : <RootStack />}</UserProvider>
+        </NavigationContainer>
       </ApolloProvider>
     </TamaguiProvider>
   );

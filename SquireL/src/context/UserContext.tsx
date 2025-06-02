@@ -2,6 +2,9 @@ import { jwtDecode } from 'jwt-decode';
 import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect } from 'react';
 import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '@/src/types/navigationTypes'; // make sure this import is correct
 
 // Define the shape of the context
 interface UserContextType {
@@ -19,13 +22,21 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [userId, setUserId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  type NavigationProp = StackNavigationProp<RootStackParamList>;
+  const navigation = useNavigation<NavigationProp>();
 
   useEffect(() => {
     checkIfSignedIn();
   }, []);
 
-  const signOut = () => {
+  const signOut = async () => {
     setUserId(null);
+    if (Platform.OS === 'web') {
+      localStorage.removeItem('access_token');
+    } else if (Platform.OS === 'ios' || Platform.OS === 'android') {
+      await SecureStore.deleteItemAsync('access_token');
+    }
+    navigation.navigate('Welcome');
   };
 
   const checkIfSignedIn = async (): Promise<boolean> => {
