@@ -1,0 +1,22 @@
+name: develop workflow
+
+on: [push]
+jobs:
+
+  eslint:
+    runs-on: ubuntu-latest
+    steps:
+    # get code from repo
+      - uses: actions/checkout@v4
+    #install nodejs
+      - uses: actions/setup-node@v4
+        with: 
+          node-version: 18.x
+          cache: 'npm'
+      - run: npm run build --if-present
+    #eslint
+    #tests
+    #build
+    #pour le deploiement? sur main
+    #docker
+      - run: echo "Test"
