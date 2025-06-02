@@ -35,15 +35,13 @@ export default function App() {
             Home: 'home',
             Memory: 'memory',
             Profile: 'profile',
-            PlayroomStack: {
-              screens: {
-                Playroom: 'playroom',
-                Puzzle: 'puzzle',
-                DrawingGame: 'drawing-game',
-                LookAndFind: 'look-and-find',
-                Library: 'library',
-              },
-            },
+          },
+        },
+        PlayroomStack: {
+          screens: {
+            Playroom: 'playroom',
+            Kitchen: 'kitchen',
+            Library: 'library',
           },
         },
       },
@@ -90,11 +88,9 @@ export default function App() {
   return (
     <TamaguiProvider config={config} defaultTheme={colorScheme!}>
       <ApolloProvider client={client}>
-        <UserProvider>
-          <NavigationContainer linking={linking}>
-            {isLoading ? <LoadingScreen /> : <RootStack />}
-          </NavigationContainer>
-        </UserProvider>
+        <NavigationContainer linking={linking}>
+          <UserProvider>{isLoading ? <LoadingScreen /> : <RootStack />}</UserProvider>
+        </NavigationContainer>
       </ApolloProvider>
     </TamaguiProvider>
   );

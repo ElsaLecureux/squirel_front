@@ -3,11 +3,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '../screens/HomeScreen/HomeScreen';
 import MemoryScreen from '../screens/MemoryScreen/MemoryScreen';
 import ProfileScreen from '../screens/ProfileScreen/ProfileScreen';
-import PlayroomStack from './PlayroomStack';
 import type { HomeStackParamList } from '../types/navigationTypes';
-import { Header } from '../components/Header';
+import { ProfileButton } from '../components/ProfileButton';
 import BackButton from '../components/BackButton';
-import { Ionicons } from '@expo/vector-icons';
 import { View } from 'tamagui';
 import { StyleSheet } from 'react-native';
 
@@ -27,16 +25,9 @@ export default function HomeStack() {
         component={HomeScreen}
         options={({ navigation }) => ({
           title: 'Home',
-          headerBackImage: () => (
-            <Ionicons
-              name="chevron-back"
-              size={3} // <- Increase this to make it bigger
-              color="#FF8A01"
-              style={{ marginLeft: 10 }}
-            />
-          ),
           headerTitle: () => null,
-          headerRight: () => <Header navigation={navigation} />,
+          headerRight: () => <ProfileButton navigation={navigation} />,
+          headerLeft: () => null,
         })}
       />
       <Stack.Screen
@@ -45,7 +36,7 @@ export default function HomeStack() {
         options={({ navigation }) => ({
           title: 'Memory',
           headerTitle: () => null,
-          headerRight: () => <Header navigation={navigation} />,
+          headerRight: () => <ProfileButton navigation={navigation} />,
           headerBackTitleVisible: false,
           headerLeft: () => (
             <View style={styles.headerLeft}>
@@ -60,22 +51,7 @@ export default function HomeStack() {
         options={({ navigation }) => ({
           title: 'Profile',
           headerTitle: () => null,
-          headerRight: () => <Header navigation={navigation} />,
-          headerBackTitleVisible: false,
-          headerLeft: () => (
-            <View style={styles.headerLeft}>
-              <BackButton navigation={navigation} />
-            </View>
-          ),
-        })}
-      />
-      <Stack.Screen
-        name="PlayroomStack"
-        component={PlayroomStack}
-        options={({ navigation }) => ({
-          title: 'Playroom',
-          headerTitle: () => null,
-          headerRight: () => <Header navigation={navigation} />,
+          headerRight: () => <ProfileButton navigation={navigation} />,
           headerBackTitleVisible: false,
           headerLeft: () => (
             <View style={styles.headerLeft}>

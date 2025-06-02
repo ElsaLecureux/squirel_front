@@ -5,6 +5,7 @@ import SignInScreen from '../screens/SignInScreen/SignInScreen';
 import SignUpScreen from '../screens/SignUpScreen/SignUpScreen';
 import HomeStack from './HomeStack';
 import type { RootStackParamList } from '../types/navigationTypes';
+import PlayroomStack from './PlayroomStack';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -15,6 +16,7 @@ export default function RootStack() {
       <Stack.Screen name="SignIn" component={SignInScreen} />
       <Stack.Screen name="SignUp" component={SignUpScreen} />
       <Stack.Screen name="HomeStack" component={HomeStack} />
+      <Stack.Screen name="PlayroomStack" component={PlayroomStack} />
     </Stack.Navigator>
   );
 }

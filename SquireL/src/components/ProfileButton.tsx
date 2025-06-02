@@ -8,7 +8,7 @@ type Props = {
   navigation: StackNavigationProp<HomeStackParamList>;
 };
 
-export const Header = ({ navigation }: Props) => {
+export const ProfileButton = ({ navigation }: Props) => {
   return (
     <XStack marginRight="3%" marginTop="3%" gap={12}>
       <Button
