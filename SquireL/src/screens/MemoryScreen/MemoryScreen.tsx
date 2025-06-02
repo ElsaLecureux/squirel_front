@@ -253,16 +253,6 @@ export default function MemoryScreen() {
       style={styles.pageContainer}
       source={require('../../assets/images/memoryGame.jpeg')}
     >
-      <XStack style={styles.pageTitle} gap={15}>
-        <Text color={'#953990'} fontSize={30}>
-          Memory
-        </Text>
-        <Image
-          source={require('../../assets/icons/poker-cards.png')}
-          width={50}
-          height={50}
-        ></Image>
-      </XStack>
       <Button size={Platform.OS === 'web' ? '$5' : '$3'} backgroundColor="#FF8A01">
         <Text
           color="#fff"
@@ -375,7 +365,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexWrap: 'wrap',
-    width: '50%',
+    width: '60%',
   },
   invisible: {
     display: 'none',
