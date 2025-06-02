@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["jest"],
     "strict": true,
     "moduleResolution": "node",
     "target": "esnext",
@@ -10,10 +11,5 @@
       ]
     }
   },
-  "include": [
-    "env.d.ts",
-    "src",
-    "App.tsx"
-  ],
-  "extends": "expo/tsconfig.base"
+  "include": ["env.d.ts", "src", "App.tsx","jest.setup.ts", "src", "tests", "__tests__"],
 }
