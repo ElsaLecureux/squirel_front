@@ -7,7 +7,7 @@ type Props = {
   navigation: StackNavigationProp<any>;
 };
 
-export default function BackButton({ navigation }: Props) {
+export default function BackButton({ navigation }: Readonly<Props>) {
   return (
     <Button
       size="$2"

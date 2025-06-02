@@ -4,6 +4,7 @@ import { Image } from 'tamagui';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faHeadphones } from '@fortawesome/free-solid-svg-icons/faHeadphones';
 import { useEffect, useRef } from 'react';
+import { PlayroomStackParamList } from '@/src/types/navigationTypes';
 
 type PlayroomScreenNavigationProp = StackNavigationProp<PlayroomStackParamList, 'Playroom'>;
 
@@ -11,7 +12,7 @@ type Props = {
   navigation: PlayroomScreenNavigationProp;
 };
 
-export default function PlayroomScreen({ navigation }: Props) {
+export default function PlayroomScreen({ navigation }: Readonly<Props>) {
   const spinValue = useRef(new Animated.Value(0)).current;
   const rotate = spinValue.interpolate({
     inputRange: [0, 0.5, 1],
@@ -32,14 +33,17 @@ export default function PlayroomScreen({ navigation }: Props) {
     spin();
   }, []);
 
+  //todo wooden sign for the kictehn with the ani,ation for library and change animation library for size growing and shrinking
+
   return (
     <ImageBackground
       style={styles.pageContainer}
       source={require('../../assets/images/playroomScreen.png')}
+      resizeMode="stretch"
     >
       <TouchableOpacity style={styles.kitchen} onPress={() => navigation.navigate('Kitchen')}>
         <Image
-          source={require('../../assets/images/cauldron.gif')}
+          source={require('../../assets/images/woodenSignKitchen.png')}
           style={{ width: 100, height: 100 }}
         />
       </TouchableOpacity>

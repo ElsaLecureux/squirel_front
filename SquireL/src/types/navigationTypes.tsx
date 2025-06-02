@@ -3,6 +3,7 @@ export type RootStackParamList = {
   SignIn: undefined;
   SignUp: undefined;
   HomeStack: { screen: keyof HomeStackParamList };
+  PlayroomStack: { screen: keyof PlayroomStackParamList };
 };
 
 export type PlayroomStackParamList = {
@@ -16,6 +17,5 @@ export type PlayroomStackParamList = {
 export type HomeStackParamList = {
   Home: undefined;
   Memory: undefined;
-  PlayroomStack: { screen: keyof PlayroomStackParamList };
   Profile: undefined;
 };
