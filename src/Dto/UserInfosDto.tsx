@@ -1,6 +1,4 @@
- type UserInfosDto = {
-    username: string;
-    email: string;
-}
-
-export default UserInfosDto;
+export type UserInfosDto = {
+  username: string;
+  email: string;
+};

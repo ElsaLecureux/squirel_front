@@ -1,4 +1,5 @@
-import { ImageBackground, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import { ImageBackground, TouchableOpacity, Platform } from 'react-native';
+import { styles } from './MemoryStyle';
 import { Text, XStack, Image, View, YStack, Button } from 'tamagui';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Card } from '../../models/Card';
@@ -10,7 +11,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { createCard } from '@/src/utils/createCard';
 import axios from 'axios';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
-import { Animal } from '@/src/models/Animal';
+import { Animal, AnimalKey } from '@/src/models/Animal';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useUser } from '@/src/context/UserContext';
 import { getHost } from '@/src/utils/getHost';
@@ -49,17 +50,6 @@ export default function MemoryScreen() {
     return cards;
   };
 
-  const createCardSet = () => {
-    console.log('creating new cards');
-    let shuffledAnimals = shuffleAnimals([...animals]);
-    shuffledAnimals = shuffledAnimals.slice(0, 6);
-    const duplicateAnimals = [...shuffledAnimals, ...shuffledAnimals];
-    const createdCardSet = duplicateAnimals.map((animal, index) => {
-      return createCard(index, animal.name, animal.image);
-    });
-    return shuffleCards(createdCardSet);
-  };
-
   const flipCards = (index: number) => {
     if (cardPlayed.length < 2 && !visibleCards[index]) {
       setVisibleCards((prev) => {
@@ -71,34 +61,6 @@ export default function MemoryScreen() {
       if (cardToSave) {
         setCardPlayed((prev) => [...prev, { card: cardToSave, index }]);
       }
-    }
-  };
-
-  const checkIfWonSet = () => {
-    const [firstCard, secondCard] = cardPlayed;
-    if (firstCard.card.name === secondCard.card.name) {
-      const updatedCards = playingCards.map((card) =>
-        card.id === firstCard.card.id || card.id === secondCard.card.id
-          ? { ...card, won: true }
-          : card,
-      );
-      const animalFound = animals.find((animal: Animal) => {
-        return firstCard.card.name === animal.name;
-      });
-      setPlayingCards(updatedCards);
-      setAnimal(animalFound);
-      setAnimalCardVisible(true);
-      setCardPlayed([]);
-    } else {
-      setTimeout(() => {
-        setVisibleCards((prev) => {
-          const cardsSet = [...prev];
-          cardsSet[firstCard.index] = false;
-          cardsSet[secondCard.index] = false;
-          return cardsSet;
-        });
-        setCardPlayed([]);
-      }, 1500);
     }
   };
 
@@ -128,45 +90,18 @@ export default function MemoryScreen() {
     } finally {
       isSavingRef.current = false;
     }
-  }, [API_URL, playingCards]);
-
-  const loadGamePlay = async () => {
-    if (!userId) return false;
-    try {
-      const response = await axios.get<GamePlay>(`${API_URL}/${userId}`);
-      if (response.data) {
-        setPlayingCards(response.data.cards);
-        setVisibleCards(response.data.cards.map((card: Card) => card.won));
-        console.log('Loaded cards:', response.data.cards);
-        console.log('Loaded cards length:', response.data.cards.length);
-        console.log('First few cards:', response.data.cards.slice(0, 3));
-        return true;
-      }
-    } catch (error) {
-      console.error('Failed to load game:', error);
-    }
-    return false;
-  };
-
-  const initializeGame = async () => {
-    console.log('Initializing game, userId:', userId);
-    setDataLoading(true);
-
-    const gameLoaded = await loadGamePlay();
-
-    if (!gameLoaded) {
-      console.log('Game loaded:', gameLoaded);
-      const newCards = createCardSet();
-      setPlayingCards(newCards);
-      setVisibleCards(new Array(newCards.length).fill(false));
-    } else {
-      console.log('Using loaded game data');
-    }
-    setDataLoading(false);
-    setGameInitialized(true);
-  };
+  }, [API_URL, playingCards, userId]);
 
   const restartGaming = () => {
+    const createCardSet = () => {
+      let shuffledAnimals = shuffleAnimals([...animals]);
+      shuffledAnimals = shuffledAnimals.slice(0, 6);
+      const duplicateAnimals = [...shuffledAnimals, ...shuffledAnimals];
+      const createdCardSet = duplicateAnimals.map((animal, index) => {
+        return createCard(index, animal.name, animal.image);
+      });
+      return shuffleCards(createdCardSet);
+    };
     const newCards = createCardSet();
     setVisibleCards(new Array(newCards.length).fill(false));
     setPlayingCards(newCards);
@@ -176,10 +111,51 @@ export default function MemoryScreen() {
   };
 
   useEffect(() => {
+    const loadGamePlay = async () => {
+      if (!userId) return false;
+      try {
+        const response = await axios.get<GamePlay>(`${API_URL}/${userId}`);
+        if (response.data) {
+          setPlayingCards(response.data.cards);
+          setVisibleCards(response.data.cards.map((card: Card) => card.won));
+          console.log('Loaded cards:', response.data.cards);
+          console.log('Loaded cards length:', response.data.cards.length);
+          console.log('First few cards:', response.data.cards.slice(0, 3));
+          return true;
+        }
+      } catch (error) {
+        console.error('Failed to load game:', error);
+      }
+      return false;
+    };
+
+    const initializeGame = async () => {
+      console.log('Initializing game, userId:', userId);
+      setDataLoading(true);
+
+      const gameLoaded = await loadGamePlay();
+
+      if (!gameLoaded) {
+        const createCardSet = () => {
+          let shuffledAnimals = shuffleAnimals([...animals]);
+          shuffledAnimals = shuffledAnimals.slice(0, 6);
+          const duplicateAnimals = [...shuffledAnimals, ...shuffledAnimals];
+          const createdCardSet = duplicateAnimals.map((animal, index) => {
+            return createCard(index, animal.name, animal.image);
+          });
+          return shuffleCards(createdCardSet);
+        };
+        const newCards = createCardSet();
+        setPlayingCards(newCards);
+        setVisibleCards(new Array(newCards.length).fill(false));
+      }
+      setDataLoading(false);
+      setGameInitialized(true);
+    };
     if (!gameInitialized && userId && !isLoading) {
       initializeGame();
     }
-  }, [isLoading, userId, gameInitialized]);
+  }, [isLoading, userId, gameInitialized, API_URL]);
 
   //save when app is unfocused in mobile app
   useFocusEffect(
@@ -212,22 +188,50 @@ export default function MemoryScreen() {
       }
     };
 
-     if (Platform.OS === 'web') {
-    window.addEventListener('beforeunload', handleBeforeUnLoad);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => {
-      // important remove event listener to not repeat the save
-      window.removeEventListener('beforeunload', handleBeforeUnLoad);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
-  }
+    if (Platform.OS === 'web') {
+      window.addEventListener('beforeunload', handleBeforeUnLoad);
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+      return () => {
+        // important remove event listener to not repeat the save
+        window.removeEventListener('beforeunload', handleBeforeUnLoad);
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+      };
+    }
   }, [saveGamePlay]);
 
   useEffect(() => {
+    const checkIfWonSet = () => {
+      const [firstCard, secondCard] = cardPlayed;
+      if (firstCard.card.name === secondCard.card.name) {
+        const updatedCards = playingCards.map((card) =>
+          card.id === firstCard.card.id || card.id === secondCard.card.id
+            ? { ...card, won: true }
+            : card,
+        );
+        const animalFound = animals.find((animal: Animal) => {
+          return firstCard.card.name === animal.name;
+        });
+        setPlayingCards(updatedCards);
+        setAnimal(animalFound);
+        setAnimalCardVisible(true);
+        setCardPlayed([]);
+      } else {
+        setTimeout(() => {
+          setVisibleCards((prev) => {
+            const cardsSet = [...prev];
+            cardsSet[firstCard.index] = false;
+            cardsSet[secondCard.index] = false;
+            return cardsSet;
+          });
+          setCardPlayed([]);
+        }, 1500);
+      }
+    };
+
     if (cardPlayed.length === 2) {
       checkIfWonSet();
     }
-  }, [cardPlayed]);
+  }, [cardPlayed, playingCards]);
 
   useEffect(() => {
     if (animalCardVisible) {
@@ -250,7 +254,7 @@ export default function MemoryScreen() {
         }, 3000);
       }
     }
-  }, [playingCards, animalCardVisible]);
+  }, [playingCards, animalCardVisible, cardPlayed.length]);
 
   return (
     <ImageBackground
@@ -275,7 +279,7 @@ export default function MemoryScreen() {
         <XStack style={styles.modalView}>
           <YStack style={styles.cardFirstHalf}>
             <View>
-              <Image style={styles.image} source={imageMap[animal?.image]} />
+              <Image style={styles.image} source={imageMap[animal?.image as AnimalKey]} />
             </View>
             <YStack>
               <Text style={styles.modalText}>Name: {animal?.name}</Text>
@@ -330,7 +334,10 @@ export default function MemoryScreen() {
                 </View>
                 <View style={visibleCards[index] ? styles.faceA : styles.invisible}>
                   <View style={styles.animalImageContainer}>
-                    <Image style={styles.animalImage} source={imageMap[card.image]}></Image>
+                    <Image
+                      style={styles.animalImage}
+                      source={imageMap[card.image as AnimalKey]}
+                    ></Image>
                   </View>
                   <View style={styles.textContainer}>
                     <Text style={styles.textCard} alignSelf="center" fontSize={20}>
@@ -346,119 +353,3 @@ export default function MemoryScreen() {
     </ImageBackground>
   );
 }
-
-const styles = StyleSheet.create({
-  pageContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'column',
-    height: '100%',
-    width: '100%',
-    paddingTop: '5%',
-    gap: 4,
-  },
-  pageTitle: {
-    flex: 1,
-  },
-  button: {
-    flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0)',
-  },
-  cardsSet: {
-    flex: 6,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    width: '60%',
-  },
-  invisible: {
-    display: 'none',
-  },
-  cardStyle: {
-    width: 140,
-    height: 200,
-  },
-  faceB: {
-    width: 140,
-    height: 200,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    borderWidth: 4,
-    borderColor: '#ff8a01',
-  },
-  faceA: {
-    width: 140,
-    height: 200,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    borderWidth: 4,
-    borderColor: '#ff8a01',
-  },
-  animalImageContainer: {
-    flex: 4,
-    width: '100%',
-    backgroundColor: '#ff8a01',
-  },
-  textContainer: {
-    flex: 1,
-    width: '100%',
-    backgroundColor: '#ff8a01',
-  },
-  backImage: {
-    height: '100%',
-    width: '100%',
-  },
-  animalImage: {
-    height: '100%',
-    width: '100%',
-    resizeMode: 'stretch',
-    borderRadius: 10,
-  },
-  textCard: {
-    height: '100%',
-    color: 'white',
-    textTransform: 'uppercase',
-    alignContent: 'center',
-  },
-  cardFirstHalf: {
-    backgroundColor: '#ff8a01',
-    flex: 2,
-  },
-  cardSecondHalf: {
-    backgroundColor: '#ff8a01',
-    flex: 1,
-  },
-  image: {
-    width: 150,
-    height: 280,
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalView: {
-    height: 600,
-    width: 400,
-    backgroundColor: '#ff8a01',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  modalCloseButton: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    backgroundColor: '#ff8a01',
-  },
-});

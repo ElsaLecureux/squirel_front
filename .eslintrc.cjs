@@ -12,7 +12,7 @@ module.exports = {
     node: true,
     jest: true,
   },
-  ignorePatterns: ['.eslintrc.js', '/dist/*'],
+  ignorePatterns: ['.eslintrc.js', '.eslintrc.cjs', '/dist/*', 'babel.config.cjs', '**/*.js'],
   rules: {
     'no-unused-vars': 'off',
     '@typescript-eslint/interface-name-prefix': 'off',
@@ -21,5 +21,6 @@ module.exports = {
     '@typescript-eslint/no-require-imports': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     'prettier/prettier': 'error',
+    'import/no-unresolved': ['error', { ignore: ['^@env$'] }],
   },
 };

@@ -4,10 +4,10 @@ import { useUser } from '../../context/UserContext';
 
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import UserInfosDto from '@/src/Dto/UserInfosDto';
-import UserPlayGameFullDto from '@/src/Dto/UserPlayGameFullDto';
+import { UserInfosDto } from '@/src/Dto/UserInfosDto';
+import { UserPlayGameFullDto } from '@/src/Dto/UserPlayGameFullDto';
 import CustomModal from '@/src/components/CustomModal/CustomModal';
-import UserDto from '@/src/Dto/UserDto';
+import { UserDto } from '@/src/Dto/UserDto';
 
 export default function ProfileScreen() {
   const [host, setHost] = useState('');
@@ -28,6 +28,25 @@ export default function ProfileScreen() {
   const [confirmPassword, setConfirmPassword] = useState<string>();
 
   useEffect(() => {
+    const getInfosUser = async () => {
+      const dataUser = await axios({
+        method: 'get',
+        url: `${API_URL}/users/${userId}`,
+      });
+      if (dataUser) {
+        setUserInfo({ ...dataUser.data });
+        setUserDto({ ...dataUser.data });
+      }
+    };
+    const getUserWonGames = async () => {
+      const dataGameUser = await axios({
+        method: 'get',
+        url: `${API_URL}/userPlayGame/${userId}`,
+      });
+      if (dataGameUser) {
+        setUserPlayGame([...dataGameUser.data]);
+      }
+    };
     if (Platform.OS === 'ios' || Platform.OS === 'android') {
       setHost('10.117.60.67');
     } else if (Platform.OS === 'web') {
@@ -39,27 +58,7 @@ export default function ProfileScreen() {
       getUserWonGames();
       setIsReady(true);
     }
-  }, [host, userId]);
-
-  const getInfosUser = async () => {
-    const dataUser = await axios({
-      method: 'get',
-      url: `${API_URL}/users/${userId}`,
-    });
-    if (dataUser) {
-      setUserInfo({ ...dataUser.data });
-      setUserDto({ ...dataUser.data });
-    }
-  };
-  const getUserWonGames = async () => {
-    const dataGameUser = await axios({
-      method: 'get',
-      url: `${API_URL}/userPlayGame/${userId}`,
-    });
-    if (dataGameUser) {
-      setUserPlayGame([...dataGameUser.data]);
-    }
-  };
+  }, [host, userId, API_URL]);
 
   const changeInfosButton = () => {
     setModalVisible(true);
