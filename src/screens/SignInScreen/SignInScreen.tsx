@@ -7,7 +7,7 @@ import * as SecureStore from 'expo-secure-store';
 import { useEffect, useState } from 'react';
 import { useFonts } from 'expo-font';
 import axios from 'axios';
-import GLOBALS from '../../config';
+import { GLOBALS } from '../../config';
 import { jwtDecode } from 'jwt-decode';
 import { useUser } from '../../context/UserContext';
 import type { RootStackParamList } from '../../types/navigationTypes';

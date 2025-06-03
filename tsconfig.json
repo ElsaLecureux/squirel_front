@@ -9,8 +9,21 @@
     "paths": {
       "@/*": [
         "./*"
-      ]
+      ],
+      "@env": ["./env.d.ts"]
     }
   },
-  "include": ["env.d.ts", "src", "App.tsx","jest.setup.ts", "src", "tests", "__tests__"]
+  "include": [
+    "env.d.ts", 
+    "**/*.ts",
+    "**/*.tsx", 
+    "tests", 
+    "__tests__",
+  ],
+  "exclude": [
+    "node_modules",
+    ".eslintrc.cjs",
+    "babel.config.cjs",
+    "**/*.js"
+  ]
 }

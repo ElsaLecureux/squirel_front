@@ -1,5 +1,3 @@
-import './gesture-handler';
-
 import { UserProvider } from './src/context/UserContext';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
@@ -12,7 +10,7 @@ import { useEffect, useState } from 'react';
 
 import { LinkingOptions, NavigationContainer } from '@react-navigation/native';
 
-import LoadingScreen from './src/screens/LoadingScreen';
+import LoadingScreen from './src/components/LoadingScreen';
 import RootStack from './src/routes/RootStack';
 
 import { BubblegumSans_400Regular } from '@expo-google-fonts/bubblegum-sans';

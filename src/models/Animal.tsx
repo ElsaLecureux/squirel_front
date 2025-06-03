@@ -9,7 +9,7 @@ export interface ImageMap {
   shark: number;
 }
 
-type AnimalKey = keyof ImageMap;
+export type AnimalKey = keyof ImageMap;
 export interface Animal {
   id: number;
   name: string;

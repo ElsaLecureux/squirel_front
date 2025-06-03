@@ -1,10 +1,18 @@
 import { jwtDecode } from 'jwt-decode';
-import React, { createContext, useContext, useState, ReactNode, useMemo, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useMemo,
+  useEffect,
+  useCallback,
+} from 'react';
 import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '@/src/types/navigationTypes'; // make sure this import is correct
+import { RootStackParamList } from '@/src/types/navigationTypes';
 
 // Define the shape of the context
 interface UserContextType {
@@ -25,21 +33,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   type NavigationProp = StackNavigationProp<RootStackParamList>;
   const navigation = useNavigation<NavigationProp>();
 
-  useEffect(() => {
-    checkIfSignedIn();
-  }, []);
-
-  const signOut = async () => {
-    setUserId(null);
-    if (Platform.OS === 'web') {
-      localStorage.removeItem('access_token');
-    } else if (Platform.OS === 'ios' || Platform.OS === 'android') {
-      await SecureStore.deleteItemAsync('access_token');
-    }
-    navigation.navigate('Welcome');
-  };
-
-  const checkIfSignedIn = async (): Promise<boolean> => {
+  const checkIfSignedIn = useCallback(async (): Promise<boolean> => {
     try {
       setIsLoading(true);
       let token: string | null = null;
@@ -51,7 +45,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (token) {
         const decodedToken = jwtDecode(token);
         if (
-          decodedToken.exp != undefined &&
+          decodedToken.exp !== undefined &&
           decodedToken.exp > Date.now() / 1000 &&
           decodedToken.sub
         ) {
@@ -70,7 +64,21 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setIsLoading(false);
       return false;
     }
-  };
+  }, [setUserId, setIsLoading]); // Dependencies: state setters are stable from useState
+
+  const signOut = useCallback(async () => {
+    setUserId(null);
+    if (Platform.OS === 'web') {
+      localStorage.removeItem('access_token');
+    } else if (Platform.OS === 'ios' || Platform.OS === 'android') {
+      await SecureStore.deleteItemAsync('access_token');
+    }
+    navigation.navigate('Welcome');
+  }, [setUserId, navigation]); // Dependencies: setUserId is stable, navigation should be stable
+
+  useEffect(() => {
+    checkIfSignedIn();
+  }, [checkIfSignedIn]); // Now checkIfSignedIn is stable
 
   const contextValue = useMemo(
     () => ({
@@ -80,7 +88,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       isLoading,
       checkIfSignedIn,
     }),
-    [userId, isLoading],
+    [userId, setUserId, signOut, isLoading, checkIfSignedIn], // All dependencies included
   );
 
   return <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>;

@@ -4,9 +4,9 @@ import { XStack, YStack, Text, Button, Form, Label, Input } from 'tamagui';
 import * as SecureStore from 'expo-secure-store';
 import axios from 'axios';
 import { useState } from 'react';
-import UserDto from '../../Dto/UserDto';
+import { UserDto } from '../../Dto/UserDto';
 import { Eye, EyeOff } from '@tamagui/lucide-icons';
-import GLOBALS from '../../config';
+import { GLOBALS } from '../../config';
 import { jwtDecode } from 'jwt-decode';
 import { useUser } from '../../context/UserContext';
 import type { RootStackParamList } from '../../types/navigationTypes';
@@ -117,7 +117,7 @@ export default function SignUpScreen({ navigation }: Readonly<Props>) {
             localStorage.setItem('access_token', response.data.access_token);
             setHost('');
           }
-          navigation.navigate('AppDrawer');
+          navigation.navigate('HomeStack', { screen: 'Home' });
         })
         .catch(function (error) {
           if (error) {
