@@ -1,6 +1,9 @@
 name: develop workflow
 
-on: [push]
+on:
+  push:
+    branches:
+      [main]
   
 jobs:
   deploy:
