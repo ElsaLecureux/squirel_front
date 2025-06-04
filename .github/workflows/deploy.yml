@@ -1,0 +1,45 @@
+name: deploy workflow
+
+on:
+  push:
+    branches:
+      [main]
+  
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with: 
+          node-version: 18.x
+          cache: 'npm'
+      
+      - name: Setup Expo and Expo Application Service
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - name: Install dependencies for web
+        run: npm ci
+
+      - name: Web app build and export
+        run: npm run build
+
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+
+      - name: Deploy to netifly
+        run: |
+          netlify deploy --dir=dist --prod --site=$NETLIFY_SITE_ID
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }} 
+
+      # Build on EAS (for android) and create ASK file, link and QR to download app    
+      - name: Android build
+        run: eas build -p android --profile production --non-interactive
+    

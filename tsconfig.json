@@ -1,0 +1,29 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "types": ["jest"],
+    "strict": true,
+     "moduleResolution": "node",
+    "target": "esnext",
+    "jsx": "react-native",
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@env": ["./env.d.ts"]
+    }
+  },
+  "include": [
+    "env.d.ts", 
+    "**/*.ts",
+    "**/*.tsx", 
+    "tests", 
+    "__tests__",
+  ],
+  "exclude": [
+    "node_modules",
+    ".eslintrc.cjs",
+    "babel.config.cjs",
+    "**/*.js"
+  ]
+}

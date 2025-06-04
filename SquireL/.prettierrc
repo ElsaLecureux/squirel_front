@@ -1,8 +1,0 @@
-{
-  "singleQuote": true,
-  "trailingComma": "all",
-  "parser": "typescript",
-  "endOfLine": "auto",
-  "tabWidth": 2,
-  "printWidth": 100
-}
