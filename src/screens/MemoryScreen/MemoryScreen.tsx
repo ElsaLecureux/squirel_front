@@ -1,7 +1,7 @@
 import { ImageBackground, TouchableOpacity, Platform } from 'react-native';
 import { styles } from './MemoryStyle';
 import { Text, XStack, Image, View, YStack, Button } from 'tamagui';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Card } from '../../models/Card';
 import { GamePlay } from '../../types/gamePlay';
 import CustomModal from '@/src/components/CustomModal/CustomModal';
@@ -13,7 +13,7 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { Animal, AnimalKey } from '@/src/models/Animal';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useUser } from '@/src/context/UserContext';
-import { getHost } from '@/src/utils/getHost';
+import { URL_BACKEND_SQUIREL } from '@env';
 
 export default function MemoryScreen() {
   const [playingCards, setPlayingCards] = useState<Card[]>([]);
@@ -26,13 +26,13 @@ export default function MemoryScreen() {
   const [animalCardVisible, setAnimalCardVisible] = useState(false);
   const [endGameVisible, setEndGameVisible] = useState(false);
   const [visibleCards, setVisibleCards] = useState<boolean[]>(new Array(12).fill(false));
-  const host = getHost();
   const [gameInitialized, setGameInitialized] = useState(false);
-  const API_URL = useMemo(() => `http://${host}:3000/gamePlay`, [host]);
+  const API_URL = `${URL_BACKEND_SQUIREL}gamePlay`;
 
   //todo reset after party won and saveGamePlay with no cards
   //todo correct endgame not showing
   //todo refacto to have only one function accepting Animal OR Card
+  //todo verify what happen when no gameplay or first game
   const shuffleAnimals = (animals: Animal[]) => {
     for (let i = animals.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));

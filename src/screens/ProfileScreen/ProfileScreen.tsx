@@ -8,10 +8,11 @@ import { UserInfosDto } from '@/src/Dto/UserInfosDto';
 import { UserPlayGameFullDto } from '@/src/Dto/UserPlayGameFullDto';
 import CustomModal from '@/src/components/CustomModal/CustomModal';
 import { UserDto } from '@/src/Dto/UserDto';
+import { URL_BACKEND_SQUIREL } from '@env';
 
 export default function ProfileScreen() {
   const [host, setHost] = useState('');
-  const API_URL = `http://${host}:3000`;
+  const API_URL = `${URL_BACKEND_SQUIREL}`;
   const [isReady, setIsReady] = useState(false);
   const { userId, signOut } = useUser();
   const [userInfo, setUserInfo] = useState<UserInfosDto>();

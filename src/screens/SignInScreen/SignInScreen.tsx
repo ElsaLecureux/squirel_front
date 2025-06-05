@@ -11,6 +11,7 @@ import { GLOBALS } from '../../config';
 import { jwtDecode } from 'jwt-decode';
 import { useUser } from '../../context/UserContext';
 import type { RootStackParamList } from '../../types/navigationTypes';
+import { URL_BACKEND_SQUIREL } from '@env';
 
 type SignInScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SignIn'>;
 
@@ -28,8 +29,7 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isMessageVisible, setIsMessageVisible] = useState(false);
-  const [host, setHost] = useState('');
-  const API_URL = `http://${host}:3000/auth/signIn`;
+  const API_URL = `${URL_BACKEND_SQUIREL}auth/signIn`;
 
   useEffect(() => {
     if (loaded) {
@@ -53,7 +53,6 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
   };
 
   const onFormSubmit = async () => {
-    console.log('submitCall');
     if (password === '') {
       setErrorMessage('Password should not be empty');
       showErrorMessage();
@@ -63,12 +62,6 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
       showErrorMessage();
     }
     if (password !== '' && username !== '') {
-      console.log('password and username filled');
-      if (Platform.OS === 'ios' || Platform.OS === 'android') {
-        setHost('10.117.60.67');
-      } else if (Platform.OS === 'web') {
-        setHost('localhost');
-      }
       //prevent from script attach or javascript attack
       setPassword(
         password
@@ -98,10 +91,8 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
           }
           if (Platform.OS === 'ios' || Platform.OS === 'android') {
             await SecureStore.setItemAsync('access_token', response.data.access_token);
-            setHost('');
           } else if (Platform.OS === 'web') {
             localStorage.setItem('access_token', response.data.access_token);
-            setHost('');
           }
           navigation.navigate('HomeStack', { screen: 'Home' });
         })
