@@ -10,6 +10,7 @@ import { GLOBALS } from '../../config';
 import { jwtDecode } from 'jwt-decode';
 import { useUser } from '../../context/UserContext';
 import type { RootStackParamList } from '../../types/navigationTypes';
+import { URL_BACKEND_SQUIREL } from '@env';
 
 type SignUpScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SignUp'>;
 
@@ -32,11 +33,9 @@ export default function SignUpScreen({ navigation }: Readonly<Props>) {
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isMessageVisible, setIsMessageVisible] = useState(false);
-  const [host, setHost] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmationPasswordVisible, setConfirmationPasswordVisible] = useState(false);
-  const API_URL = `http://${host}:3000/auth/signUp`;
-
+  const API_URL = `${URL_BACKEND_SQUIREL}auth/signUp`;
   const showErrorMessage = () => {
     setIsMessageVisible(true);
     setTimeout(() => {
@@ -76,11 +75,6 @@ export default function SignUpScreen({ navigation }: Readonly<Props>) {
   };
 
   const onFormSubmit = async () => {
-    if (Platform.OS === 'ios' || Platform.OS === 'android') {
-      setHost('10.117.60.67');
-    } else if (Platform.OS === 'web') {
-      setHost('localhost');
-    }
     checkInput('all');
     if (userDto.password === '') {
       setErrorMessage('Password should not be empty');
@@ -95,11 +89,6 @@ export default function SignUpScreen({ navigation }: Readonly<Props>) {
       showErrorMessage();
     }
     if (userDto.password !== '' && userDto.username !== '' && userDto.email !== '') {
-      if (Platform.OS === 'ios' || Platform.OS === 'android') {
-        setHost('10.117.60.67');
-      } else if (Platform.OS === 'web') {
-        setHost('localhost');
-      }
       await axios({
         method: 'post',
         url: `${API_URL}`,
@@ -112,10 +101,8 @@ export default function SignUpScreen({ navigation }: Readonly<Props>) {
           }
           if (Platform.OS === 'ios' || Platform.OS === 'android') {
             await SecureStore.setItemAsync('access_token', response.data.access_token);
-            setHost('');
           } else if (Platform.OS === 'web') {
             localStorage.setItem('access_token', response.data.access_token);
-            setHost('');
           }
           navigation.navigate('HomeStack', { screen: 'Home' });
         })
