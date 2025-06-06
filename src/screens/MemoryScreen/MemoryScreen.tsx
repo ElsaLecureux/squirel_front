@@ -110,14 +110,6 @@ export default function MemoryScreen() {
     setEndGameVisible(false);
   };
 
-  const createCardSet = () => {
-    const shuffledAnimals = shuffleAnimals([...animals]).slice(0, 6);
-    const duplicateAnimals = [...shuffledAnimals, ...shuffledAnimals];
-    return shuffleCards(
-      duplicateAnimals.map((animal, index) => createCard(index, animal.name, animal.image)),
-    );
-  };
-
   const loadGamePlay = useCallback(async () => {
     if (!userId) return false;
     try {
@@ -134,6 +126,13 @@ export default function MemoryScreen() {
   }, [API_URL, userId]);
 
   const initializeGame = useCallback(async () => {
+    const createCardSet = () => {
+      const shuffledAnimals = shuffleAnimals([...animals]).slice(0, 6);
+      const duplicateAnimals = [...shuffledAnimals, ...shuffledAnimals];
+      return shuffleCards(
+        duplicateAnimals.map((animal, index) => createCard(index, animal.name, animal.image)),
+      );
+    };
     setDataLoading(true);
     const gameLoaded = await loadGamePlay();
 
