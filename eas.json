@@ -11,6 +11,11 @@
       "distribution": "internal"
     },
     "production": {
+      "env": {
+        "TOKEN_API_RADIO_FRANCE": "$TOKEN_API_RADIO_FRANCE",
+        "URL_API_RADIO_FRANCE": "$URL_API_RADIO_FRANCE", 
+        "URL_BACKEND_SQUIREL": "$URL_BACKEND_SQUIREL"
+      },
       "distribution": "internal",
       "android": {
         "buildType": "apk"
