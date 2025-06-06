@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
-    "types": ["jest"],
+    "types": [
+      "jest"
+    ],
     "strict": true,
     "moduleResolution": "node",
     "target": "esnext",
@@ -9,20 +11,23 @@
       "@/*": [
         "./*"
       ],
-      "@env": ["./env.d.ts"]
+      "@env": [
+        "./env.d.ts"
+      ]
     }
   },
   "include": [
-    "env.d.ts", 
+    "env.d.ts",
     "**/*.ts",
-    "**/*.tsx", 
-    "tests", 
-    "__tests__",
+    "**/*.tsx",
+    "tests",
+    "__tests__"
   ],
   "exclude": [
     "node_modules",
     ".eslintrc.cjs",
     "babel.config.cjs",
     "**/*.js"
-  ]
+  ],
+  "extends": "expo/tsconfig.base"
 }

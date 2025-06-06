@@ -11,8 +11,7 @@ import { UserDto } from '@/src/Dto/UserDto';
 import { URL_BACKEND_SQUIREL } from '@env';
 
 export default function ProfileScreen() {
-  const [host, setHost] = useState('');
-  const API_URL = `${URL_BACKEND_SQUIREL}`;
+  const API_URL = URL_BACKEND_SQUIREL;
   const [isReady, setIsReady] = useState(false);
   const { userId, signOut } = useUser();
   const [userInfo, setUserInfo] = useState<UserInfosDto>();
@@ -32,7 +31,7 @@ export default function ProfileScreen() {
     const getInfosUser = async () => {
       const dataUser = await axios({
         method: 'get',
-        url: `${API_URL}/users/${userId}`,
+        url: `${API_URL}users/${userId}`,
       });
       if (dataUser) {
         setUserInfo({ ...dataUser.data });
@@ -42,24 +41,19 @@ export default function ProfileScreen() {
     const getUserWonGames = async () => {
       const dataGameUser = await axios({
         method: 'get',
-        url: `${API_URL}/userPlayGame/${userId}`,
+        url: `${API_URL}userPlayGame/${userId}`,
       });
       if (dataGameUser) {
         setUserPlayGame([...dataGameUser.data]);
       }
     };
-    if (Platform.OS === 'ios' || Platform.OS === 'android') {
-      setHost('10.117.60.67');
-    } else if (Platform.OS === 'web') {
-      setHost('localhost');
-    }
 
-    if (host && userId) {
+    if (userId) {
       getInfosUser();
       getUserWonGames();
       setIsReady(true);
     }
-  }, [host, userId, API_URL]);
+  }, [userId, API_URL]);
 
   const changeInfosButton = () => {
     setModalVisible(true);
@@ -145,21 +139,6 @@ export default function ProfileScreen() {
         <Text>Loading ...</Text>
       </View>
     );
-  useEffect(() => {
-    if (!isReady) return;
-    //add get infos user
-    const getUserWonGames = async () => {
-      const Id = userId;
-      console.log(userId);
-      const infos = await axios({
-        method: 'get',
-        url: `${API_URL}/${Id}`,
-      }).then();
-      console.log(infos);
-    };
-    getUserWonGames();
-  }, [isReady, host]);
-
   return (
     <ImageBackground
       style={styles.pageContainer}

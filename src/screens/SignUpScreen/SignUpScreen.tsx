@@ -35,7 +35,7 @@ export default function SignUpScreen({ navigation }: Readonly<Props>) {
   const [isMessageVisible, setIsMessageVisible] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmationPasswordVisible, setConfirmationPasswordVisible] = useState(false);
-  const API_URL = `${URL_BACKEND_SQUIREL}auth/signUp`;
+  const API_URL = URL_BACKEND_SQUIREL;
   const showErrorMessage = () => {
     setIsMessageVisible(true);
     setTimeout(() => {
@@ -91,7 +91,7 @@ export default function SignUpScreen({ navigation }: Readonly<Props>) {
     if (userDto.password !== '' && userDto.username !== '' && userDto.email !== '') {
       await axios({
         method: 'post',
-        url: `${API_URL}`,
+        url: `${API_URL}auth/signUp`,
         data: { ...userDto },
       })
         .then(async function (response) {

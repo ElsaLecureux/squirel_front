@@ -29,7 +29,7 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isMessageVisible, setIsMessageVisible] = useState(false);
-  const API_URL = `${URL_BACKEND_SQUIREL}auth/signIn`;
+  const API_URL = URL_BACKEND_SQUIREL;
 
   useEffect(() => {
     if (loaded) {
@@ -81,7 +81,7 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
       console.log('axios called');
       await axios({
         method: 'post',
-        url: `${API_URL}`,
+        url: `${API_URL}auth/signIn`,
         data: { username, password },
       })
         .then(async function (response) {

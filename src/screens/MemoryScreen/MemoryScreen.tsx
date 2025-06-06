@@ -3,7 +3,6 @@ import { styles } from './MemoryStyle';
 import { Text, XStack, Image, View, YStack, Button } from 'tamagui';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Card } from '../../models/Card';
-import { Animal } from '../../models/Animal';
 import { GamePlay } from '../../types/gamePlay';
 import CustomModal from '@/src/components/CustomModal/CustomModal';
 import { animals, imageMap } from '../../utils/memoryAnimals';
@@ -102,6 +101,7 @@ export default function MemoryScreen() {
       });
       return shuffleCards(createdCardSet);
     };
+
     const newCards = createCardSet();
     setVisibleCards(new Array(newCards.length).fill(false));
     setPlayingCards(newCards);
@@ -110,52 +110,49 @@ export default function MemoryScreen() {
     setEndGameVisible(false);
   };
 
+  const createCardSet = () => {
+    const shuffledAnimals = shuffleAnimals([...animals]).slice(0, 6);
+    const duplicateAnimals = [...shuffledAnimals, ...shuffledAnimals];
+    return shuffleCards(
+      duplicateAnimals.map((animal, index) => createCard(index, animal.name, animal.image)),
+    );
+  };
+
+  const loadGamePlay = useCallback(async () => {
+    if (!userId) return false;
+    try {
+      const response = await axios.get<GamePlay>(`${API_URL}/${userId}`);
+      if (response.data && response.data.cards.length > 0) {
+        setPlayingCards(response.data.cards);
+        setVisibleCards(response.data.cards.map((card: Card) => card.won));
+        return true;
+      }
+    } catch (error) {
+      console.error('Failed to load game:', error);
+    }
+    return false;
+  }, [API_URL, userId]);
+
+  const initializeGame = useCallback(async () => {
+    setDataLoading(true);
+    const gameLoaded = await loadGamePlay();
+
+    if (!gameLoaded) {
+      const newCards = createCardSet();
+      setPlayingCards(newCards);
+      setVisibleCards(new Array(newCards.length).fill(false));
+    }
+
+    setDataLoading(false);
+    setGameInitialized(true);
+  }, [loadGamePlay]);
+
+  // 👇 Main trigger
   useEffect(() => {
-    const loadGamePlay = async () => {
-      if (!userId) return false;
-      try {
-        const response = await axios.get<GamePlay>(`${API_URL}/${userId}`);
-        if (response.data) {
-          setPlayingCards(response.data.cards);
-          setVisibleCards(response.data.cards.map((card: Card) => card.won));
-          console.log('Loaded cards:', response.data.cards);
-          console.log('Loaded cards length:', response.data.cards.length);
-          console.log('First few cards:', response.data.cards.slice(0, 3));
-          return true;
-        }
-      } catch (error) {
-        console.error('Failed to load game:', error);
-      }
-      return false;
-    };
-
-    const initializeGame = async () => {
-      console.log('Initializing game, userId:', userId);
-      setDataLoading(true);
-
-      const gameLoaded = await loadGamePlay();
-
-      if (!gameLoaded) {
-        const createCardSet = () => {
-          let shuffledAnimals = shuffleAnimals([...animals]);
-          shuffledAnimals = shuffledAnimals.slice(0, 6);
-          const duplicateAnimals = [...shuffledAnimals, ...shuffledAnimals];
-          const createdCardSet = duplicateAnimals.map((animal, index) => {
-            return createCard(index, animal.name, animal.image);
-          });
-          return shuffleCards(createdCardSet);
-        };
-        const newCards = createCardSet();
-        setPlayingCards(newCards);
-        setVisibleCards(new Array(newCards.length).fill(false));
-      }
-      setDataLoading(false);
-      setGameInitialized(true);
-    };
-    if (!gameInitialized && userId && !isLoading) {
+    if (userId && !isLoading && !gameInitialized) {
       initializeGame();
     }
-  }, [isLoading, userId, gameInitialized, API_URL]);
+  }, [userId, isLoading, gameInitialized, initializeGame]);
 
   //save when app is unfocused in mobile app
   useFocusEffect(
@@ -165,15 +162,6 @@ export default function MemoryScreen() {
       };
     }, [saveGamePlay]),
   );
-
-  useEffect(() => {
-    console.log('PlayingCards updated:', playingCards.length);
-    console.log('VisibleCards updated:', visibleCards.length);
-    console.log(
-      'Cards match:',
-      playingCards.map((card) => `${card.id}:${card.name}`),
-    );
-  }, [playingCards, visibleCards]);
 
   useEffect(() => {
     //save when browser is closed
@@ -244,14 +232,12 @@ export default function MemoryScreen() {
 
   useEffect(() => {
     if (cardPlayed.length === 2 && playingCards.every((card) => card.won)) {
-      if (animalCardVisible === false) {
-        setEndGameVisible(true);
-        setCardPlayed([]);
-      } else {
+      if (animalCardVisible) {
         setTimeout(() => {
           setEndGameVisible(true);
-          setCardPlayed([]);
         }, 3000);
+      } else {
+        setEndGameVisible(true);
       }
     }
   }, [playingCards, animalCardVisible, cardPlayed.length]);
