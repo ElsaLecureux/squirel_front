@@ -26,6 +26,14 @@ jobs:
       - name: Install dependencies for web
         run: npm ci
 
+      - name: Create .env file
+        run: |
+          cat > .env << EOF
+          TOKEN_API_RADIO_FRANCE=${{ secrets.TOKEN_API_RADIO_FRANCE }}
+          URL_API_RADIO_FRANCE=${{ secrets.URL_API_RADIO_FRANCE }}
+          URL_BACKEND_SQUIREL=${{ secrets.URL_BACKEND_SQUIREL }}
+          EOF
+
       - name: Web app build and export
         run: npm run build
 
@@ -42,4 +50,8 @@ jobs:
       # Build on EAS (for android) and create ASK file, link and QR to download app    
       - name: Android build
         run: eas build -p android --profile production --non-interactive
+        env:
+          TOKEN_API_RADIO_FRANCE: ${{ secrets.TOKEN_API_RADIO_FRANCE }}
+          URL_API_RADIO_FRANCE: ${{ secrets.URL_API_RADIO_FRANCE }}
+          URL_BACKEND_SQUIREL: ${{ secrets.URL_BACKEND_SQUIREL }}
     

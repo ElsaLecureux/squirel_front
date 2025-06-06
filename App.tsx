@@ -22,7 +22,7 @@ import type { RootStackParamList } from './src/types/navigationTypes';
 
 export default function App() {
   const linking: LinkingOptions<RootStackParamList> = {
-    prefixes: ['http://localhost:8080', 'https://yourdomain.com'],
+    prefixes: ['http://localhost:8080', 'https://squirelproject.netlify.app/'],
     config: {
       screens: {
         Welcome: 'welcome',
