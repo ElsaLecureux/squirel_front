@@ -9,7 +9,7 @@
     "ios": "DARK_MODE=media expo start --ios",
     "web": "DARK_MODE=media expo start --web",
     "build": "npx expo export --platform web",
-    "prebuild": "node -e \"const fs=require('fs'); if (fs.existsSync('.env')) fs.copyFileSync('.env', '.env.local', fs.constants.COPYFILE_EXCL);\"",
+    "prebuild": "node -e \"const fs=require('fs'); if (fs.existsSync('.env')) fs.copyFileSync('.env', '.env.local');\"",
     "test": "jest",
     "lint": "eslint ."
   },
