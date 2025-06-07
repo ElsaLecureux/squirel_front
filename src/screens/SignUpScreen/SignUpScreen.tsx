@@ -91,7 +91,7 @@ export default function SignUpScreen({ navigation }: Readonly<Props>) {
     if (userDto.password !== '' && userDto.username !== '' && userDto.email !== '') {
       await axios({
         method: 'post',
-        url: `${API_URL}auth/signUp`,
+        url: `${API_URL}auth/signup`,
         data: { ...userDto },
       })
         .then(async function (response) {
