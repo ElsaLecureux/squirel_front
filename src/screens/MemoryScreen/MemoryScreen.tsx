@@ -27,7 +27,7 @@ export default function MemoryScreen() {
   const [endGameVisible, setEndGameVisible] = useState(false);
   const [visibleCards, setVisibleCards] = useState<boolean[]>(new Array(12).fill(false));
   const [gameInitialized, setGameInitialized] = useState(false);
-  const API_URL = `${URL_BACKEND_SQUIREL}gamePlay`;
+  const API_URL = `${URL_BACKEND_SQUIREL}/gamePlay`;
 
   //todo reset after party won and saveGamePlay with no cards
   //todo correct endgame not showing
