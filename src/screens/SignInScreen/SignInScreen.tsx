@@ -81,7 +81,7 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
       console.log('axios called');
       await axios({
         method: 'post',
-        url: `${API_URL}auth/signIn`,
+        url: `${API_URL}/auth/signIn`,
         data: { username, password },
       })
         .then(async function (response) {

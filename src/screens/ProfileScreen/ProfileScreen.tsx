@@ -31,7 +31,7 @@ export default function ProfileScreen() {
     const getInfosUser = async () => {
       const dataUser = await axios({
         method: 'get',
-        url: `${API_URL}users/${userId}`,
+        url: `${API_URL}/users/${userId}`,
       });
       if (dataUser) {
         setUserInfo({ ...dataUser.data });
@@ -41,7 +41,7 @@ export default function ProfileScreen() {
     const getUserWonGames = async () => {
       const dataGameUser = await axios({
         method: 'get',
-        url: `${API_URL}userPlayGame/${userId}`,
+        url: `${API_URL}/userPlayGame/${userId}`,
       });
       if (dataGameUser) {
         setUserPlayGame([...dataGameUser.data]);
