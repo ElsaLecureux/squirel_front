@@ -12,7 +12,14 @@ module.exports = {
     node: true,
     jest: true,
   },
-  ignorePatterns: ['.eslintrc.js', '.eslintrc.cjs', '/dist/*', 'babel.config.cjs', '**/*.js'],
+  ignorePatterns: [
+    '.eslintrc.js',
+    '.eslintrc.cjs',
+    '/dist/*',
+    'babel.config.cjs',
+    '**/*.js',
+    'metro.config.cjs',
+  ],
   rules: {
     'no-unused-vars': 'off',
     '@typescript-eslint/interface-name-prefix': 'off',

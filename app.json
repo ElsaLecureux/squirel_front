@@ -13,7 +13,6 @@
     },
     "newArchEnabled": true,
     "ios": {
-      "package": "com.exam.squirel",
       "bundleIdentifier": "com.exam.squirel",
       "supportsTablet": true,
       "requireFullScreen": true,
