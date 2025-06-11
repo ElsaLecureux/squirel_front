@@ -7,7 +7,6 @@ import * as SecureStore from 'expo-secure-store';
 import { useEffect, useState } from 'react';
 import { useFonts } from 'expo-font';
 import axios from 'axios';
-import { GLOBALS } from '../../config';
 import { jwtDecode } from 'jwt-decode';
 import { useUser } from '../../context/UserContext';
 import type { RootStackParamList } from '../../types/navigationTypes';
@@ -128,9 +127,8 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
         marginLeft={Platform.OS === 'web' ? '15%' : '5%'}
         marginTop="3%"
         marginBottom="3%"
-        gap={GLOBALS.gap_5}
       >
-        <Text fontSize={GLOBALS.fontSize_3} fontFamily="MedievalSharp-Regular" color="#fff">
+        <Text fontSize={35} fontFamily="MedievalSharp-Regular" color="#fff">
           Welcome Back !
         </Text>
         <Form

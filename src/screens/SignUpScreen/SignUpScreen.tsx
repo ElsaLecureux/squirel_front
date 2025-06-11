@@ -6,7 +6,6 @@ import axios from 'axios';
 import { useState } from 'react';
 import { UserDto } from '../../Dto/UserDto';
 import { Eye, EyeOff } from '@tamagui/lucide-icons';
-import { GLOBALS } from '../../config';
 import { jwtDecode } from 'jwt-decode';
 import { useUser } from '../../context/UserContext';
 import type { RootStackParamList } from '../../types/navigationTypes';
@@ -137,9 +136,8 @@ export default function SignUpScreen({ navigation }: Readonly<Props>) {
         marginLeft={Platform.OS === 'web' ? '15%' : '5%'}
         marginTop="3%"
         marginBottom="3%"
-        gap={GLOBALS.gap_5}
       >
-        <Text fontSize={GLOBALS.fontSize_3} fontFamily="MedievalSharp-Regular" color="#fff">
+        <Text fontSize={35} fontFamily="MedievalSharp-Regular" color="#fff">
           Join the adventure
         </Text>
         <Form width="100%" paddingRight="8%" gap="$3" onSubmit={() => onFormSubmit()}>
@@ -260,10 +258,7 @@ export default function SignUpScreen({ navigation }: Readonly<Props>) {
               />
             </XStack>
           </XStack>
-          <XStack
-            paddingTop={Platform.OS === 'web' ? GLOBALS.padding_3 : null}
-            justifyContent="space-around"
-          >
+          <XStack paddingTop={Platform.OS === 'web' ? '10' : null} justifyContent="space-around">
             <Form.Trigger asChild>
               <Button size={Platform.OS === 'web' ? '$5' : '$3'} backgroundColor="#FF8A01">
                 <Text
