@@ -8,12 +8,12 @@ import CustomModal from '@/src/components/CustomModal/CustomModal';
 import { animals, imageMap } from '../../utils/memoryAnimals';
 import { useFocusEffect } from '@react-navigation/native';
 import { createCard } from '@/src/utils/createCard';
-import axios from 'axios';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { Animal, AnimalKey } from '@/src/models/Animal';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useUser } from '@/src/context/UserContext';
 import { URL_BACKEND_SQUIREL } from '@env';
+import axiosInstance from '@/src/utils/axiosInstance';
 
 export default function MemoryScreen() {
   const [playingCards, setPlayingCards] = useState<Card[]>([]);
@@ -113,7 +113,7 @@ export default function MemoryScreen() {
   const loadGamePlay = useCallback(async () => {
     if (!userId) return false;
     try {
-      const response = await axios.get<GamePlay>(`${API_URL}/${userId}`);
+      const response = await axiosInstance.get<GamePlay>(`/${userId}`);
       if (response.data && response.data.cards.length > 0) {
         setPlayingCards(response.data.cards);
         setVisibleCards(response.data.cards.map((card: Card) => card.won));

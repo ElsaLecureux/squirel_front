@@ -7,10 +7,9 @@ import * as SecureStore from 'expo-secure-store';
 import { useEffect, useState } from 'react';
 import { useFonts } from 'expo-font';
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
 import { useUser } from '../../context/UserContext';
 import type { RootStackParamList } from '../../types/navigationTypes';
-import { URL_BACKEND_SQUIREL } from '@env';
+import axiosInstance from '@/src/utils/axiosInstance';
 
 type SignInScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SignIn'>;
 
@@ -28,7 +27,6 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isMessageVisible, setIsMessageVisible] = useState(false);
-  const API_URL = URL_BACKEND_SQUIREL;
 
   useEffect(() => {
     if (loaded) {
@@ -52,62 +50,54 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
   };
 
   const onFormSubmit = async () => {
-    if (password === '') {
-      setErrorMessage('Password should not be empty');
-      showErrorMessage();
-    }
-    if (username === '') {
+    // Validate inputs
+    if (!username.trim()) {
       setErrorMessage('Username should not be empty');
-      showErrorMessage();
+      return showErrorMessage();
     }
-    if (password !== '' && username !== '') {
-      //prevent from script attach or javascript attack
-      setPassword(
-        password
-          .replace(/<script.*?>.*?<\/script>/g, '')
-          .replace(/javascript:/g, '')
-          .replace(/[<>]/g, ''),
-      );
-      setUsername(
-        username
-          .replace(/<script.*?>.*?<\/script>/g, '')
-          .replace(/javascript:/g, '')
-          .replace(/[<>]/g, ''),
-      );
-      //trim accidentals spaces
-      setPassword(password.trim());
-      setUsername(username.trim());
-      console.log('axios called');
-      await axios({
-        method: 'post',
-        url: `${API_URL}/auth/signin`,
-        data: { username, password },
-      })
-        .then(async function (response) {
-          const decoded_token = jwtDecode(response.data.access_token);
-          if (decoded_token?.sub) {
-            setUserId(decoded_token.sub);
-          }
-          if (Platform.OS === 'ios' || Platform.OS === 'android') {
-            await SecureStore.setItemAsync('access_token', response.data.access_token);
-          } else if (Platform.OS === 'web') {
-            localStorage.setItem('access_token', response.data.access_token);
-          }
-          navigation.navigate('HomeStack', { screen: 'Home' });
-        })
-        .catch(function (error) {
-          if (error) {
-            if (error.response) {
-              const message = error.response.data.message;
-              setErrorMessage(message);
-              showErrorMessage();
-            }
-          } else {
-            console.log('An unexpected error occurred:', error);
-            setErrorMessage('An unexpected error occurred');
-            showErrorMessage();
-          }
-        });
+
+    if (!password.trim()) {
+      setErrorMessage('Password should not be empty');
+      return showErrorMessage();
+    }
+
+    // Sanitize input (defend against XSS/script injection)
+    const cleanUsername = username
+      .replace(/<script.*?>.*?<\/script>/gi, '')
+      .replace(/javascript:/gi, '')
+      .replace(/[<>]/g, '')
+      .trim();
+
+    const cleanPassword = password
+      .replace(/<script.*?>.*?<\/script>/gi, '')
+      .replace(/javascript:/gi, '')
+      .replace(/[<>]/g, '')
+      .trim();
+
+    try {
+      let access_token: string | null = null;
+      const response = await axiosInstance.post(`/auth/signin`, {
+        username: cleanUsername,
+        password: cleanPassword,
+      });
+      access_token = response.data.access_token;
+      if (access_token) {
+        await SecureStore.setItemAsync('access_token', access_token);
+      }
+      const authResponse = await axiosInstance.get('/auth/me');
+      const userId = authResponse.data.userId;
+      setUserId(userId);
+
+      navigation.navigate('HomeStack', { screen: 'Home' });
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        const message = err.response?.data?.message || 'A network error occurred';
+        setErrorMessage(message);
+      } else {
+        setErrorMessage('An unexpected error occurred');
+        console.error(err);
+      }
+      showErrorMessage();
     }
   };
 
