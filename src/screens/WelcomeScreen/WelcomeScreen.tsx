@@ -9,10 +9,9 @@ import type { RootStackParamList } from '../../types/navigationTypes';
 type Props = NativeStackScreenProps<RootStackParamList, 'Welcome'>;
 
 export default function WelcomeScreen({ navigation }: Readonly<Props>) {
-  const { checkIfSignedIn } = useUser();
+  const { isSignedIn } = useUser();
 
   const handleAuthCheck = async () => {
-    const isSignedIn = await checkIfSignedIn();
     if (isSignedIn) {
       navigation.navigate('HomeStack', { screen: 'Home' });
     } else {
