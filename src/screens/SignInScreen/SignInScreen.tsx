@@ -4,13 +4,16 @@ import * as SplashScreen from 'expo-splash-screen';
 import { MedievalSharp_400Regular } from '@expo-google-fonts/medievalsharp';
 import { XStack, YStack, Text, Button, Form, Label, Input } from 'tamagui';
 import * as SecureStore from 'expo-secure-store';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFonts } from 'expo-font';
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
 import { useUser } from '../../context/UserContext';
 import type { RootStackParamList } from '../../types/navigationTypes';
-import { URL_BACKEND_SQUIREL } from '@env';
+import axiosInstance from '@/src/utils/axiosInstance';
+import { SignInSchema } from '@/src/schemas/signInSchema';
+import { treeifyError } from 'zod/v4';
+import { ValidationResultSignIn } from '@/src/types/validation';
+import { UserToasterErrors, Toaster } from '../../utils/toaster';
 
 type SignInScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SignIn'>;
 
@@ -20,15 +23,14 @@ type Props = {
 
 export default function SignInScreen({ navigation }: Readonly<Props>) {
   const { setUserId } = useUser();
+  const { showError, showSuccess } = UserToasterErrors();
 
   const [loaded, error] = useFonts({
     'MedievalSharp-Regular': MedievalSharp_400Regular,
   });
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [isMessageVisible, setIsMessageVisible] = useState(false);
-  const API_URL = URL_BACKEND_SQUIREL;
+  const [errorMessage, setErrorMessage] = useState<{ username?: string; password?: string }>({});
 
   useEffect(() => {
     if (loaded) {
@@ -43,71 +45,46 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
     return null;
   }
 
-  const showErrorMessage = () => {
-    setIsMessageVisible(true);
-    setTimeout(() => {
-      setIsMessageVisible(false);
-      setErrorMessage('');
-    }, 3000);
+  const validateFormInputs = (): ValidationResultSignIn => {
+    const result = SignInSchema.safeParse({ username, password });
+    if (!result.success) {
+      const tree = treeifyError(result.error);
+      setErrorMessage({
+        username: tree.properties?.username?.errors?.[0],
+        password: tree.properties?.password?.errors?.[0],
+      });
+      return { success: false, data: null };
+    }
+    setErrorMessage({});
+    return { success: true, data: result.data };
   };
 
   const onFormSubmit = async () => {
-    if (password === '') {
-      setErrorMessage('Password should not be empty');
-      showErrorMessage();
-    }
-    if (username === '') {
-      setErrorMessage('Username should not be empty');
-      showErrorMessage();
-    }
-    if (password !== '' && username !== '') {
-      //prevent from script attach or javascript attack
-      setPassword(
-        password
-          .replace(/<script.*?>.*?<\/script>/g, '')
-          .replace(/javascript:/g, '')
-          .replace(/[<>]/g, ''),
-      );
-      setUsername(
-        username
-          .replace(/<script.*?>.*?<\/script>/g, '')
-          .replace(/javascript:/g, '')
-          .replace(/[<>]/g, ''),
-      );
-      //trim accidentals spaces
-      setPassword(password.trim());
-      setUsername(username.trim());
-      console.log('axios called');
-      await axios({
-        method: 'post',
-        url: `${API_URL}/auth/signin`,
-        data: { username, password },
-      })
-        .then(async function (response) {
-          const decoded_token = jwtDecode(response.data.access_token);
-          if (decoded_token?.sub) {
-            setUserId(decoded_token.sub);
-          }
-          if (Platform.OS === 'ios' || Platform.OS === 'android') {
-            await SecureStore.setItemAsync('access_token', response.data.access_token);
-          } else if (Platform.OS === 'web') {
-            localStorage.setItem('access_token', response.data.access_token);
-          }
-          navigation.navigate('HomeStack', { screen: 'Home' });
-        })
-        .catch(function (error) {
-          if (error) {
-            if (error.response) {
-              const message = error.response.data.message;
-              setErrorMessage(message);
-              showErrorMessage();
-            }
-          } else {
-            console.log('An unexpected error occurred:', error);
-            setErrorMessage('An unexpected error occurred');
-            showErrorMessage();
-          }
-        });
+    // Validate inputs with zod
+    const result = validateFormInputs();
+    if (!result.success) return;
+
+    try {
+      const response = await axiosInstance.post(`/auth/signin`, { ...result.data });
+      const access_token = response.data.access_token;
+      if (access_token) {
+        await SecureStore.setItemAsync('access_token', access_token);
+      }
+
+      const authResponse = await axiosInstance.get('/auth/me');
+      const userId = authResponse.data.userId;
+      setUserId(userId);
+      showSuccess('Successfully signed in!');
+      navigation.navigate('HomeStack', { screen: 'Home' });
+    } catch (err: any) {
+      console.log('Caught error:', err.response?.data.message);
+      let message = 'An unexpected error occured';
+      if (axios.isAxiosError(err)) {
+        message = err.response?.data?.message;
+      } else {
+        console.log(err);
+      }
+      showError(message);
     }
   };
 
@@ -137,7 +114,6 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
           paddingLeft="8%"
           gap="$3"
           onSubmit={() => {
-            console.log('onSubmit call');
             onFormSubmit();
           }}
         >
@@ -153,15 +129,22 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
                 </Text>
               </Label>
             </YStack>
-            <Input
-              id="username"
-              value={username}
-              onChangeText={setUsername}
-              autoCapitalize="none"
-              maxLength={30}
-              size={Platform.OS === 'web' ? '$5' : '$3'}
-              flex={1}
-            ></Input>
+            <YStack>
+              <Input
+                id="username"
+                value={username}
+                onChangeText={setUsername}
+                autoCapitalize="none"
+                maxLength={30}
+                size={Platform.OS === 'web' ? '$5' : '$3'}
+                flex={1}
+              />
+              {errorMessage.username && (
+                <Text color="red" fontSize={12} marginTop={4}>
+                  {errorMessage.username}
+                </Text>
+              )}
+            </YStack>
           </XStack>
           <XStack gap="$3" justifyContent="center" alignItems="center">
             <YStack width="40%" justifyContent="center" alignItems="center">
@@ -175,17 +158,24 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
                 </Text>
               </Label>
             </YStack>
-            <Input
-              id="password"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry
-              maxLength={30}
-              autoCorrect={false}
-              autoComplete="off"
-              size={Platform.OS === 'web' ? '$5' : '$3'}
-              flex={1}
-            ></Input>
+            <YStack>
+              <Input
+                id="password"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+                maxLength={30}
+                autoCorrect={false}
+                autoComplete="off"
+                size={Platform.OS === 'web' ? '$5' : '$3'}
+                flex={1}
+              />
+              {errorMessage.password && (
+                <Text color="red" fontSize={12} marginTop={4}>
+                  {errorMessage.password}
+                </Text>
+              )}
+            </YStack>
           </XStack>
           <Form.Trigger asChild>
             <Button size={Platform.OS === 'web' ? '$5' : '$3'} backgroundColor="#FF8A01">
@@ -213,36 +203,8 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
             </Text>
           </Button>
         </Form>
-        <Button size={Platform.OS === 'web' ? '$5' : '$3'} chromeless>
-          <Text
-            fontFamily="MedievalSharp-Regular"
-            fontSize={Platform.OS === 'web' ? 25 : 16}
-            color="#fff"
-          >
-            Forgot password?
-          </Text>
-        </Button>
       </YStack>
-      <YStack alignItems="flex-end" flex={1}>
-        {isMessageVisible ? (
-          <XStack
-            borderRadius={10}
-            justifyContent="center"
-            alignItems="center"
-            borderColor="orange"
-            borderWidth={2}
-            paddingTop={10}
-            paddingBottom={10}
-            paddingLeft={5}
-            paddingRight={5}
-            margin="5%"
-          >
-            <Text fontSize={12} color="#fff">
-              {errorMessage}
-            </Text>
-          </XStack>
-        ) : null}
-      </YStack>
+      <Toaster />
     </ImageBackground>
   );
 }

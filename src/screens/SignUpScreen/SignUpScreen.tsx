@@ -6,10 +6,13 @@ import axios from 'axios';
 import { useState } from 'react';
 import { UserDto } from '../../Dto/UserDto';
 import { Eye, EyeOff } from '@tamagui/lucide-icons';
-import { jwtDecode } from 'jwt-decode';
 import { useUser } from '../../context/UserContext';
 import type { RootStackParamList } from '../../types/navigationTypes';
-import { URL_BACKEND_SQUIREL } from '@env';
+import axiosInstance from '@/src/utils/axiosInstance';
+import { SignUpSchema } from '@/src/schemas/signUpSchema';
+import { treeifyError } from 'zod/v4';
+import { ValidationResultSignUp } from '@/src/types/validation';
+import { UserToasterErrors, Toaster } from '../../utils/toaster';
 
 type SignUpScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SignUp'>;
 
@@ -19,104 +22,95 @@ type Props = {
 
 export default function SignUpScreen({ navigation }: Readonly<Props>) {
   const { setUserId } = useUser();
-
-  const emailRegex = /^[a-zA-Z0-9._-]{3,}@[a-zA-Z0-9.-]{3,}\.[a-zA-Z]{2,}$/;
-  const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+  const { showError } = UserToasterErrors();
 
   const [userDto, setUserDto] = useState<UserDto>({
     username: '',
     email: '',
     password: '',
-    newPassword: undefined,
+    newPassword: '',
   });
-  const [passwordConfirmation, setPasswordConfirmation] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [isMessageVisible, setIsMessageVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmationPasswordVisible, setConfirmationPasswordVisible] = useState(false);
-  const API_URL = URL_BACKEND_SQUIREL;
-  const showErrorMessage = () => {
-    setIsMessageVisible(true);
-    setTimeout(() => {
-      setIsMessageVisible(false);
-      setErrorMessage('');
-    }, 3000);
-  };
 
   const handleInputChange = (field: string, value: string) => {
-    setUserDto((prevState) => ({
-      ...prevState,
+    const updatedUserDto = {
+      ...userDto,
       [field]: value,
-    }));
+    };
+    setUserDto(updatedUserDto);
+
+    const errorFieldMap: { [key: string]: keyof typeof errorMessage } = {
+      username: 'username',
+      email: 'email',
+      password: 'password',
+      newPassword: 'confirmPassword',
+    };
+
+    const errorField = errorFieldMap[field];
+
+    if (errorField) {
+      setErrorMessage((prev) => ({
+        ...prev,
+        [errorField]: '',
+      }));
+    }
+
+    if (field === 'password') {
+      setErrorMessage((prev) => ({
+        ...prev,
+        confirmPassword: '',
+      }));
+    }
   };
 
-  const checkInput = (type: string) => {
-    if (type === userDto.email || type === 'all') {
-      if (!emailRegex.test(userDto.email)) {
-        setErrorMessage('Invalid email address. Please enter a valid email.');
-        showErrorMessage();
-      }
+  const validateFormInputs = (showErrors = true): ValidationResultSignUp => {
+    const result = SignUpSchema.safeParse({
+      username: userDto.username,
+      email: userDto.email,
+      password: userDto.password,
+      confirmPassword: userDto.newPassword,
+    });
+    if (!result.success && showErrors) {
+      const tree = treeifyError(result.error);
+      setErrorMessage({
+        username: tree.properties?.username?.errors?.[0] ?? '',
+        email: tree.properties?.email?.errors?.[0] ?? '',
+        password: tree.properties?.password?.errors?.[0] ?? '',
+        confirmPassword: tree.properties?.confirmPassword?.errors?.[0] ?? '',
+      });
+      return { success: false, data: null };
     }
-    if (type === userDto.password || type === 'all') {
-      if (!passwordRegex.test(userDto.password)) {
-        setErrorMessage(
-          'Password must contain at least 8 characters, one uppercase letter, one number, and one special character.',
-        );
-        showErrorMessage();
-      }
-    }
-    if (type === passwordConfirmation || type === 'all') {
-      if (userDto.password !== passwordConfirmation && userDto.password !== '') {
-        setErrorMessage('Passwords not identical');
-        showErrorMessage();
-      }
-    }
+    return { success: true, data: result.data ?? null };
   };
 
   const onFormSubmit = async () => {
-    checkInput('all');
-    if (userDto.password === '') {
-      setErrorMessage('Password should not be empty');
-      showErrorMessage();
-    }
-    if (userDto.username === '') {
-      setErrorMessage('Username should not be empty');
-      showErrorMessage();
-    }
-    if (userDto.email === '') {
-      setErrorMessage('Email should not be empty');
-      showErrorMessage();
-    }
-    if (userDto.password !== '' && userDto.username !== '' && userDto.email !== '') {
-      await axios({
-        method: 'post',
-        url: `${API_URL}/auth/signup`,
-        data: { ...userDto },
-      })
-        .then(async function (response) {
-          const decoded_token = jwtDecode(response.data.access_token);
-          if (decoded_token?.sub) {
-            setUserId(decoded_token.sub);
-          }
-          if (Platform.OS === 'ios' || Platform.OS === 'android') {
-            await SecureStore.setItemAsync('access_token', response.data.access_token);
-          } else if (Platform.OS === 'web') {
-            localStorage.setItem('access_token', response.data.access_token);
-          }
-          navigation.navigate('HomeStack', { screen: 'Home' });
-        })
-        .catch(function (error) {
-          if (error) {
-            if (error.response) {
-              const message = error.response.data.message;
-              setErrorMessage(message);
-              showErrorMessage();
-            }
-          } else {
-            setErrorMessage('An unexpected error occurred');
-            showErrorMessage();
-          }
-        });
+    const result = validateFormInputs();
+    if (!result.success) return;
+
+    try {
+      let access_token: string | null = null;
+      const response = await axiosInstance.post(`/auth/signup`, { ...userDto });
+      access_token = response.data.access_token;
+      if (access_token) {
+        await SecureStore.setItemAsync('access_token', access_token);
+      }
+      const authResponse = await axiosInstance.get('/auth/me');
+      const userId = authResponse.data.userId;
+      setUserId(userId);
+
+      navigation.navigate('HomeStack', { screen: 'Home' });
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        const message = err.response?.data?.message || 'A network error occurred';
+        showError(message);
+      }
     }
   };
 
@@ -153,16 +147,23 @@ export default function SignUpScreen({ navigation }: Readonly<Props>) {
                 </Text>
               </Label>
             </YStack>
-            <Input
-              id="username"
-              value={userDto.username}
-              onChangeText={(text) => handleInputChange('username', text)}
-              autoCapitalize="none"
-              maxLength={30}
-              flex={1}
-              size={Platform.OS === 'web' ? '$5' : '$3'}
-              style={{ fontSize: 11 }}
-            />
+            <YStack>
+              <Input
+                id="username"
+                value={userDto.username}
+                onChangeText={(text) => handleInputChange('username', text)}
+                autoCapitalize="none"
+                maxLength={30}
+                flex={1}
+                size={Platform.OS === 'web' ? '$5' : '$3'}
+                style={{ fontSize: 11 }}
+              />
+              {errorMessage.username && (
+                <Text color="red" fontSize={12} marginTop={4}>
+                  {errorMessage.username}
+                </Text>
+              )}
+            </YStack>
           </XStack>
           <XStack gap="$3" justifyContent="center" alignItems="center">
             <YStack width="40%" justifyContent="center" alignItems="center">
@@ -176,17 +177,23 @@ export default function SignUpScreen({ navigation }: Readonly<Props>) {
                 </Text>
               </Label>
             </YStack>
-            <Input
-              id="email"
-              value={userDto.email}
-              onChangeText={(text) => handleInputChange('email', text)}
-              autoCapitalize="none"
-              maxLength={30}
-              onBlur={() => checkInput(userDto.email)}
-              flex={1}
-              size={Platform.OS === 'web' ? '$5' : '$3'}
-              style={{ fontSize: 11 }}
-            />
+            <YStack>
+              <Input
+                id="email"
+                value={userDto.email}
+                onChangeText={(text) => handleInputChange('email', text)}
+                autoCapitalize="none"
+                maxLength={30}
+                flex={1}
+                size={Platform.OS === 'web' ? '$5' : '$3'}
+                style={{ fontSize: 11 }}
+              />
+              {errorMessage.email && (
+                <Text color="red" fontSize={12} marginTop={4}>
+                  {errorMessage.email}
+                </Text>
+              )}
+            </YStack>
           </XStack>
           <XStack gap="$3" justifyContent="center" alignItems="center">
             <YStack width="40%" justifyContent="center" alignItems="center">
@@ -201,19 +208,25 @@ export default function SignUpScreen({ navigation }: Readonly<Props>) {
               </Label>
             </YStack>
             <XStack flex={1}>
-              <Input
-                id="password"
-                value={userDto.password}
-                onChangeText={(text) => handleInputChange('password', text)}
-                secureTextEntry={!passwordVisible}
-                maxLength={30}
-                autoCorrect={false}
-                autoComplete="off"
-                onBlur={() => checkInput(userDto.password)}
-                flex={1}
-                size={Platform.OS === 'web' ? '$5' : '$3'}
-                style={{ fontSize: 11 }}
-              />
+              <YStack>
+                <Input
+                  id="password"
+                  value={userDto.password}
+                  onChangeText={(text) => handleInputChange('password', text)}
+                  secureTextEntry={!passwordVisible}
+                  maxLength={30}
+                  autoCorrect={false}
+                  autoComplete="off"
+                  flex={1}
+                  size={Platform.OS === 'web' ? '$5' : '$3'}
+                  style={{ fontSize: 11 }}
+                />
+                {errorMessage.password && (
+                  <Text color="red" fontSize={12} marginTop={4}>
+                    {errorMessage.password}
+                  </Text>
+                )}
+              </YStack>
               <Button
                 size={Platform.OS === 'web' ? '$5' : '$3'}
                 position="absolute"
@@ -236,19 +249,26 @@ export default function SignUpScreen({ navigation }: Readonly<Props>) {
               </Label>
             </YStack>
             <XStack flex={1}>
-              <Input
-                id="passwordConfirmation"
-                value={passwordConfirmation}
-                onChangeText={setPasswordConfirmation}
-                secureTextEntry={!confirmationPasswordVisible}
-                maxLength={30}
-                autoCorrect={false}
-                autoComplete="off"
-                flex={1}
-                onBlur={() => checkInput(passwordConfirmation)}
-                size={Platform.OS === 'web' ? '$5' : '$3'}
-                style={{ fontSize: 11 }}
-              />
+              <YStack>
+                <Input
+                  id="passwordConfirmation"
+                  value={userDto.newPassword || ''}
+                  onChangeText={(text) => handleInputChange('newPassword', text)}
+                  secureTextEntry={!confirmationPasswordVisible}
+                  maxLength={30}
+                  autoCorrect={false}
+                  autoComplete="off"
+                  flex={1}
+                  size={Platform.OS === 'web' ? '$5' : '$3'}
+                  style={{ fontSize: 11 }}
+                />
+                {errorMessage.confirmPassword && (
+                  <Text color="red" fontSize={12} marginTop={4}>
+                    {errorMessage.confirmPassword}
+                  </Text>
+                )}
+              </YStack>
+
               <Button
                 position="absolute"
                 size={Platform.OS === 'web' ? '$5' : '$3'}
@@ -287,27 +307,8 @@ export default function SignUpScreen({ navigation }: Readonly<Props>) {
             </Button>
           </XStack>
         </Form>
-        <YStack alignItems="flex-end" flex={1}>
-          {isMessageVisible && (
-            <XStack
-              borderRadius={10}
-              justifyContent="center"
-              alignItems="center"
-              borderColor="orange"
-              borderWidth={2}
-              paddingTop={10}
-              paddingBottom={10}
-              paddingLeft={5}
-              paddingRight={5}
-              margin="5%"
-            >
-              <Text fontSize={12} color="#fff">
-                {errorMessage}
-              </Text>
-            </XStack>
-          )}
-        </YStack>
       </YStack>
+      <Toaster key="signup-toaster" />
     </ImageBackground>
   );
 }

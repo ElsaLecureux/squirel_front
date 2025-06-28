@@ -3,12 +3,12 @@ import { Text, YStack, XStack, Image, Input, Label, Button, Form, Stack, View } 
 import { useUser } from '../../context/UserContext';
 
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { UserInfosDto } from '@/src/Dto/UserInfosDto';
 import { UserPlayGameFullDto } from '@/src/Dto/UserPlayGameFullDto';
 import CustomModal from '@/src/components/CustomModal/CustomModal';
 import { UserDto } from '@/src/Dto/UserDto';
 import { URL_BACKEND_SQUIREL } from '@env';
+import axiosInstance from '@/src/utils/axiosInstance';
 
 export default function ProfileScreen() {
   const API_URL = URL_BACKEND_SQUIREL;
@@ -29,9 +29,9 @@ export default function ProfileScreen() {
 
   useEffect(() => {
     const getInfosUser = async () => {
-      const dataUser = await axios({
+      const dataUser = await axiosInstance({
         method: 'get',
-        url: `${API_URL}/users/${userId}`,
+        url: `/users/${userId}`,
       });
       if (dataUser) {
         setUserInfo({ ...dataUser.data });
@@ -39,9 +39,9 @@ export default function ProfileScreen() {
       }
     };
     const getUserWonGames = async () => {
-      const dataGameUser = await axios({
+      const dataGameUser = await axiosInstance({
         method: 'get',
-        url: `${API_URL}/userPlayGame/${userId}`,
+        url: `/userPlayGame/${userId}`,
       });
       if (dataGameUser) {
         setUserPlayGame([...dataGameUser.data]);
@@ -99,9 +99,9 @@ export default function ProfileScreen() {
     }
     if (checkIfPasswordNotEmpty() && confirmPassword === userDto.newPassword) {
       try {
-        const response = await axios({
+        const response = await axiosInstance({
           method: 'put',
-          url: `${API_URL}/users/${userId}`,
+          url: `/users/${userId}`,
           data: { ...userDto },
         });
         if (response.status === 200) {
@@ -178,12 +178,12 @@ export default function ProfileScreen() {
                   />
                 </XStack>
               ) : null}
-              {game.avatarGold && game.numberoftimewon >= 5 ? (
+              {game.avatargold && game.numberoftimewon >= 5 ? (
                 <XStack style={styles.containerTrophyGolden}>
                   <Image
-                    key={game.avatarGold}
+                    key={game.avatargold}
                     style={styles.trophy}
-                    source={{ uri: `${game.avatarGold.replace(/[\r\n]+/g, '')}` }}
+                    source={{ uri: `${game.avatargold.replace(/[\r\n]+/g, '')}` }}
                   />
                 </XStack>
               ) : null}

@@ -3776,7 +3776,8 @@
             "componentName": "Avatar",
             "isReactNative": false,
             "isText": false,
-            "isStyledHOC": false
+            "isStyledHOC": false,
+            "memo": true
           }
         },
         "Button": {
@@ -19414,7 +19415,8 @@
             "componentName": "Square",
             "isReactNative": false,
             "isText": false,
-            "isStyledHOC": false
+            "isStyledHOC": false,
+            "memo": true
           }
         },
         "Circle": {
@@ -19720,7 +19722,8 @@
             "componentName": "Circle",
             "isReactNative": false,
             "isText": false,
-            "isStyledHOC": false
+            "isStyledHOC": false,
+            "memo": true
           }
         },
         "Frame": {

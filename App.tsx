@@ -1,7 +1,7 @@
 import { UserProvider } from './src/context/UserContext';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
-import { TamaguiProvider } from '@tamagui/core';
+import { TamaguiProvider } from 'tamagui';
 import config from './tamagui.config';
 
 import { Platform, useColorScheme } from 'react-native';
@@ -19,6 +19,7 @@ import { MedievalSharp_400Regular } from '@expo-google-fonts/medievalsharp';
 import { useFonts } from 'expo-font';
 import { TOKEN_API_RADIO_FRANCE, URL_API_RADIO_FRANCE } from '@env';
 import type { RootStackParamList } from './src/types/navigationTypes';
+import { ToastProvider, ToastViewport } from '@tamagui/toast';
 
 export default function App() {
   const linking: LinkingOptions<RootStackParamList> = {
@@ -87,7 +88,20 @@ export default function App() {
     <TamaguiProvider config={config} defaultTheme={colorScheme!}>
       <ApolloProvider client={client}>
         <NavigationContainer linking={linking}>
-          <UserProvider>{isLoading ? <LoadingScreen /> : <RootStack />}</UserProvider>
+          <ToastProvider>
+            <UserProvider>
+              {isLoading ? <LoadingScreen /> : <RootStack />}
+              <ToastViewport
+                flexDirection="column-reverse"
+                top={16} // 16px below status bar/notch
+                right={16} // 16px from right edge
+                alignItems="flex-end"
+                pointerEvents="none"
+                gap="$2"
+                maxWidth={360}
+              />
+            </UserProvider>
+          </ToastProvider>
         </NavigationContainer>
       </ApolloProvider>
     </TamaguiProvider>

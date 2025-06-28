@@ -1,18 +1,15 @@
-import { jwtDecode } from 'jwt-decode';
 import React, {
   createContext,
   useContext,
   useState,
   ReactNode,
   useMemo,
-  useEffect,
   useCallback,
+  useEffect,
 } from 'react';
 import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '@/src/types/navigationTypes';
+import axiosInstance from '../utils/axiosInstance';
 
 // Define the shape of the context
 interface UserContextType {
@@ -20,6 +17,7 @@ interface UserContextType {
   setUserId: (id: string | null) => void;
   signOut: () => void;
   isLoading: boolean;
+  isSignedIn: boolean;
   checkIfSignedIn: () => Promise<boolean>;
 }
 
@@ -30,55 +28,47 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [userId, setUserId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  type NavigationProp = StackNavigationProp<RootStackParamList>;
-  const navigation = useNavigation<NavigationProp>();
 
   const checkIfSignedIn = useCallback(async (): Promise<boolean> => {
     try {
       setIsLoading(true);
-      let token: string | null = null;
-      if (Platform.OS === 'web') {
-        token = localStorage.getItem('access_token');
-      } else if (Platform.OS === 'ios' || Platform.OS === 'android') {
-        token = await SecureStore.getItemAsync('access_token');
-      }
-      if (token) {
-        const decodedToken = jwtDecode(token);
-        if (
-          decodedToken.exp !== undefined &&
-          decodedToken.exp > Date.now() / 1000 &&
-          decodedToken.sub
-        ) {
-          setUserId(decodedToken.sub);
-          setIsLoading(false);
-          return true;
-        }
-        setIsLoading(false);
-        return false;
-      } else {
-        setIsLoading(false);
-        return false;
-      }
+      const authResponse = await axiosInstance.get('/auth/me');
+      const userId = authResponse.data.userId;
+      setUserId(userId);
+      setIsLoading(false);
+      return true;
     } catch (error) {
       console.log('Error checking if sign In:', error);
       setIsLoading(false);
+      setUserId(null);
       return false;
     }
-  }, [setUserId, setIsLoading]); // Dependencies: state setters are stable from useState
+  }, [setUserId, setIsLoading]);
 
   const signOut = useCallback(async () => {
-    setUserId(null);
-    if (Platform.OS === 'web') {
-      localStorage.removeItem('access_token');
-    } else if (Platform.OS === 'ios' || Platform.OS === 'android') {
-      await SecureStore.deleteItemAsync('access_token');
+    try {
+      await axiosInstance.post('/auth/signout');
+    } catch (error) {
+      console.log(error);
     }
-    navigation.navigate('Welcome');
-  }, [setUserId, navigation]); // Dependencies: setUserId is stable, navigation should be stable
+    setUserId(null);
+    if (Platform.OS === 'ios' || Platform.OS === 'android') {
+      try {
+        await SecureStore.deleteItemAsync('access_token');
+      } catch (error) {
+        console.warn('Failed to clear local storage', error);
+      }
+    }
+  }, [setUserId]);
 
   useEffect(() => {
-    checkIfSignedIn();
-  }, [checkIfSignedIn]); // Now checkIfSignedIn is stable
+    const bootstrapAuth = async () => {
+      setIsLoading(true);
+      await checkIfSignedIn();
+      setIsLoading(false);
+    };
+    bootstrapAuth();
+  }, [checkIfSignedIn]);
 
   const contextValue = useMemo(
     () => ({
@@ -87,8 +77,9 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       signOut,
       isLoading,
       checkIfSignedIn,
+      isSignedIn: userId !== null,
     }),
-    [userId, setUserId, signOut, isLoading, checkIfSignedIn], // All dependencies included
+    [userId, setUserId, signOut, isLoading, checkIfSignedIn],
   );
 
   return <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>;

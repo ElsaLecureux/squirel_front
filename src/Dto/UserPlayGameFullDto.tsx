@@ -4,5 +4,5 @@ export type UserPlayGameFullDto = {
   numberoftimewon: number;
   name: string;
   avatar: string;
-  avatarGold: string;
+  avatargold: string;
 };
