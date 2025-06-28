@@ -24,26 +24,26 @@
       "bundler": "metro",
       "output": "static"
     },
-     "doctor": {
-    "reactNativeDirectoryCheck": {
-      "exclude": [
-        "@apollo/client",
-        "@babel/preset-env",
-        "@babel/preset-typescript",
-        "@tamagui/babel-plugin",
-        "@tamagui/image",
-        "@tamagui/lucide-icons",
-        "@tamagui/tabs",
-        "graphql",
-        "react-native-vector-icons",
-        "@fortawesome/fontawesome-svg-core",
-        "@fortawesome/free-brands-svg-icons",
-        "@fortawesome/free-regular-svg-icons",
-        "@fortawesome/free-solid-svg-icons",
-        "jwt-decode"
-      ]
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "@apollo/client",
+          "@babel/preset-env",
+          "@babel/preset-typescript",
+          "@tamagui/babel-plugin",
+          "@tamagui/image",
+          "@tamagui/lucide-icons",
+          "@tamagui/tabs",
+          "graphql",
+          "react-native-vector-icons",
+          "@fortawesome/fontawesome-svg-core",
+          "@fortawesome/free-brands-svg-icons",
+          "@fortawesome/free-regular-svg-icons",
+          "@fortawesome/free-solid-svg-icons",
+          "jwt-decode"
+        ]
+      }
     }
-  }
   },
   "type": "module",
   "dependencies": {
@@ -67,9 +67,11 @@
     "@tamagui/config": "^1.112.12",
     "@tamagui/image": "^1.112.12",
     "@tamagui/lucide-icons": "^1.112.12",
-    "@tamagui/tabs": "^1.126.3",
+    "@tamagui/tabs": "^1.112.12",
+    "@tamagui/toast": "^1.112.12",
     "axios": "^1.7.7",
     "babel-plugin-module-resolver": "^5.0.2",
+    "burnt": "^0.13.0",
     "expo": "^52.0.11",
     "expo-font": "~13.0.1",
     "expo-navigation-bar": "~4.0.4",
@@ -80,7 +82,7 @@
     "graphql": "^16.10.0",
     "jwt-decode": "^4.0.0",
     "react": "18.3.1",
-    "react-dom": "18.3.1",
+    "react-dom": "^18.3.1",
     "react-native": "0.76.9",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-reanimated": "~3.16.1",
@@ -90,7 +92,8 @@
     "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5",
-    "tamagui": "^1.112.12"
+    "tamagui": "^1.112.12",
+    "zod": "^3.25.67"
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",
