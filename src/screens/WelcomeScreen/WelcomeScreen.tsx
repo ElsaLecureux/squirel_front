@@ -50,7 +50,7 @@ export default function WelcomeScreen({ navigation }: Readonly<Props>) {
               width="auto"
               onPress={handleAuthCheck}
               hoverStyle={{
-                backgroundColor: '#E68200',
+                backgroundColor: '#FF5F1F',
               }}
               size="$9"
               $sm={{ size: '$5' }}
@@ -65,7 +65,7 @@ export default function WelcomeScreen({ navigation }: Readonly<Props>) {
                 $md={{ fontSize: 36 }}
                 $lg={{ fontSize: 42 }}
               >
-                Play
+                Jouer
               </Text>
             </Button>
           </YStack>
