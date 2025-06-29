@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
     height: 600,
     width: 400,
     margin: 20,
-    backgroundColor: '#ff8a01',
+    backgroundColor: 'rgba(0, 0, 0, 0.18)',
     padding: 35,
     alignItems: 'center',
     shadowColor: '#000',

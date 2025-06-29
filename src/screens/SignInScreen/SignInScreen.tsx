@@ -1,4 +1,4 @@
-import { Platform, ImageBackground, StyleSheet } from 'react-native';
+import { ImageBackground, StyleSheet } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as SplashScreen from 'expo-splash-screen';
 import { MedievalSharp_400Regular } from '@expo-google-fonts/medievalsharp';
@@ -14,8 +14,8 @@ import { SignInSchema } from '@/src/schemas/signInSchema';
 import { treeifyError } from 'zod/v4';
 import { ValidationResultSignIn } from '@/src/types/validation';
 import { UserToasterErrors, Toaster } from '../../utils/toaster';
-import * as ScreenOrientation from 'expo-screen-orientation';
 import { RotationWarning } from '@/src/components/rotatingWarning/RotatingWarning';
+import { useScreenOrientation } from '@/src/utils/useScreenOrientation';
 
 type SignInScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SignIn'>;
 
@@ -33,15 +33,7 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState<{ username?: string; password?: string }>({});
-  const [orientation, setOrientation] = useState<ScreenOrientation.Orientation | null>(null);
-
-  const isMobile = Platform.OS !== 'web' || (Platform.OS === 'web' && window.innerWidth < 768);
-
-  const isLandscape =
-    isMobile &&
-    orientation &&
-    (orientation === ScreenOrientation.Orientation.LANDSCAPE_LEFT ||
-      orientation === ScreenOrientation.Orientation.LANDSCAPE_RIGHT);
+  const { isLandscape, isMobile } = useScreenOrientation();
 
   useEffect(() => {
     if (loaded) {
@@ -51,28 +43,6 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
       SplashScreen.hideAsync();
     }
   }, [loaded, error]);
-
-  useEffect(() => {
-    if (!isMobile) return;
-    const getInitialOrientation = async () => {
-      try {
-        const currentOrientation = await ScreenOrientation.getOrientationAsync();
-        setOrientation(currentOrientation);
-      } catch (error) {
-        console.log('Error getting orientation:', error);
-      }
-    };
-    const subscription = ScreenOrientation.addOrientationChangeListener((orientationInfo) => {
-      setOrientation(orientationInfo.orientationInfo.orientation);
-    });
-    getInitialOrientation();
-    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
-
-    return () => {
-      ScreenOrientation.removeOrientationChangeListener(subscription);
-      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
-    };
-  }, [isMobile]);
 
   if (!loaded && !error) {
     return null;
@@ -135,13 +105,11 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
       <Stack
         justifyContent="center"
         alignItems="center"
-        backgroundColor="rgba(177, 176, 176, 0.53)"
+        backgroundColor="rgba(0, 0, 0, 0.18)"
         borderRadius={30}
-        marginVertical="10%"
         marginLeft={isMobile ? '0%' : '15%'}
         maxWidth={600}
         alignSelf="center"
-        height="50%"
         width={'100%'}
         padding={'$3'}
       >
@@ -156,15 +124,14 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
             onFormSubmit();
           }}
         >
-          <Stack flex={1} gap="$1" maxHeight={120}>
-            <Label flex={1} htmlFor="username">
+          <Stack gap="$1" maxHeight={120}>
+            <Label htmlFor="username">
               <Text fontSize={25} color="#fff" fontFamily="BubblegumSans_400Regular" width="100%">
                 Identifiant
               </Text>
             </Label>
 
             <Input
-              flex={1}
               id="username"
               value={username}
               onChangeText={setUsername}
@@ -177,15 +144,14 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
               </Text>
             )}
           </Stack>
-          <Stack flex={1} gap="$1" maxHeight={120}>
-            <Label flex={1} htmlFor="password">
+          <Stack gap="$1" maxHeight={120}>
+            <Label htmlFor="password">
               <Text fontSize={25} color="#fff" fontFamily="BubblegumSans_400Regular">
                 Mot de passe
               </Text>
             </Label>
 
             <Input
-              flex={1}
               id="password"
               value={password}
               onChangeText={setPassword}
@@ -200,7 +166,7 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
               </Text>
             )}
           </Stack>
-          <Stack flex={1} gap="$3" marginTop="$5">
+          <Stack gap="$3" marginTop="$5">
             <Form.Trigger asChild>
               <Button size="auto" backgroundColor="#FF8A01">
                 <Text color="#fff" fontFamily="BubblegumSans_400Regular" fontSize={25}>
@@ -217,8 +183,7 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
               <Text
                 color="#FFF"
                 fontFamily="BubblegumSans_400Regular"
-                fontSize={25}
-                numberOfLines={2}
+                fontSize={20}
                 textAlign="center"
               >
                 Pas de compte? Inscrivez-vous
@@ -227,7 +192,7 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
           </Stack>
         </Form>
       </Stack>
-      <Toaster />
+      <Toaster key={'signInToaster'} />
     </ImageBackground>
   );
 }

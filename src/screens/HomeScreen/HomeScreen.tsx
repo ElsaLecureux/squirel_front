@@ -16,36 +16,21 @@ export default function HomeScreen({ navigation }: Readonly<Props>) {
   const translateY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    const startJumping = (jumps = 3) => {
-      const jumpAnimations = [];
+    const jumpAnimation = Animated.sequence([
+      Animated.timing(translateY, {
+        toValue: -10,
+        duration: 200,
+        useNativeDriver: true,
+      }),
 
-      // Create a jump animation sequence for the specified number of jumps
-      for (let i = 0; i < jumps; i++) {
-        jumpAnimations.push(
-          Animated.timing(translateY, {
-            toValue: -10, // Move up by 10px
-            duration: 200,
-            useNativeDriver: true,
-          }),
-        );
-        jumpAnimations.push(
-          Animated.timing(translateY, {
-            toValue: 0, // Back to original position
-            duration: 200,
-            useNativeDriver: true,
-          }),
-        );
-      }
+      Animated.timing(translateY, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]);
 
-      // Create the sequence of jumps and start the animation
-      Animated.sequence(jumpAnimations).start();
-    };
-    startJumping(3);
-
-    const interval = setInterval(() => {
-      startJumping(3);
-    }, 10000);
-    return () => clearInterval(interval);
+    jumpAnimation.start();
   }, [translateY]);
 
   return (
@@ -59,7 +44,14 @@ export default function HomeScreen({ navigation }: Readonly<Props>) {
         onPress={() => navigation.getParent()?.navigate('PlayroomStack', { screen: 'Playroom' })}
         accessibilityLabel="goToPlayroomButton"
       >
-        <Image source={require('../../assets/images/key.gif')} style={{ width: 80, height: 80 }} />
+        <Image
+          source={require('../../assets/images/key.gif')}
+          width={80}
+          height={80}
+          $sm={{ width: 40, height: 40 }}
+          $md={{ width: 60, height: 60 }}
+          $lg={{ width: 80, height: 80 }}
+        />
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.woodenSign}
@@ -69,7 +61,12 @@ export default function HomeScreen({ navigation }: Readonly<Props>) {
         <Animated.View style={{ transform: [{ translateY }] }}>
           <Image
             source={require('../../assets/images/woodenSign.png')}
-            style={{ width: 120, height: 160 }}
+            width={120}
+            height={160}
+            $sm={{ width: 60, height: 100 }}
+            $md={{ width: 80, height: 120 }}
+            $lg={{ width: 100, height: 140 }}
+            $xl={{ width: 120, height: 160 }}
           />
         </Animated.View>
       </TouchableOpacity>
