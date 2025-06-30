@@ -5,6 +5,7 @@ import { styles } from './HomeScreenStyle';
 import { Image } from 'tamagui';
 import { useRef, useEffect } from 'react';
 import { HomeStackParamList } from '@/src/types/navigationTypes';
+import { CommonActions } from '@react-navigation/native';
 
 type HomeScreenNavigationProp = StackNavigationProp<HomeStackParamList, 'Home'>;
 
@@ -41,7 +42,13 @@ export default function HomeScreen({ navigation }: Readonly<Props>) {
     >
       <TouchableOpacity
         style={styles.door}
-        onPress={() => navigation.getParent()?.navigate('PlayroomStack', { screen: 'Playroom' })}
+        onPress={() => {
+          navigation.dispatch(
+            CommonActions.navigate({
+              name: 'PlayroomStack',
+            }),
+          );
+        }}
         accessibilityLabel="goToPlayroomButton"
       >
         <Image

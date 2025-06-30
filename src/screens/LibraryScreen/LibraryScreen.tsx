@@ -154,12 +154,15 @@ export default function LibraryScreen() {
     >
       <XStack style={styles.pageTitleContainer}>
         <Text
-          fontSize={40}
+          $xs={{ fontSize: 15 }}
+          $sm={{ fontSize: 20 }}
+          $md={{ fontSize: 30 }}
+          $lg={{ fontSize: 40 }}
           color={'#fff'}
           fontFamily="MysteryQuest_400Regular"
           style={styles.pageTitle}
         >
-          AudioBooks Library
+          Bibliothèque audio
         </Text>
       </XStack>
       <Tabs
@@ -180,7 +183,15 @@ export default function LibraryScreen() {
               borderColor="#ff8a01"
               value={podcast.id}
             >
-              <Text fontFamily="BubblegumSans_400Regular">{podcast.name}</Text>
+              <Text
+                $xs={{ fontSize: 15 }}
+                $sm={{ fontSize: 20 }}
+                $md={{ fontSize: 30 }}
+                $lg={{ fontSize: 40 }}
+                fontFamily="BubblegumSans_400Regular"
+              >
+                {podcast.name}
+              </Text>
             </Tabs.Tab>
           ))}
         </Tabs.List>
@@ -205,12 +216,19 @@ export default function LibraryScreen() {
                   <Text
                     fontFamily="BubblegumSans_400Regular"
                     alignSelf="center"
-                    fontSize={40}
+                    $xs={{ fontSize: 15 }}
+                    $sm={{ fontSize: 20 }}
+                    $md={{ fontSize: 30 }}
+                    $lg={{ fontSize: 40 }}
                     color={'#fff'}
                   >
                     {loadedData[podcast.id]?.title}
                   </Text>
                   <Text
+                    $xs={{ fontSize: 10 }}
+                    $sm={{ fontSize: 15 }}
+                    $md={{ fontSize: 20 }}
+                    $lg={{ fontSize: 30 }}
                     fontFamily="BubblegumSans_400Regular"
                     alignSelf="center"
                     fontSize={30}
@@ -219,16 +237,37 @@ export default function LibraryScreen() {
                     {loadedData[podcast.id]?.standFirst}
                   </Text>
                 </YStack>
-                <YStack gap={15} style={styles.podcastContainer}>
+                <YStack style={styles.podcastContainer}>
                   {loadedData[podcast.id]?.diffusionsConnection.edges.map(({ node }) => (
                     <YStack style={styles.episodeCardContainer} key={node.id}>
                       <Separator alignSelf="stretch" style={styles.episodeSeparator} />
                       <XStack style={styles.episodeCard}>
                         <XStack style={styles.episodeTitleContainer}>
-                          <Image style={styles.episodeImage} source={podcast.image}></Image>
-                          <Text style={styles.episodeTitle}>{node.title}</Text>
+                          <Image
+                            $xs={{ width: 60, height: 60 }}
+                            $sm={{ width: 80, height: 80 }}
+                            $md={{ width: 100, height: 100 }}
+                            $lg={{ width: 120, height: 120 }}
+                            source={podcast.image}
+                          ></Image>
+                          <Text
+                            $xs={{ fontSize: 10 }}
+                            $sm={{ fontSize: 15 }}
+                            $md={{ fontSize: 20 }}
+                            $lg={{ fontSize: 30 }}
+                            style={styles.episodeTitle}
+                          >
+                            {node.title}
+                          </Text>
                         </XStack>
-                        <Button size="$6" style={styles.episodeButton} onPress={() => onplay(node)}>
+                        <Button
+                          $xs={{ size: '$3' }}
+                          $sm={{ size: '$4' }}
+                          $md={{ size: '$5' }}
+                          $lg={{ size: '$6' }}
+                          style={styles.episodeButton}
+                          onPress={() => onplay(node)}
+                        >
                           <FontAwesomeIcon icon={faCirclePlay} style={styles.iconButtonStyle} />
                         </Button>
                       </XStack>

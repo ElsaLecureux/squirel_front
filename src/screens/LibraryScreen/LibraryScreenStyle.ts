@@ -15,6 +15,7 @@ export const styles = StyleSheet.create({
     gap: '2%',
   },
   scrollerView: {
+    marginTop: '1%',
     width: '100%',
   },
   pageTitleContainer: {
@@ -32,7 +33,6 @@ export const styles = StyleSheet.create({
     gap: 10,
   },
   podcastContainer: {
-    marginTop: 25,
     gap: 15,
     alignItems: 'center',
     justifyContent: 'center',
@@ -59,26 +59,22 @@ export const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   episodeTitleContainer: {
-    gap: 20,
+    gap: '10%',
     alignItems: 'center',
     justifyContent: 'center',
   },
   episodeTitle: {
     fontFamily: 'BubblegumSans_400Regular',
-    fontSize: 20,
     color: '#fff',
-  },
-  episodeImage: {
-    width: 160,
-    height: 160,
+    flexWrap: 'wrap',
   },
   episodeButton: {
     backgroundColor: '#ff8a01',
   },
   iconButtonStyle: {
     color: '#fff',
-    width: 40,
-    height: 40,
+    width: '80%',
+    height: '80%',
   },
   playerWeb: {
     width: 800,

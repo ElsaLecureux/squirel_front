@@ -1,10 +1,14 @@
 // add lauching animation
-import { View, StyleSheet, Text } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { YStack, View, Image, Spinner } from 'tamagui';
 
 export default function LoadingScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Loading...</Text>
+      <YStack>
+        <Image width={80} height={80} source={require('../assets/images/squirrelLogo.png')}></Image>
+        <Spinner size={'large'} color="$orange10" />
+      </YStack>
     </View>
   );
 }
@@ -12,11 +16,8 @@ export default function LoadingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: '#FFF',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  text: {
-    color: '#ffffff',
   },
 });
