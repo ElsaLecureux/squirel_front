@@ -53,7 +53,11 @@ export default function PlayroomScreen({ navigation }: Readonly<Props>) {
         <Animated.View style={{ transform: [{ rotate }] }}>
           <FontAwesomeIcon
             icon={faHeadphones}
-            style={{ color: '#ff8a01', width: 80, height: 80 }}
+            width={80}
+            height={80}
+            $sm={{ width: 40, height: 40 }}
+            $md={{ width: 60, height: 60 }}
+            $lg={{ width: 80, height: 80 }}
           />
         </Animated.View>
       </TouchableOpacity>

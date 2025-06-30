@@ -66,7 +66,6 @@ export default function HomeScreen({ navigation }: Readonly<Props>) {
             $sm={{ width: 60, height: 100 }}
             $md={{ width: 80, height: 120 }}
             $lg={{ width: 100, height: 140 }}
-            $xl={{ width: 120, height: 160 }}
           />
         </Animated.View>
       </TouchableOpacity>

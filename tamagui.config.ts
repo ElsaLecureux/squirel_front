@@ -1,7 +1,15 @@
 import { config } from '@tamagui/config/v3';
 import { createTamagui } from 'tamagui';
 
-export const tamaguiConfig = createTamagui(config);
+const tamaguiConfig = createTamagui({
+  ...config,
+  media: {
+    xs: { maxWidth: 750 },
+    sm: { minWidth: 751, maxWidth: 930 },
+    md: { minWidth: 931, maxWidth: 1050 },
+    lg: { minWidth: 1051, maxWidth: 2500 },
+  },
+});
 
 export default tamaguiConfig;
 

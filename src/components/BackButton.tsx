@@ -14,7 +14,7 @@ export default function BackButton({ navigation }: Readonly<Props>) {
       height={50}
       variant="outlined"
       borderColor="#ff8a01"
-      onPress={() => navigation.goBack()}
+      onPress={() => navigation.navigate('Home')}
     >
       <FontAwesomeIcon
         icon={faArrowCircleLeft}

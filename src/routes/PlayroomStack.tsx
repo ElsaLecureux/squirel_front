@@ -4,7 +4,6 @@ import PlayroomScreen from '../screens/PlayRoomScreen/PlayroomScreen';
 import LibraryScreen from '../screens/LibraryScreen/LibraryScreen';
 import KitchenScreen from '../screens/KitchenScreen/KitchenScreen';
 import { PlayroomStackParamList } from '../types/navigationTypes';
-import { ProfileButton } from '../components/ProfileButton';
 import BackButton from '../components/BackButton';
 import { View } from 'tamagui';
 import { StyleSheet } from 'react-native';
@@ -26,7 +25,6 @@ export default function PlayroomStack() {
         options={({ navigation }) => ({
           title: 'Playroom',
           headerTitle: () => null,
-          headerRight: () => <ProfileButton navigation={navigation} />,
           headerBackTitleVisible: false,
           headerLeft: () => (
             <View style={styles.headerLeft}>
@@ -41,7 +39,6 @@ export default function PlayroomStack() {
         options={({ navigation }) => ({
           title: 'Kitchen',
           headerTitle: () => null,
-          headerRight: () => <ProfileButton navigation={navigation} />,
           headerBackTitleVisible: false,
           headerLeft: () => (
             <View style={styles.headerLeft}>
@@ -56,7 +53,6 @@ export default function PlayroomStack() {
         options={({ navigation }) => ({
           title: 'Library',
           headerTitle: () => null,
-          headerRight: () => <ProfileButton navigation={navigation} />,
           headerBackTitleVisible: false,
           headerLeft: () => (
             <View style={styles.headerLeft}>

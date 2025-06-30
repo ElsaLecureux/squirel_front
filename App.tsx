@@ -2,7 +2,7 @@ import { UserProvider } from './src/context/UserContext';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
 import { TamaguiProvider } from 'tamagui';
-import config from './tamagui.config';
+import tamaguiConfig from './tamagui.config';
 
 import { Platform, useColorScheme } from 'react-native';
 import * as ScreenOrientation from 'expo-screen-orientation';
@@ -85,7 +85,7 @@ export default function App() {
   }
 
   return (
-    <TamaguiProvider config={config} defaultTheme={colorScheme!}>
+    <TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme!}>
       <ApolloProvider client={client}>
         <NavigationContainer linking={linking}>
           <ToastProvider>
