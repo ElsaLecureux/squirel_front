@@ -25,14 +25,12 @@ export default function MemoryScreen() {
   const [dataLoading, setDataLoading] = useState(true);
   const style_modal_bottom = false;
   const [animalCardVisible, setAnimalCardVisible] = useState(false);
-  const [endGameVisible, setEndGameVisible] = useState(true);
+  const [endGameVisible, setEndGameVisible] = useState(false);
   const [visibleCards, setVisibleCards] = useState<boolean[]>(new Array(12).fill(false));
   const [gameInitialized, setGameInitialized] = useState(false);
   const API_URL = `${URL_BACKEND_SQUIREL}/gamePlay`;
   const gameId = 1;
 
-  //todo refacto to have only one function accepting Animal OR Card
-  //todo verify what happen when no gameplay or first game
   const shuffleAnimals = (animals: Animal[]) => {
     for (let i = animals.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));

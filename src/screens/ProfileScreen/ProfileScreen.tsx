@@ -1,5 +1,5 @@
 import { Platform, ImageBackground, StyleSheet } from 'react-native';
-import { Text, YStack, XStack, Image, Input, Label, Button, Form, Stack, View } from 'tamagui';
+import { Text, Image, Input, Label, Button, Form, Stack, View, Spinner } from 'tamagui';
 import { useUser } from '../../context/UserContext';
 
 import { useEffect, useState } from 'react';
@@ -9,6 +9,8 @@ import CustomModal from '@/src/components/CustomModal/CustomModal';
 import { UserDto } from '@/src/Dto/UserDto';
 import { URL_BACKEND_SQUIREL } from '@env';
 import axiosInstance from '@/src/utils/axiosInstance';
+import { RotationWarning } from '@/src/components/rotatingWarning/RotatingWarning';
+import { useScreenOrientation } from '@/src/utils/useScreenOrientation';
 
 export default function ProfileScreen() {
   const API_URL = URL_BACKEND_SQUIREL;
@@ -26,6 +28,7 @@ export default function ProfileScreen() {
   const style_modal_bottom = false;
   const [errorMessage, setErrorMessage] = useState<string>();
   const [confirmPassword, setConfirmPassword] = useState<string>();
+  const { isLandscape, isMobile } = useScreenOrientation();
 
   useEffect(() => {
     const getInfosUser = async () => {
@@ -69,6 +72,7 @@ export default function ProfileScreen() {
       }));
     }
   };
+
   const handleNewPassword = () => {
     setUserDto((prevState) => ({
       ...prevState,
@@ -136,238 +140,262 @@ export default function ProfileScreen() {
   if (!isReady)
     return (
       <View>
-        <Text>Loading ...</Text>
+        <Image
+          width={80}
+          height={80}
+          source={require('../../assets/images/squirrelLogo.png')}
+        ></Image>
+        <Spinner size={'large'} color="$orange10" />
       </View>
     );
   return (
     <ImageBackground
       style={styles.pageContainer}
-      source={require('../../assets/images/profileScreen.jpg')}
+      source={
+        isMobile
+          ? require('../../assets/images/profileScreenPortrait.jpg')
+          : require('../../assets/images/profileScreen.jpg')
+      }
     >
-      <YStack gap={15}>
-        <XStack justifyContent="center" alignContent="center" marginBottom={40}>
-          <Text fontFamily="MysteryQuest_400Regular" style={styles.title} fontSize={30}>
-            Welcome {userInfo?.username}!
-          </Text>
-        </XStack>
-        <XStack gap={25}>
-          <Stack style={styles.containerAvatar}>
-            <Image style={styles.avatar} source={require('../../assets/images/avatar1.png')} />
-          </Stack>
-          <YStack justifyContent="center" gap={15}>
-            <Text fontFamily="BubblegumSans_400Regular" color={'#fff'} fontSize={20}>
-              Username: {userInfo?.username}
-            </Text>
-            <Text fontFamily="BubblegumSans_400Regular" color={'#fff'} fontSize={20}>
-              Email: {userInfo?.email}
-            </Text>
-          </YStack>
-        </XStack>
-        <XStack gap={15} alignItems="center">
-          <Text fontFamily="BubblegumSans_400Regular" fontSize={20} color={'#fff'}>
-            Trophies:
-          </Text>
-          {userPlayGame.map((game) => (
-            <XStack gap={15} key={game.gameid}>
-              {game.avatar && game.numberoftimewon > 0 ? (
-                <XStack style={styles.containerTrophy}>
-                  <Image
-                    key={game.avatar}
-                    style={styles.trophy}
-                    source={{ uri: `${game.avatar.replace(/[\r\n]+/g, '')}` }}
-                  />
-                </XStack>
-              ) : null}
-              {game.avatargold && game.numberoftimewon >= 5 ? (
-                <XStack style={styles.containerTrophyGolden}>
-                  <Image
-                    key={game.avatargold}
-                    style={styles.trophy}
-                    source={{ uri: `${game.avatargold.replace(/[\r\n]+/g, '')}` }}
-                  />
-                </XStack>
-              ) : null}
-            </XStack>
-          ))}
-        </XStack>
-        <YStack alignItems="center">
-          <Button
-            size="$5"
-            variant="outlined"
-            borderColor="#FF8A01"
-            onPress={() => changeInfosButton()}
-          >
-            <Text fontFamily="MysteryQuest_400Regular" color={'#fff'} fontSize={18}>
-              Change infos
-            </Text>
-          </Button>
-          <Button size="$5" variant="outlined" borderColor="#FF8A01" onPress={() => signOut()}>
-            <Text fontFamily="MysteryQuest_400Regular" color={'#fff'} fontSize={18}>
-              Sign Out
-            </Text>
-          </Button>
-        </YStack>
-        <CustomModal
-          style_modal={style_modal_bottom}
-          setModalVisible={setModalVisible}
-          modalVisible={modalVisible}
+      {isLandscape && <RotationWarning />}
+      <Stack gap={'2%'} justifyContent="center" alignContent="center">
+        <Text
+          marginBottom={'15%'}
+          fontFamily="MysteryQuest_400Regular"
+          color="#ffa358"
+          textAlign="center"
+          $xs={{ fontSize: 40 }}
+          $sm={{ fontSize: 50 }}
+          $md={{ fontSize: 60 }}
+          $lg={{ fontSize: 70 }}
         >
-          <Form
-            width="100%"
-            paddingRight="8%"
-            paddingLeft="8%"
-            style={styles.modalView}
-            gap="$3"
-            onSubmit={() => onFormSubmit()}
-          >
-            <YStack gap="$3">
-              <XStack gap="$3" justifyContent="center" alignItems="center">
-                <YStack width="40%" justifyContent="center" alignItems="center">
-                  <Label htmlFor="username" lineHeight={16}>
-                    <Text
-                      fontSize={Platform.OS === 'web' ? 25 : 16}
-                      color="#fff"
-                      fontFamily="BubblegumSans_400Regular"
-                    >
-                      Username
-                    </Text>
-                  </Label>
-                </YStack>
-                <Input
-                  id="username"
-                  value={userDto.username}
-                  onChangeText={(text) => handleInputChange('username', text)}
-                  autoCapitalize="none"
-                  maxLength={30}
-                  size={Platform.OS === 'web' ? '$5' : '$3'}
-                  flex={1}
-                />
-              </XStack>
-              <XStack gap="$3" justifyContent="center" alignItems="center">
-                <YStack width="40%" justifyContent="center" alignItems="center">
-                  <Label htmlFor="email" lineHeight={16}>
-                    <Text
-                      fontSize={Platform.OS === 'web' ? 25 : 16}
-                      color="#fff"
-                      fontFamily="BubblegumSans_400Regular"
-                    >
-                      Email
-                    </Text>
-                  </Label>
-                </YStack>
-                <Input
-                  id="email"
-                  value={userDto.email}
-                  onChangeText={(text) => handleInputChange('email', text)}
-                  autoCapitalize="none"
-                  maxLength={150}
-                  flex={1}
-                  size={Platform.OS === 'web' ? '$5' : '$3'}
-                ></Input>
-              </XStack>
-              <XStack gap="$3" justifyContent="center" alignItems="center">
-                <YStack width="40%" justifyContent="center" alignItems="center">
-                  <Label htmlFor="password">
-                    <Text
-                      fontSize={Platform.OS === 'web' ? 25 : 16}
-                      color="#fff"
-                      fontFamily="BubblegumSans_400Regular"
-                    >
-                      Password
-                    </Text>
-                  </Label>
-                </YStack>
-                <Input
-                  id="password"
-                  value={userDto.password}
-                  onChangeText={(text) => handleInputChange('password', text)}
-                  secureTextEntry
-                  maxLength={30}
-                  autoCorrect={false}
-                  autoComplete="off"
-                  size={Platform.OS === 'web' ? '$5' : '$3'}
-                  flex={1}
-                ></Input>
-              </XStack>
-              <XStack gap="$3" justifyContent="center" alignItems="center">
-                <YStack width="40%" justifyContent="center" alignItems="center">
-                  <Label htmlFor="newPassword">
-                    <Text
-                      fontSize={Platform.OS === 'web' ? 25 : 16}
-                      color="#fff"
-                      fontFamily="BubblegumSans_400Regular"
-                    >
-                      New password
-                    </Text>
-                  </Label>
-                </YStack>
-                <Input
-                  id="newPassword"
-                  value={userDto.newPassword}
-                  onChangeText={(text) => handleInputChange('newPassword', text)}
-                  secureTextEntry
-                  maxLength={30}
-                  autoCorrect={false}
-                  autoComplete="off"
-                  size={Platform.OS === 'web' ? '$5' : '$3'}
-                  flex={1}
-                ></Input>
-              </XStack>
-              <XStack gap="$3" justifyContent="center" alignItems="center">
-                <YStack width="40%" justifyContent="center" alignItems="center">
-                  <Label htmlFor="newPasswordConfirmation">
-                    <Text
-                      fontSize={Platform.OS === 'web' ? 25 : 16}
-                      color="#fff"
-                      fontFamily="BubblegumSans_400Regular"
-                    >
-                      Confirm new password
-                    </Text>
-                  </Label>
-                </YStack>
-                <Input
-                  id="newPasswordConfirmation"
-                  value={confirmPassword}
-                  onChangeText={(text) => handleInputChange('confirmPassword', text)}
-                  secureTextEntry
-                  maxLength={30}
-                  autoCorrect={false}
-                  autoComplete="off"
-                  size={Platform.OS === 'web' ? '$5' : '$3'}
-                  flex={1}
-                />
-              </XStack>
-              {errorMessage ? <Text>{errorMessage}</Text> : null}
-              <XStack gap={30} alignItems="center" justifyContent="center">
-                <Form.Trigger asChild>
-                  <Button size={Platform.OS === 'web' ? '$5' : '$3'} backgroundColor="#FFF">
-                    <Text
-                      color="#FF8A01"
-                      fontFamily="MysteryQuest_400Regular"
-                      fontSize={Platform.OS === 'web' ? 25 : 16}
-                    >
-                      Save
-                    </Text>
-                  </Button>
-                </Form.Trigger>
-                <Button
-                  size={Platform.OS === 'web' ? '$5' : '$3'}
-                  style={styles.modalCloseButton}
-                  onPress={() => setModalVisible(false)}
+          Bienvenue {userInfo?.username}!
+        </Text>
+        <Stack>
+          <Stack gap={'5%'}>
+            <Stack justifyContent="center" gap={'2%'}>
+              <Stack justifyContent="center" gap={'2%'}>
+                <Text
+                  fontFamily="BubblegumSans_400Regular"
+                  color={'#fff'}
+                  $xs={{ fontSize: 20 }}
+                  $sm={{ fontSize: 25 }}
+                  $md={{ fontSize: 30 }}
+                  $lg={{ fontSize: 35 }}
                 >
-                  <Text
-                    color="#FF8A01"
-                    fontFamily="MysteryQuest_400Regular"
-                    fontSize={Platform.OS === 'web' ? 25 : 16}
-                  >
-                    Close
-                  </Text>
-                </Button>
-              </XStack>
-            </YStack>
-          </Form>
-        </CustomModal>
-      </YStack>
+                  Identifiant:
+                </Text>
+                <Text
+                  fontFamily="BubblegumSans_400Regular"
+                  color={'#fff'}
+                  $xs={{ fontSize: 30 }}
+                  $sm={{ fontSize: 35 }}
+                  $md={{ fontSize: 40 }}
+                  $lg={{ fontSize: 45 }}
+                >
+                  {userInfo?.username}
+                </Text>
+              </Stack>
+
+              <Stack justifyContent="center" gap={'2%'}>
+                <Text
+                  fontFamily="BubblegumSans_400Regular"
+                  color={'#fff'}
+                  $xs={{ fontSize: 20 }}
+                  $sm={{ fontSize: 25 }}
+                  $md={{ fontSize: 30 }}
+                  $lg={{ fontSize: 35 }}
+                >
+                  Email:
+                </Text>
+                <Text
+                  fontFamily="BubblegumSans_400Regular"
+                  color={'#fff'}
+                  $xs={{ fontSize: 30 }}
+                  $sm={{ fontSize: 35 }}
+                  $md={{ fontSize: 40 }}
+                  $lg={{ fontSize: 45 }}
+                >
+                  {userInfo?.email}
+                </Text>
+              </Stack>
+            </Stack>
+          </Stack>
+        </Stack>
+        <Stack flexDirection="column">
+          <Stack gap={'2%'} alignItems="center" flexDirection="row">
+            <Text
+              fontFamily="BubblegumSans_400Regular"
+              $xs={{ fontSize: 30 }}
+              $sm={{ fontSize: 35 }}
+              $md={{ fontSize: 40 }}
+              $lg={{ fontSize: 45 }}
+              color={'#fff'}
+            >
+              Trophées:
+            </Text>
+            {userPlayGame.map((game) => (
+              <Stack gap="1%" key={game.gameid} flexDirection="row">
+                {game.avatar && game.numberoftimewon > 0 ? (
+                  <Stack style={styles.containerTrophy}>
+                    <Image
+                      key={game.avatar}
+                      style={styles.trophy}
+                      source={{ uri: `${game.avatar.replace(/[\r\n]+/g, '')}` }}
+                    />
+                  </Stack>
+                ) : null}
+                {game.avatargold && game.numberoftimewon >= 5 ? (
+                  <Stack style={styles.containerTrophyGolden}>
+                    <Image
+                      key={game.avatargold}
+                      style={styles.trophy}
+                      source={{ uri: `${game.avatargold.replace(/[\r\n]+/g, '')}` }}
+                    />
+                  </Stack>
+                ) : null}
+              </Stack>
+            ))}
+          </Stack>
+          <Stack alignItems="center">
+            <Button
+              size="$5"
+              variant="outlined"
+              borderColor="#FF8A01"
+              onPress={() => changeInfosButton()}
+            >
+              <Text fontFamily="MysteryQuest_400Regular" color={'#fff'} fontSize={18}>
+                Change tes infos
+              </Text>
+            </Button>
+            <Button size="$5" variant="outlined" borderColor="#FF8A01" onPress={() => signOut()}>
+              <Text fontFamily="MysteryQuest_400Regular" color={'#fff'} fontSize={18}>
+                Quitter le jeu
+              </Text>
+            </Button>
+          </Stack>
+        </Stack>
+      </Stack>
+
+      <CustomModal
+        style_modal={style_modal_bottom}
+        setModalVisible={setModalVisible}
+        modalVisible={modalVisible}
+      >
+        <Form
+          backgroundColor="rgba(0, 0, 0, 0.34)"
+          width="100%"
+          style={styles.modalView}
+          gap="2%"
+          onSubmit={() => onFormSubmit()}
+        >
+          <Stack gap="$3" width="auto" justifyContent="center" alignItems="center">
+            <Label htmlFor="username">
+              <Text fontSize={25} color="#fff" fontFamily="BubblegumSans_400Regular">
+                Identifiant
+              </Text>
+            </Label>
+            <Input
+              id="username"
+              value={userDto.username}
+              onChangeText={(text) => handleInputChange('username', text)}
+              autoCapitalize="none"
+              size="auto"
+            />
+          </Stack>
+          <Stack gap="2%" width="auto" justifyContent="center" alignItems="center">
+            <Label htmlFor="email">
+              <Text fontSize={25} color="#fff" fontFamily="BubblegumSans_400Regular">
+                Email
+              </Text>
+            </Label>
+            <Input
+              id="email"
+              value={userDto.email}
+              onChangeText={(text) => handleInputChange('email', text)}
+              autoCapitalize="none"
+              size="auto"
+            ></Input>
+          </Stack>
+          <Stack gap="2%" width="auto" justifyContent="center" alignItems="center">
+            <Label htmlFor="password">
+              <Text
+                fontSize={Platform.OS === 'web' ? 25 : 16}
+                color="#fff"
+                fontFamily="BubblegumSans_400Regular"
+              >
+                Mot de passe
+              </Text>
+            </Label>
+            <Input
+              id="password"
+              value={userDto.password}
+              onChangeText={(text) => handleInputChange('password', text)}
+              secureTextEntry
+              autoCorrect={false}
+              autoComplete="off"
+              size="auto"
+            />
+          </Stack>
+          <Stack gap="2%" width="auto" justifyContent="center" alignItems="center">
+            <Label htmlFor="newPassword">
+              <Text fontSize={25} color="#fff" fontFamily="BubblegumSans_400Regular">
+                Nouveau mot de passe
+              </Text>
+            </Label>
+            <Input
+              id="newPassword"
+              value={userDto.newPassword}
+              onChangeText={(text) => handleInputChange('newPassword', text)}
+              secureTextEntry
+              autoCorrect={false}
+              autoComplete="off"
+              size="auto"
+            />
+          </Stack>
+          <Stack
+            paddingTop={'2%'}
+            gap="2%"
+            width="auto"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Label htmlFor="newPasswordConfirmation">
+              <Text fontSize={25} color="#fff" fontFamily="BubblegumSans_400Regular">
+                Confirmation du nouveau mot de passe
+              </Text>
+            </Label>
+            <Input
+              id="newPasswordConfirmation"
+              value={confirmPassword}
+              onChangeText={(text) => handleInputChange('confirmPassword', text)}
+              secureTextEntry
+              autoCorrect={false}
+              autoComplete="off"
+              size="auto"
+            />
+          </Stack>
+          {errorMessage ? <Text>{errorMessage}</Text> : null}
+          <Stack paddingTop={'2%'} gap="3%" alignItems="center" justifyContent="center">
+            <Form.Trigger asChild>
+              <Button size={'2%'} backgroundColor="#FFF">
+                <Text color="#FF8A01" fontFamily="MysteryQuest_400Regular" fontSize={25}>
+                  Sauver
+                </Text>
+              </Button>
+            </Form.Trigger>
+            <Button
+              size={'4%'}
+              style={styles.modalCloseButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text color="#FF8A01" fontFamily="MysteryQuest_400Regular" fontSize={25}>
+                Fermer
+              </Text>
+            </Button>
+          </Stack>
+        </Form>
+      </CustomModal>
     </ImageBackground>
   );
 }
@@ -381,20 +409,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  title: {
-    color: '#ffa358',
-  },
-  containerAvatar: {
-    borderColor: '#FF8A01',
+  avatar: {
     borderRadius: 20,
     borderWidth: 4,
-    height: 120,
-    width: 120,
-  },
-  avatar: {
-    height: '100%',
-    width: '100%',
-    borderRadius: 20,
   },
   containerTrophy: {
     borderColor: '#FF8A01',
@@ -418,11 +435,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   modalView: {
-    height: 500,
-    width: 600,
-    backgroundColor: '#ff8a01',
     borderRadius: 20,
-    padding: 35,
     alignItems: 'center',
     justifyContent: 'center',
   },
