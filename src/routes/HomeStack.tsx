@@ -36,7 +36,6 @@ export default function HomeStack() {
         options={({ navigation }) => ({
           title: 'Memory',
           headerTitle: () => null,
-          headerRight: () => <ProfileButton navigation={navigation} />,
           headerBackTitleVisible: false,
           headerLeft: () => (
             <View style={styles.headerLeft}>
@@ -51,7 +50,6 @@ export default function HomeStack() {
         options={({ navigation }) => ({
           title: 'Profile',
           headerTitle: () => null,
-          headerRight: () => <ProfileButton navigation={navigation} />,
           headerBackTitleVisible: false,
           headerLeft: () => (
             <View style={styles.headerLeft}>

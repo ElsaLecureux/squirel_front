@@ -1,8 +1,6 @@
 import { Animated, Easing, ImageBackground, TouchableOpacity } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { Image } from 'tamagui';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faHeadphones } from '@fortawesome/free-solid-svg-icons/faHeadphones';
+import { Image, useMedia } from 'tamagui';
 import { useEffect, useRef } from 'react';
 import { PlayroomStackParamList } from '@/src/types/navigationTypes';
 import { styles } from './PlayroomStyle';
@@ -14,6 +12,9 @@ type Props = {
 };
 
 export default function PlayroomScreen({ navigation }: Readonly<Props>) {
+  const media = useMedia();
+
+  const signHeight = media.sm ? 80 : media.md ? 120 : 150;
   const spinValue = useRef(new Animated.Value(0)).current;
   const rotate = spinValue.interpolate({
     inputRange: [0, 0.5, 1],
@@ -33,8 +34,6 @@ export default function PlayroomScreen({ navigation }: Readonly<Props>) {
     spin();
   }, [spinValue]);
 
-  //todo wooden sign for the kictehn with the ani,ation for library and change animation library for size growing and shrinking
-
   return (
     <ImageBackground
       style={styles.pageContainer}
@@ -42,20 +41,32 @@ export default function PlayroomScreen({ navigation }: Readonly<Props>) {
       resizeMode="stretch"
     >
       <TouchableOpacity style={styles.kitchen} onPress={() => navigation.navigate('Kitchen')}>
-        <Animated.View style={{ transform: [{ rotate }] }}>
+        <Animated.View
+          style={{
+            transform: [
+              { translateY: -signHeight / 2 },
+              { rotate },
+              { translateY: signHeight / 2 },
+            ],
+          }}
+        >
           <Image
             source={require('../../assets/images/woodenSignKitchen.png')}
-            style={{ width: 150, height: 150 }}
+            $sm={{ width: 80, height: 80 }}
+            $md={{ width: 120, height: 120 }}
+            $lg={{ width: 150, height: 150 }}
           />
         </Animated.View>
       </TouchableOpacity>
       <TouchableOpacity style={styles.headPhones} onPress={() => navigation.navigate('Library')}>
-        <Animated.View style={{ transform: [{ rotate }] }}>
-          <FontAwesomeIcon
-            icon={faHeadphones}
-            style={{ color: '#ff8a01', width: 80, height: 80 }}
-          />
-        </Animated.View>
+        <Image
+          source={require('../../assets/images/headphones.gif')}
+          width={80}
+          height={80}
+          $sm={{ width: 60, height: 60 }}
+          $md={{ width: 80, height: 80 }}
+          $lg={{ width: 100, height: 100 }}
+        />
       </TouchableOpacity>
     </ImageBackground>
   );

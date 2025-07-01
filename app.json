@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#FFE5CC"
     },
     "newArchEnabled": true,
     "ios": {
@@ -24,7 +24,7 @@
       "package": "com.exam.squirel",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#FFE5CC"
       }
     },
     "androidNavigationBar": {

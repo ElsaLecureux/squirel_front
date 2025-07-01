@@ -1,8 +1,8 @@
-import { Platform, ImageBackground, StyleSheet } from 'react-native';
+import { ImageBackground, StyleSheet } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as SplashScreen from 'expo-splash-screen';
 import { MedievalSharp_400Regular } from '@expo-google-fonts/medievalsharp';
-import { XStack, YStack, Text, Button, Form, Label, Input } from 'tamagui';
+import { Text, Button, Form, Label, Input, Stack } from 'tamagui';
 import * as SecureStore from 'expo-secure-store';
 import React, { useEffect, useState } from 'react';
 import { useFonts } from 'expo-font';
@@ -14,6 +14,8 @@ import { SignInSchema } from '@/src/schemas/signInSchema';
 import { treeifyError } from 'zod/v4';
 import { ValidationResultSignIn } from '@/src/types/validation';
 import { UserToasterErrors, Toaster } from '../../utils/toaster';
+import { RotationWarning } from '@/src/components/rotatingWarning/RotatingWarning';
+import { useScreenOrientation } from '@/src/utils/useScreenOrientation';
 
 type SignInScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SignIn'>;
 
@@ -31,6 +33,7 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState<{ username?: string; password?: string }>({});
+  const { isLandscape, isMobile } = useScreenOrientation();
 
   useEffect(() => {
     if (loaded) {
@@ -91,120 +94,105 @@ export default function SignInScreen({ navigation }: Readonly<Props>) {
   return (
     <ImageBackground
       style={styles.pageContainer}
-      source={require('../../assets/images/welcomeScreen.jpg')}
+      source={
+        isMobile
+          ? require('../../assets/images/welcomeScreenPortrait.jpg')
+          : require('../../assets/images/welcomeScreen.jpg')
+      }
     >
-      <YStack
-        flex={Platform.OS === 'web' ? 0.3 : 1.2}
+      {isLandscape && <RotationWarning />}
+
+      <Stack
         justifyContent="center"
         alignItems="center"
-        backgroundColor="rgba(177, 176, 176, 0.27)"
+        backgroundColor="rgba(0, 0, 0, 0.18)"
         borderRadius={30}
-        paddingTop="2%"
-        paddingBottom="2%"
-        marginLeft={Platform.OS === 'web' ? '15%' : '5%'}
-        marginTop="3%"
-        marginBottom="3%"
+        marginLeft={isMobile ? '0%' : '15%'}
+        maxWidth={600}
+        alignSelf="center"
+        width={'100%'}
+        padding={'$3'}
       >
-        <Text fontSize={35} fontFamily="MedievalSharp-Regular" color="#fff">
-          Welcome Back !
+        <Text fontSize={45} fontFamily="MysteryQuest_400Regular" color="#fff" marginBottom="$2">
+          À l'aventure !
         </Text>
         <Form
-          width="100%"
-          paddingRight="8%"
-          paddingLeft="8%"
-          gap="$3"
+          flex={1}
+          width={'100%'}
+          gap="$1"
           onSubmit={() => {
             onFormSubmit();
           }}
         >
-          <XStack gap="$3" justifyContent="center" alignItems="center">
-            <YStack width="40%" justifyContent="center" alignItems="center">
-              <Label htmlFor="username">
-                <Text
-                  fontSize={Platform.OS === 'web' ? 25 : 16}
-                  color="#fff"
-                  fontFamily="MedievalSharp-Regular"
-                >
-                  Username
+          <Stack gap="$1" maxHeight={120}>
+            <Label htmlFor="username">
+              <Text fontSize={25} color="#fff" fontFamily="BubblegumSans_400Regular" width="100%">
+                Identifiant
+              </Text>
+            </Label>
+
+            <Input
+              id="username"
+              value={username}
+              onChangeText={setUsername}
+              autoCapitalize="none"
+              size="auto"
+            />
+            {errorMessage.username && (
+              <Text color="red" fontSize={12} marginTop={4}>
+                {errorMessage.username}
+              </Text>
+            )}
+          </Stack>
+          <Stack gap="$1" maxHeight={120}>
+            <Label htmlFor="password">
+              <Text fontSize={25} color="#fff" fontFamily="BubblegumSans_400Regular">
+                Mot de passe
+              </Text>
+            </Label>
+
+            <Input
+              id="password"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              autoCorrect={false}
+              autoComplete="off"
+              size="auto"
+            />
+            {errorMessage.password && (
+              <Text color="red" fontSize={12} marginTop={4}>
+                {errorMessage.password}
+              </Text>
+            )}
+          </Stack>
+          <Stack gap="$3" marginTop="$5">
+            <Form.Trigger asChild>
+              <Button size="auto" backgroundColor="#FF8A01">
+                <Text color="#fff" fontFamily="BubblegumSans_400Regular" fontSize={25}>
+                  Se connecter
                 </Text>
-              </Label>
-            </YStack>
-            <YStack>
-              <Input
-                id="username"
-                value={username}
-                onChangeText={setUsername}
-                autoCapitalize="none"
-                maxLength={30}
-                size={Platform.OS === 'web' ? '$5' : '$3'}
-                flex={1}
-              />
-              {errorMessage.username && (
-                <Text color="red" fontSize={12} marginTop={4}>
-                  {errorMessage.username}
-                </Text>
-              )}
-            </YStack>
-          </XStack>
-          <XStack gap="$3" justifyContent="center" alignItems="center">
-            <YStack width="40%" justifyContent="center" alignItems="center">
-              <Label htmlFor="password">
-                <Text
-                  fontSize={Platform.OS === 'web' ? 25 : 16}
-                  color="#fff"
-                  fontFamily="MedievalSharp-Regular"
-                >
-                  Password
-                </Text>
-              </Label>
-            </YStack>
-            <YStack>
-              <Input
-                id="password"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-                maxLength={30}
-                autoCorrect={false}
-                autoComplete="off"
-                size={Platform.OS === 'web' ? '$5' : '$3'}
-                flex={1}
-              />
-              {errorMessage.password && (
-                <Text color="red" fontSize={12} marginTop={4}>
-                  {errorMessage.password}
-                </Text>
-              )}
-            </YStack>
-          </XStack>
-          <Form.Trigger asChild>
-            <Button size={Platform.OS === 'web' ? '$5' : '$3'} backgroundColor="#FF8A01">
+              </Button>
+            </Form.Trigger>
+            <Button
+              size="auto"
+              variant="outlined"
+              borderColor="#FF8A01"
+              onPress={() => navigation.navigate('SignUp')}
+            >
               <Text
-                color="#fff"
-                fontFamily="MedievalSharp-Regular"
-                fontSize={Platform.OS === 'web' ? 25 : 16}
+                color="#FFF"
+                fontFamily="BubblegumSans_400Regular"
+                fontSize={20}
+                textAlign="center"
               >
-                Sign In
+                Pas de compte? Inscrivez-vous
               </Text>
             </Button>
-          </Form.Trigger>
-          <Button
-            size={Platform.OS === 'web' ? '$5' : '$3'}
-            variant="outlined"
-            borderColor="#FF8A01"
-            onPress={() => navigation.navigate('SignUp')}
-          >
-            <Text
-              color="#FFF"
-              fontFamily="MedievalSharp-Regular"
-              fontSize={Platform.OS === 'web' ? 25 : 16}
-            >
-              Don't have an account? Sign up
-            </Text>
-          </Button>
+          </Stack>
         </Form>
-      </YStack>
-      <Toaster />
+      </Stack>
+      <Toaster key={'signInToaster'} />
     </ImageBackground>
   );
 }
