@@ -1,15 +1,14 @@
 import axios from 'axios';
 import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
-//import { URL_BACKEND_SQUIREL } from '@env';
+import { URL_BACKEND_SQUIREL } from '@env';
 
 const isMobile = Platform.OS === 'ios' || Platform.OS === 'android';
 
-const baseURL = isMobile ? 'http://192.168.1.111:3000' : 'http://localhost:3000';
-// chang in prod const API_URL = URL_BACKEND_SQUIREL;
+const API_URL = URL_BACKEND_SQUIREL;
 
 const axiosInstance = axios.create({
-  baseURL: baseURL,
+  baseURL: API_URL,
   withCredentials: !isMobile,
 });
 
