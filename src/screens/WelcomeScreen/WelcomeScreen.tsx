@@ -1,18 +1,17 @@
-import { Platform, ImageBackground, Image } from 'react-native';
+import { Platform, ImageBackground } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { styles } from './WelcomeScreenStyle';
 
-import { Button, Text, YStack, XStack } from 'tamagui';
+import { Button, Text, YStack, XStack, Image } from 'tamagui';
 import { useUser } from '../../context/UserContext';
 import type { RootStackParamList } from '../../types/navigationTypes';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Welcome'>;
 
 export default function WelcomeScreen({ navigation }: Readonly<Props>) {
-  const { checkIfSignedIn } = useUser();
+  const { isSignedIn } = useUser();
 
   const handleAuthCheck = async () => {
-    const isSignedIn = await checkIfSignedIn();
     if (isSignedIn) {
       navigation.navigate('HomeStack', { screen: 'Home' });
     } else {
@@ -26,25 +25,47 @@ export default function WelcomeScreen({ navigation }: Readonly<Props>) {
       source={require('../../assets/images/welcomeScreen.jpg')}
     >
       <XStack flex={1}>
-        <YStack flex={2} justifyContent="center" alignItems="flex-start" paddingLeft="2%">
-          <Image
-            style={styles.titleWelcomePage}
-            source={require('../../assets/images/titleWelcomePage3.png')}
-          />
-          <YStack alignItems="center" width="100%" paddingTop="5%">
+        <YStack width="66%" height="100%" position="relative">
+          <YStack flex={1} justifyContent="center" alignItems="center">
+            <Image
+              source={require('../../assets/images/squirelTitle.png')}
+              aspectRatio={759 / 303}
+              maxWidth={Platform.OS === 'web' ? 700 : 320}
+              width={Platform.OS === 'web' ? '70%' : '90%'}
+              $sm={{ width: '85%', maxWidth: 350 }}
+              $md={{ width: '70%', maxWidth: 500 }}
+              $lg={{ width: '65%', maxWidth: 650 }}
+              resizeMode="contain"
+            />
+          </YStack>
+          <YStack
+            position="absolute"
+            left={0}
+            right={0}
+            alignItems="center"
+            bottom={Platform.OS === 'web' ? '15%' : '10%'}
+          >
             <Button
-              size={Platform.OS === 'web' ? '$8' : '$5'}
-              variant="outlined"
-              borderColor="#FF8A01"
+              backgroundColor="#FF8A01"
               width="auto"
               onPress={handleAuthCheck}
+              hoverStyle={{
+                backgroundColor: '#FF5F1F',
+              }}
+              size="$9"
+              $sm={{ size: '$5' }}
+              $md={{ size: '$7' }}
+              $lg={{ size: '$9' }}
             >
               <Text
-                fontSize={Platform.OS === 'web' ? 38 : 24}
-                fontFamily="MedievalSharp_400Regular"
-                color="#FF8A01"
+                fontFamily="MysteryQuest_400Regular"
+                color="#FFF"
+                fontSize={42}
+                $sm={{ fontSize: 24 }}
+                $md={{ fontSize: 36 }}
+                $lg={{ fontSize: 42 }}
               >
-                Play
+                Jouer
               </Text>
             </Button>
           </YStack>

@@ -3776,7 +3776,8 @@
             "componentName": "Avatar",
             "isReactNative": false,
             "isText": false,
-            "isStyledHOC": false
+            "isStyledHOC": false,
+            "memo": true
           }
         },
         "Button": {
@@ -19414,7 +19415,8 @@
             "componentName": "Square",
             "isReactNative": false,
             "isText": false,
-            "isStyledHOC": false
+            "isStyledHOC": false,
+            "memo": true
           }
         },
         "Circle": {
@@ -19720,7 +19722,8 @@
             "componentName": "Circle",
             "isReactNative": false,
             "isText": false,
-            "isStyledHOC": false
+            "isStyledHOC": false,
+            "memo": true
           }
         },
         "Frame": {
@@ -27694,38 +27697,20 @@
       "useAnimations": "Function"
     },
     "media": {
-      "xl": {
-        "maxWidth": 1650
-      },
-      "lg": {
-        "maxWidth": 1280
-      },
-      "md": {
-        "maxWidth": 1020
+      "xs": {
+        "maxWidth": 750
       },
       "sm": {
-        "maxWidth": 800
+        "minWidth": 751,
+        "maxWidth": 930
       },
-      "xs": {
-        "maxWidth": 660
+      "md": {
+        "minWidth": 931,
+        "maxWidth": 1050
       },
-      "xxs": {
-        "maxWidth": 390
-      },
-      "gtXs": {
-        "minWidth": 661
-      },
-      "gtSm": {
-        "minWidth": 801
-      },
-      "gtMd": {
-        "minWidth": 1021
-      },
-      "gtLg": {
-        "minWidth": 1281
-      },
-      "gtXl": {
-        "minWidth": 1651
+      "lg": {
+        "minWidth": 1051,
+        "maxWidth": 2500
       }
     },
     "themes": {

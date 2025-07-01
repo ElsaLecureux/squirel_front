@@ -47,7 +47,7 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }} 
 
-      # Build on EAS (for android) and create ASK file, link and QR to download app    
+      # Build on EAS (for android) and create APK file, link and QR to download app    
       - name: Android build
         run: eas build -p android --profile production --non-interactive
         env:

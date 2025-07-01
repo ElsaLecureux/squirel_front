@@ -59,7 +59,6 @@ describe('<MemoryScreen />', () => {
       </NavigationContainer>,
     );
 
-    // Use screen.getByText for better error messaging
     const memoryText = screen.getByText('Memory');
     expect(memoryText).toBeTruthy();
   });

@@ -11,16 +11,12 @@ export const styles = StyleSheet.create({
     height: '100%',
   },
   kitchen: {
-    marginLeft: 20,
-    marginBottom: 25,
-    width: 150,
-    height: 150,
+    marginLeft: '1%',
+    marginBottom: '12%',
     backgroundColor: 'rgba(255, 255, 255, 0)',
   },
   headPhones: {
-    marginRight: 20,
-    width: 80,
-    height: 80,
+    marginRight: '3%',
     backgroundColor: 'rgba(255, 255, 255, 0)',
   },
 });

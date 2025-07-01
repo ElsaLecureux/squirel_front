@@ -1,4 +1,6 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+const { width: vw, height: vh } = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
   pageContainer: {
@@ -12,38 +14,14 @@ export const styles = StyleSheet.create({
   },
   door: {
     position: 'absolute',
-    bottom: '30%',
-    right: '46%',
-    width: 80,
-    height: 80,
+    bottom: vh * 0.3,
+    right: vw * 0.46,
     backgroundColor: 'rgba(255, 255, 255, 0)',
-  },
-  message: {
-    backgroundColor: '#ff8a01',
-    position: 'absolute',
-    bottom: '35%',
-    left: '15%',
-    color: '#fff',
-    height: 40,
-    width: 80,
-    fontSize: 30,
-    borderRadius: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  squirrel: {
-    position: 'absolute',
-    bottom: '20%',
-    left: '2%',
-    height: 300,
-    width: 300,
   },
   woodenSign: {
     position: 'absolute',
-    bottom: '8%',
-    right: '22%',
-    width: 120,
-    height: 180,
+    bottom: vh * 0.08,
+    right: vw * 0.22,
     backgroundColor: 'rgba(255, 255, 255, 0)',
   },
 });
