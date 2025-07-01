@@ -288,7 +288,7 @@ export default function MemoryScreen() {
               $lg={{ fontSize: 20 }}
               style={styles.modalText}
             >
-              Food: {animal?.food}
+              {animal?.food}
             </Text>
             <Text
               $xs={{ fontSize: 9 }}
@@ -306,7 +306,7 @@ export default function MemoryScreen() {
               $lg={{ fontSize: 20 }}
               style={styles.modalText}
             >
-              Size: {animal?.size}
+              Taille: {animal?.size}
             </Text>
             <Text
               $xs={{ fontSize: 9 }}
@@ -315,7 +315,7 @@ export default function MemoryScreen() {
               $lg={{ fontSize: 20 }}
               style={styles.modalText}
             >
-              Weight: {animal?.weight}
+              Poids: {animal?.weight}
             </Text>
             <Text
               $xs={{ fontSize: 9 }}
@@ -324,7 +324,7 @@ export default function MemoryScreen() {
               $lg={{ fontSize: 20 }}
               style={styles.modalText}
             >
-              Speed: {animal?.speed}
+              Vitesse: {animal?.speed}
             </Text>
             <Text
               $xs={{ fontSize: 9 }}
@@ -333,7 +333,7 @@ export default function MemoryScreen() {
               $lg={{ fontSize: 20 }}
               style={styles.modalText}
             >
-              Endangered: {animal?.endangered ? 'yes' : 'no'}
+              En danger: {animal?.endangered ? 'oui' : 'non'}
             </Text>
           </YStack>
           <Stack style={styles.funfact}>
@@ -349,6 +349,7 @@ export default function MemoryScreen() {
           </Stack>
         </XStack>
         <Button
+          margin={'1%'}
           $xs={{ size: '$2' }}
           $sm={{ size: '$3' }}
           $md={{ size: '$4' }}

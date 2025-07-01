@@ -17,19 +17,21 @@ export default function HomeScreen({ navigation }: Readonly<Props>) {
   const translateY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    const jumpAnimation = Animated.sequence([
-      Animated.timing(translateY, {
-        toValue: -10,
-        duration: 200,
-        useNativeDriver: true,
-      }),
+    const jumpAnimation = Animated.loop(
+      Animated.sequence([
+        Animated.timing(translateY, {
+          toValue: -10,
+          duration: 200,
+          useNativeDriver: true,
+        }),
 
-      Animated.timing(translateY, {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-    ]);
+        Animated.timing(translateY, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]),
+    );
 
     jumpAnimation.start();
   }, [translateY]);

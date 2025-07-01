@@ -158,12 +158,12 @@ export default function ProfileScreen() {
       }
     >
       {isLandscape && <RotationWarning />}
-      <Stack gap={'2%'} justifyContent="center" alignContent="center">
+      <Stack marginTop={'5%'} gap={'2%'} justifyContent="center" alignContent="center">
         <Text
-          marginBottom={'15%'}
-          fontFamily="MysteryQuest_400Regular"
-          color="#ffa358"
+          color="#E65100"
           textAlign="center"
+          marginBottom={'4%'}
+          fontFamily="MysteryQuest_400Regular"
           $xs={{ fontSize: 40 }}
           $sm={{ fontSize: 50 }}
           $md={{ fontSize: 60 }}
@@ -171,23 +171,29 @@ export default function ProfileScreen() {
         >
           Bienvenue {userInfo?.username}!
         </Text>
-        <Stack>
+        <Stack
+          marginBottom={'2%'}
+          padding={'2%'}
+          borderRadius={10}
+          backgroundColor="rgba(255, 255, 255, 0.34)"
+        >
           <Stack gap={'5%'}>
             <Stack justifyContent="center" gap={'2%'}>
               <Stack justifyContent="center" gap={'2%'}>
                 <Text
                   fontFamily="BubblegumSans_400Regular"
+                  fontStyle="italic"
                   color={'#fff'}
                   $xs={{ fontSize: 20 }}
                   $sm={{ fontSize: 25 }}
                   $md={{ fontSize: 30 }}
                   $lg={{ fontSize: 35 }}
                 >
-                  Identifiant:
+                  Identifiant
                 </Text>
                 <Text
                   fontFamily="BubblegumSans_400Regular"
-                  color={'#fff'}
+                  color={'#E65100'}
                   $xs={{ fontSize: 30 }}
                   $sm={{ fontSize: 35 }}
                   $md={{ fontSize: 40 }}
@@ -200,17 +206,18 @@ export default function ProfileScreen() {
               <Stack justifyContent="center" gap={'2%'}>
                 <Text
                   fontFamily="BubblegumSans_400Regular"
-                  color={'#fff'}
+                  fontStyle="italic"
+                  color={'#FFF'}
                   $xs={{ fontSize: 20 }}
                   $sm={{ fontSize: 25 }}
                   $md={{ fontSize: 30 }}
                   $lg={{ fontSize: 35 }}
                 >
-                  Email:
+                  Email
                 </Text>
                 <Text
                   fontFamily="BubblegumSans_400Regular"
-                  color={'#fff'}
+                  color={'#E65100'}
                   $xs={{ fontSize: 30 }}
                   $sm={{ fontSize: 35 }}
                   $md={{ fontSize: 40 }}
@@ -223,7 +230,15 @@ export default function ProfileScreen() {
           </Stack>
         </Stack>
         <Stack flexDirection="column">
-          <Stack gap={'2%'} alignItems="center" flexDirection="row">
+          <Stack
+            gap={'2%'}
+            marginBottom={'2%'}
+            padding={'2%'}
+            borderRadius={10}
+            backgroundColor="rgba(255, 255, 255, 0.34)"
+            alignItems="center"
+            flexDirection="row"
+          >
             <Text
               fontFamily="BubblegumSans_400Regular"
               $xs={{ fontSize: 30 }}
@@ -232,7 +247,7 @@ export default function ProfileScreen() {
               $lg={{ fontSize: 45 }}
               color={'#fff'}
             >
-              Trophées:
+              Trophées gagnés:
             </Text>
             {userPlayGame.map((game) => (
               <Stack gap="1%" key={game.gameid} flexDirection="row">
@@ -246,7 +261,7 @@ export default function ProfileScreen() {
                   </Stack>
                 ) : null}
                 {game.avatargold && game.numberoftimewon >= 5 ? (
-                  <Stack style={styles.containerTrophyGolden}>
+                  <Stack gap="1%" key={game.gameid} style={styles.containerTrophyGolden}>
                     <Image
                       key={game.avatargold}
                       style={styles.trophy}
@@ -260,16 +275,16 @@ export default function ProfileScreen() {
           <Stack alignItems="center">
             <Button
               size="$5"
-              variant="outlined"
-              borderColor="#FF8A01"
+              backgroundColor={'#FF8A01'}
               onPress={() => changeInfosButton()}
+              marginBottom={'2%'}
             >
-              <Text fontFamily="MysteryQuest_400Regular" color={'#fff'} fontSize={18}>
+              <Text fontFamily="MysteryQuest_400Regular" color={'#fff'} fontSize={25}>
                 Change tes infos
               </Text>
             </Button>
-            <Button size="$5" variant="outlined" borderColor="#FF8A01" onPress={() => signOut()}>
-              <Text fontFamily="MysteryQuest_400Regular" color={'#fff'} fontSize={18}>
+            <Button size="$5" backgroundColor={'#FF8A01'} onPress={() => signOut()}>
+              <Text fontFamily="MysteryQuest_400Regular" color={'#fff'} fontSize={25}>
                 Quitter le jeu
               </Text>
             </Button>
@@ -283,13 +298,18 @@ export default function ProfileScreen() {
         modalVisible={modalVisible}
       >
         <Form
-          backgroundColor="rgba(0, 0, 0, 0.34)"
-          width="100%"
+          backgroundColor="rgba(0, 0, 0, 0.53)"
           style={styles.modalView}
           gap="2%"
+          paddingTop="5%"
+          paddingBottom="5%"
+          $xs={{ width: 'auto' }}
+          $sm={{ width: 'auto' }}
+          $md={{ width: 300 }}
+          $lg={{ width: 400 }}
           onSubmit={() => onFormSubmit()}
         >
-          <Stack gap="$3" width="auto" justifyContent="center" alignItems="center">
+          <Stack gap="2%" width="auto">
             <Label htmlFor="username">
               <Text fontSize={25} color="#fff" fontFamily="BubblegumSans_400Regular">
                 Identifiant
@@ -300,7 +320,7 @@ export default function ProfileScreen() {
               value={userDto.username}
               onChangeText={(text) => handleInputChange('username', text)}
               autoCapitalize="none"
-              size="auto"
+              width="100%"
             />
           </Stack>
           <Stack gap="2%" width="auto" justifyContent="center" alignItems="center">
@@ -337,7 +357,7 @@ export default function ProfileScreen() {
               size="auto"
             />
           </Stack>
-          <Stack gap="2%" width="auto" justifyContent="center" alignItems="center">
+          <Stack marginTop={'3%'} gap="2%" width="auto" justifyContent="center" alignItems="center">
             <Label htmlFor="newPassword">
               <Text fontSize={25} color="#fff" fontFamily="BubblegumSans_400Regular">
                 Nouveau mot de passe
@@ -376,9 +396,9 @@ export default function ProfileScreen() {
             />
           </Stack>
           {errorMessage ? <Text>{errorMessage}</Text> : null}
-          <Stack paddingTop={'2%'} gap="3%" alignItems="center" justifyContent="center">
+          <Stack paddingTop={'2%'} alignItems="center" justifyContent="center">
             <Form.Trigger asChild>
-              <Button size={'2%'} backgroundColor="#FFF">
+              <Button marginBottom={'2%'} size={'2%'} backgroundColor="#FFF">
                 <Text color="#FF8A01" fontFamily="MysteryQuest_400Regular" fontSize={25}>
                   Sauver
                 </Text>
@@ -409,30 +429,26 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  avatar: {
-    borderRadius: 20,
-    borderWidth: 4,
-  },
   containerTrophy: {
     borderColor: '#FF8A01',
     borderRadius: 15,
     padding: 4,
     borderWidth: 2,
-    height: 50,
-    width: 50,
+    height: 'auto',
+    width: 'auto',
   },
   containerTrophyGolden: {
     borderColor: '#D4AF37',
     borderRadius: 15,
     padding: 4,
     borderWidth: 2,
-    height: 50,
-    width: 50,
+    height: 'auto',
+    width: 'auto',
   },
   trophy: {
-    height: '100%',
-    width: '100%',
     borderRadius: 15,
+    height: 60,
+    width: 60,
   },
   modalView: {
     borderRadius: 20,

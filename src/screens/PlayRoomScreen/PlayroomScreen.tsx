@@ -1,6 +1,6 @@
 import { Animated, Easing, ImageBackground, TouchableOpacity } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { Image } from 'tamagui';
+import { Image, useMedia } from 'tamagui';
 import { useEffect, useRef } from 'react';
 import { PlayroomStackParamList } from '@/src/types/navigationTypes';
 import { styles } from './PlayroomStyle';
@@ -12,6 +12,9 @@ type Props = {
 };
 
 export default function PlayroomScreen({ navigation }: Readonly<Props>) {
+  const media = useMedia();
+
+  const signHeight = media.sm ? 80 : media.md ? 120 : 150;
   const spinValue = useRef(new Animated.Value(0)).current;
   const rotate = spinValue.interpolate({
     inputRange: [0, 0.5, 1],
@@ -31,8 +34,6 @@ export default function PlayroomScreen({ navigation }: Readonly<Props>) {
     spin();
   }, [spinValue]);
 
-  //todo change animation library for size growing and shrinking
-
   return (
     <ImageBackground
       style={styles.pageContainer}
@@ -40,7 +41,15 @@ export default function PlayroomScreen({ navigation }: Readonly<Props>) {
       resizeMode="stretch"
     >
       <TouchableOpacity style={styles.kitchen} onPress={() => navigation.navigate('Kitchen')}>
-        <Animated.View style={{ transform: [{ rotate }] }}>
+        <Animated.View
+          style={{
+            transform: [
+              { translateY: -signHeight / 2 },
+              { rotate },
+              { translateY: signHeight / 2 },
+            ],
+          }}
+        >
           <Image
             source={require('../../assets/images/woodenSignKitchen.png')}
             $sm={{ width: 80, height: 80 }}
