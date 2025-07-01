@@ -36,7 +36,11 @@ jobs:
 
       - name: Web app build and export
         run: npm run build
-
+        env:
+          TOKEN_API_RADIO_FRANCE: ${{ secrets.TOKEN_API_RADIO_FRANCE }}
+          URL_API_RADIO_FRANCE: ${{ secrets.URL_API_RADIO_FRANCE }}
+          URL_BACKEND_SQUIREL: ${{ secrets.URL_BACKEND_SQUIREL }}
+          
       - name: Install Netlify CLI
         run: npm install -g netlify-cli
 
