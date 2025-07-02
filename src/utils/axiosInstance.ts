@@ -12,11 +12,11 @@ const axiosInstance = axios.create({
   withCredentials: !isMobile,
 });
 
-axios.interceptors.request.use(async (config) => {
+axiosInstance.interceptors.request.use(async (config) => {
   if (isMobile) {
     const token = await SecureStore.getItemAsync('access_token');
     if (token) {
-      config.headers.Authorization = `Bearer: ${token}`;
+      config.headers.Authorization = `Bearer ${token}`;
     }
   }
   return config;
