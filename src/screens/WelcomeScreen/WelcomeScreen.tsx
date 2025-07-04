@@ -53,7 +53,7 @@ export default function WelcomeScreen({ navigation }: Readonly<Props>) {
                 backgroundColor: '#FF5F1F',
               }}
               size="$9"
-              $sm={{ size: '$5' }}
+              $sm={{ size: '$4' }}
               $md={{ size: '$7' }}
               $lg={{ size: '$9' }}
             >
