@@ -4,15 +4,22 @@ const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!
 
 export const SignUpSchema = z
   .object({
-    username: z.string().min(1, 'Username is required'),
-    email: z.email(),
-    password: z.string().min(8, 'Must have at least 8 characters').regex(passwordRegex, {
-      message:
-        'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character',
-    }),
+    username: z.string().min(1, 'Le nom d’utilisateur est requis'),
+    email: z.email('Adresse email invalide'),
+    password: z
+      .string()
+      .min(8, 'Le mot de passe doit contenir au moins 8 caractères')
+      .regex(passwordRegex, {
+        message:
+          'Le mot de passe doit contenir au moins une lettre majuscule, une lettre minuscule, un chiffre et un caractère spécial',
+      }),
     confirmPassword: z.string(),
+    consent: z.literal(true, {
+      message:
+        'Conformément au RGPD, vous devez accepter la collecte des données pour créer le compte.',
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
-    path: ['confirmPassword'], // This specifies which field the error should be attached to
+    message: 'Les mots de passe ne correspondent pas',
+    path: ['confirmPassword'],
   });

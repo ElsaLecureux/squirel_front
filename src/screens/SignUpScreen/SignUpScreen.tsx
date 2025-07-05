@@ -1,11 +1,11 @@
 import { ImageBackground, StyleSheet } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { Text, Button, Form, Label, Input, Stack } from 'tamagui';
+import { Text, Button, Form, Label, Input, Stack, Checkbox } from 'tamagui';
 import * as SecureStore from 'expo-secure-store';
 import axios from 'axios';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { UserDto } from '../../Dto/UserDto';
-import { Eye, EyeOff } from '@tamagui/lucide-icons';
+import { Eye, EyeOff, Check as CheckIcon } from '@tamagui/lucide-icons';
 import { useUser } from '../../context/UserContext';
 import type { RootStackParamList } from '../../types/navigationTypes';
 import axiosInstance from '@/src/utils/axiosInstance';
@@ -31,18 +31,26 @@ export default function SignUpScreen({ navigation }: Readonly<Props>) {
     email: '',
     password: '',
     newPassword: '',
+    consent: false,
   });
-  const [errorMessage, setErrorMessage] = useState({
+  const [errorMessage, setErrorMessage] = useState<{
+    username: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+    consent?: string;
+  }>({
     username: '',
     email: '',
     password: '',
     confirmPassword: '',
+    consent: '',
   });
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmationPasswordVisible, setConfirmationPasswordVisible] = useState(false);
   const { isLandscape, isMobile } = useScreenOrientation();
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: string, value: string | boolean) => {
     const updatedUserDto = {
       ...userDto,
       [field]: value,
@@ -54,6 +62,7 @@ export default function SignUpScreen({ navigation }: Readonly<Props>) {
       email: 'email',
       password: 'password',
       newPassword: 'confirmPassword',
+      consent: 'consent',
     };
 
     const errorField = errorFieldMap[field];
@@ -79,6 +88,7 @@ export default function SignUpScreen({ navigation }: Readonly<Props>) {
       email: userDto.email,
       password: userDto.password,
       confirmPassword: userDto.newPassword,
+      consent: userDto.consent,
     });
     if (!result.success && showErrors) {
       const tree = treeifyError(result.error);
@@ -87,6 +97,7 @@ export default function SignUpScreen({ navigation }: Readonly<Props>) {
         email: tree.properties?.email?.errors?.[0] ?? '',
         password: tree.properties?.password?.errors?.[0] ?? '',
         confirmPassword: tree.properties?.confirmPassword?.errors?.[0] ?? '',
+        consent: tree.properties?.consent?.errors?.[0] ?? '',
       });
       return { success: false, data: null };
     }
@@ -254,7 +265,40 @@ export default function SignUpScreen({ navigation }: Readonly<Props>) {
               />
             </Stack>
           </Stack>
-          <Stack gap="$3" maxHeight={120} marginTop="12%">
+          <Stack
+            marginTop={'5%'}
+            flexDirection={'row'}
+            justifyContent="center"
+            alignItems="center"
+            gap={'3%'}
+          >
+            <Checkbox
+              flex={1}
+              padding={'2%'}
+              id={'consent'}
+              size={'$4'}
+              checked={userDto.consent}
+              onCheckedChange={(checked: boolean) => handleInputChange('consent', checked)}
+            >
+              <Checkbox.Indicator>
+                <CheckIcon />
+              </Checkbox.Indicator>
+            </Checkbox>
+            <Label size={'$2'} htmlFor={'consent'}>
+              <Text color="#fff" fontSize={20}>
+                En tant que représentant légal je donne mon autorisation pour la collecte de ces
+                informations uniquement pour la création de son compte.
+              </Text>
+            </Label>
+          </Stack>
+          <Stack>
+            {errorMessage.consent && (
+              <Text color="red" fontSize={12} marginTop={4}>
+                {errorMessage.consent}
+              </Text>
+            )}
+          </Stack>
+          <Stack gap="$3" maxHeight={120} marginTop="5%">
             <Form.Trigger asChild>
               <Button size="auto" backgroundColor="#FF8A01">
                 <Text color="#fff" fontFamily="BubblegumSans_400Regular" fontSize={25}>

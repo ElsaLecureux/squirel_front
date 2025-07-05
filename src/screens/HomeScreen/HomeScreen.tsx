@@ -55,8 +55,8 @@ export default function HomeScreen({ navigation }: Readonly<Props>) {
       >
         <Image
           source={require('../../assets/images/key.gif')}
-          width={80}
-          height={80}
+          width={40}
+          height={40}
           $sm={{ width: 40, height: 40 }}
           $md={{ width: 60, height: 60 }}
           $lg={{ width: 80, height: 80 }}
@@ -70,8 +70,8 @@ export default function HomeScreen({ navigation }: Readonly<Props>) {
         <Animated.View style={{ transform: [{ translateY }] }}>
           <Image
             source={require('../../assets/images/woodenSign.png')}
-            width={120}
-            height={160}
+            width={60}
+            height={100}
             $sm={{ width: 60, height: 100 }}
             $md={{ width: 80, height: 120 }}
             $lg={{ width: 100, height: 140 }}

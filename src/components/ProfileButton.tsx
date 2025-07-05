@@ -11,11 +11,12 @@ type Props = {
 export const ProfileButton = ({ navigation }: Props) => {
   const media = useMedia();
 
-  const iconSize = media.sm ? 20 : media.md ? 28 : 35;
+  const iconSize = media.sm ? 18 : media.md ? 28 : 35;
   return (
     <XStack marginRight="3%" marginTop="3%" gap={12}>
       <Button
-        $sm={{ height: 40, size: 40 }}
+        $xs={{ height: 30, size: 30 }}
+        $sm={{ height: 30, size: 30 }}
         $md={{ height: 50, size: 50 }}
         $lg={{ height: 60, size: 60 }}
         variant="outlined"
