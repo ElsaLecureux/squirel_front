@@ -1,6 +1,6 @@
 import { faUser } from '@fortawesome/free-solid-svg-icons/faUser';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { Button, XStack } from 'tamagui';
+import { Button, useMedia, XStack } from 'tamagui';
 import { HomeStackParamList } from '../types/navigationTypes';
 import { StackNavigationProp } from '@react-navigation/stack';
 
@@ -9,6 +9,9 @@ type Props = {
 };
 
 export const ProfileButton = ({ navigation }: Props) => {
+  const media = useMedia();
+
+  const iconSize = media.sm ? 20 : media.md ? 28 : 35;
   return (
     <XStack marginRight="3%" marginTop="3%" gap={12}>
       <Button
@@ -21,7 +24,7 @@ export const ProfileButton = ({ navigation }: Props) => {
         paddingRight={'30%'}
         onPress={() => navigation.navigate('Profile')}
       >
-        <FontAwesomeIcon icon={faUser} style={{ color: '#ff8a01' }} size={30} />
+        <FontAwesomeIcon icon={faUser} style={{ color: '#ff8a01' }} size={iconSize} />
       </Button>
     </XStack>
   );

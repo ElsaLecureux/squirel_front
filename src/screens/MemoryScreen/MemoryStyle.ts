@@ -30,7 +30,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexWrap: 'wrap',
-    width: '65%',
+    width: '70%',
   },
   invisible: {
     display: 'none',

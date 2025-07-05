@@ -261,7 +261,6 @@ export default function MemoryScreen() {
           style={styles.modalView}
         >
           <Image
-            flex={1}
             borderTopLeftRadius={15}
             borderBottomLeftRadius={15}
             $xs={{ width: 180, height: 240 }}
@@ -415,15 +414,14 @@ export default function MemoryScreen() {
               animation="bouncy"
               $xs={{ width: 65, height: 100 }}
               $sm={{ width: 80, height: 120 }}
-              $md={{ width: 120, height: 160 }}
+              $md={{ width: 100, height: 160 }}
               $lg={{ width: 160, height: 220 }}
             >
               <TouchableOpacity onPress={() => flipCards(index)} activeOpacity={1}>
                 <View
-                  flex={1}
                   $xs={{ width: 65, height: 100 }}
                   $sm={{ width: 80, height: 120 }}
-                  $md={{ width: 120, height: 160 }}
+                  $md={{ width: 100, height: 160 }}
                   $lg={{ width: 160, height: 220 }}
                   style={visibleCards[index] ? styles.invisible : styles.faceB}
                 >
@@ -433,10 +431,9 @@ export default function MemoryScreen() {
                   />
                 </View>
                 <View
-                  flex={1}
                   $xs={{ width: 65, height: 100 }}
                   $sm={{ width: 80, height: 120 }}
-                  $md={{ width: 120, height: 160 }}
+                  $md={{ width: 100, height: 160 }}
                   $lg={{ width: 160, height: 220 }}
                   style={visibleCards[index] ? styles.faceA : styles.invisible}
                 >
