@@ -29,7 +29,7 @@ module.exports = function (api) {
           components: ['tamagui'],
           config: './tamagui.config.ts',
           logTimings: true,
-          disableExtraction: process.env.NODE_ENV === 'development',
+          disableExtraction: false,
         },
       ],
     ],
