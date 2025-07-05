@@ -51,7 +51,7 @@ export default function KitchenScreen() {
           >
             <Button
               style={styles.closeButton}
-              $xs={{ size: '$3' }}
+              $xs={{ size: '$2' }}
               $sm={{ size: '$3' }}
               $md={{ size: '$4' }}
               $lg={{ size: '$5' }}

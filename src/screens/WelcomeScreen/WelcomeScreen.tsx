@@ -52,15 +52,15 @@ export default function WelcomeScreen({ navigation }: Readonly<Props>) {
               hoverStyle={{
                 backgroundColor: '#FF5F1F',
               }}
-              size="$9"
-              $sm={{ size: '$4' }}
+              $xs={{ size: '$2' }}
+              $sm={{ size: '$3' }}
               $md={{ size: '$7' }}
               $lg={{ size: '$9' }}
             >
               <Text
                 fontFamily="MysteryQuest_400Regular"
                 color="#FFF"
-                fontSize={42}
+                $xs={{ fontSize: 20 }}
                 $sm={{ fontSize: 24 }}
                 $md={{ fontSize: 36 }}
                 $lg={{ fontSize: 42 }}
