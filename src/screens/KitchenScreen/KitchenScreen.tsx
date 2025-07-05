@@ -9,7 +9,7 @@ export default function KitchenScreen() {
 
   return (
     <ImageBackground
-      source={require('../../assets/images/kitchenScreen.png')}
+      source={require('../../assets/images/kitchenScreen.jpg')}
       style={styles.pageContainer}
       resizeMode="stretch"
     >

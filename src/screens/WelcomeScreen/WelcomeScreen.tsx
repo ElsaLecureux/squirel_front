@@ -47,12 +47,11 @@ export default function WelcomeScreen({ navigation }: Readonly<Props>) {
           >
             <Button
               backgroundColor="#FF8A01"
-              width="auto"
               onPress={handleAuthCheck}
               hoverStyle={{
                 backgroundColor: '#FF5F1F',
               }}
-              $xs={{ size: '$2' }}
+              $xs={{ size: '$3' }}
               $sm={{ size: '$3' }}
               $md={{ size: '$7' }}
               $lg={{ size: '$9' }}

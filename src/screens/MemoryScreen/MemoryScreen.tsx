@@ -254,8 +254,8 @@ export default function MemoryScreen() {
         modalVisible={animalCardVisible}
       >
         <XStack
-          $xs={{ width: 320, height: 240 }}
-          $sm={{ width: 375, height: 280 }}
+          $xs={{ width: 350, height: 240 }}
+          $sm={{ width: 400, height: 280 }}
           $md={{ width: 600, height: 450 }}
           $lg={{ width: 800, height: 600 }}
           style={styles.modalView}
@@ -280,15 +280,24 @@ export default function MemoryScreen() {
             >
               {animal?.name}
             </Text>
-            <Text
-              $xs={{ fontSize: 9 }}
-              $sm={{ fontSize: 12 }}
-              $md={{ fontSize: 16 }}
-              $lg={{ fontSize: 20 }}
-              style={styles.modalText}
-            >
-              {animal?.food}
-            </Text>
+            <Stack flexDirection="row" gap={'1%'}>
+              <Image
+                $xs={{ width: 20, height: 20 }}
+                $sm={{ width: 20, height: 20 }}
+                $md={{ width: 25, height: 25 }}
+                $lg={{ width: 30, height: 30 }}
+                source={require('../../assets/images/food.png')}
+              />
+              <Text
+                $xs={{ fontSize: 9 }}
+                $sm={{ fontSize: 12 }}
+                $md={{ fontSize: 16 }}
+                $lg={{ fontSize: 20 }}
+                style={styles.modalText}
+              >
+                {animal?.food}
+              </Text>
+            </Stack>
             <Text
               $xs={{ fontSize: 9 }}
               $sm={{ fontSize: 12 }}
@@ -332,7 +341,17 @@ export default function MemoryScreen() {
               $lg={{ fontSize: 20 }}
               style={styles.modalText}
             >
-              En danger: {animal?.endangered ? 'oui' : 'non'}
+              {animal?.endangered ? (
+                <Image
+                  $xs={{ width: 35, height: 35 }}
+                  $sm={{ width: 45, height: 45 }}
+                  $md={{ width: 55, height: 55 }}
+                  $lg={{ width: 60, height: 60 }}
+                  source={require('../../assets/images/endangered.png')}
+                />
+              ) : (
+                ''
+              )}
             </Text>
           </YStack>
           <Stack style={styles.funfact}>

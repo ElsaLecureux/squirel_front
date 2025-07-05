@@ -67,7 +67,7 @@ export default function PlayroomStack() {
 
 const styles = StyleSheet.create({
   headerLeft: {
-    paddingLeft: 40,
-    paddingTop: 40,
+    paddingLeft: 20,
+    paddingTop: 20,
   },
 });

@@ -7,6 +7,15 @@ export interface ImageMap {
   bear: number;
   cat: number;
   shark: number;
+  lion: number;
+  polarBear: number;
+  peacock: number;
+  penguin: number;
+  squirrel: number;
+  wolf: number;
+  koala: number;
+  giraf: number;
+  spider: number;
 }
 
 export type AnimalKey = keyof ImageMap;
