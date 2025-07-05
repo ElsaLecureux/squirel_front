@@ -3,4 +3,5 @@ export interface UserDto {
   email: string;
   password: string;
   newPassword: string | undefined;
+  consent: boolean;
 }

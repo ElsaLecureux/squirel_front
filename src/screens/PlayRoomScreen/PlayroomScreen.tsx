@@ -37,7 +37,7 @@ export default function PlayroomScreen({ navigation }: Readonly<Props>) {
   return (
     <ImageBackground
       style={styles.pageContainer}
-      source={require('../../assets/images/playroomScreen.png')}
+      source={require('../../assets/images/playroomScreen.jpg')}
       resizeMode="stretch"
     >
       <TouchableOpacity style={styles.kitchen} onPress={() => navigation.navigate('Kitchen')}>
