@@ -1,7 +1,6 @@
 import { config } from '@tamagui/config';
 import { createTamagui, createFont } from 'tamagui';
 
-// Minimal fix: Just add the missing "true" tokens to stop the warnings
 const bodyFont = createFont({
   ...config.fonts.body,
   size: { ...config.fonts.body.size, true: config.fonts.body.size[4] },
@@ -23,12 +22,12 @@ const headingFont = createFont({
 
 const tamaguiConfig = createTamagui({
   ...config,
+  defaultFont: 'body',
   fonts: {
     ...config.fonts,
     body: bodyFont,
     heading: headingFont,
   },
-  // Keep your exact media queries unchanged
   media: {
     xs: { maxWidth: 750 },
     sm: { minWidth: 751, maxWidth: 930 },
