@@ -1,0 +1,10 @@
+[[redirects]]
+  from = "https://squirelproject.netlify.app/*"
+  to = "https://squirel.de/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
