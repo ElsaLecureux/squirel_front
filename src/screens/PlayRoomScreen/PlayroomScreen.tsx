@@ -52,6 +52,8 @@ export default function PlayroomScreen({ navigation }: Readonly<Props>) {
         >
           <Image
             source={require('../../assets/images/woodenSignKitchen.png')}
+            width={80}
+            height={80}
             $sm={{ width: 80, height: 80 }}
             $md={{ width: 120, height: 120 }}
             $lg={{ width: 150, height: 150 }}

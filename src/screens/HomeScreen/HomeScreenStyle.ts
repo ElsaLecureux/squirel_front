@@ -1,6 +1,4 @@
-import { StyleSheet, Dimensions } from 'react-native';
-
-const { width: vw, height: vh } = Dimensions.get('window');
+import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   pageContainer: {
@@ -14,14 +12,14 @@ export const styles = StyleSheet.create({
   },
   door: {
     position: 'absolute',
-    bottom: vh * 0.3,
-    right: vw * 0.46,
+    bottom: '30%',
+    right: '46%',
     backgroundColor: 'rgba(255, 255, 255, 0)',
   },
   woodenSign: {
     position: 'absolute',
-    bottom: vh * 0.08,
-    right: vw * 0.22,
+    bottom: '8%',
+    right: '22%',
     backgroundColor: 'rgba(255, 255, 255, 0)',
   },
 });
