@@ -1,8 +1,34 @@
-import { config } from '@tamagui/config/v3';
-import { createTamagui } from 'tamagui';
+import { config } from '@tamagui/config';
+import { createTamagui, createFont } from 'tamagui';
+
+// Minimal fix: Just add the missing "true" tokens to stop the warnings
+const bodyFont = createFont({
+  ...config.fonts.body,
+  size: { ...config.fonts.body.size, true: config.fonts.body.size[4] },
+  lineHeight: { ...config.fonts.body.lineHeight, true: config.fonts.body.lineHeight[4] },
+  weight: { ...config.fonts.body.weight, true: config.fonts.body.weight[4] },
+  letterSpacing: { ...config.fonts.body.letterSpacing, true: config.fonts.body.letterSpacing[4] },
+});
+
+const headingFont = createFont({
+  ...config.fonts.heading,
+  size: { ...config.fonts.heading.size, true: config.fonts.heading.size[6] },
+  lineHeight: { ...config.fonts.heading.lineHeight, true: config.fonts.heading.lineHeight[6] },
+  weight: { ...config.fonts.heading.weight, true: config.fonts.heading.weight[6] },
+  letterSpacing: {
+    ...config.fonts.heading.letterSpacing,
+    true: config.fonts.heading.letterSpacing[6],
+  },
+});
 
 const tamaguiConfig = createTamagui({
   ...config,
+  fonts: {
+    ...config.fonts,
+    body: bodyFont,
+    heading: headingFont,
+  },
+  // Keep your exact media queries unchanged
   media: {
     xs: { maxWidth: 750 },
     sm: { minWidth: 751, maxWidth: 930 },
@@ -12,7 +38,6 @@ const tamaguiConfig = createTamagui({
 });
 
 export default tamaguiConfig;
-
 export type Conf = typeof tamaguiConfig;
 
 declare module 'tamagui' {

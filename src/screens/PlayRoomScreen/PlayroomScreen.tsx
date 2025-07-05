@@ -61,8 +61,6 @@ export default function PlayroomScreen({ navigation }: Readonly<Props>) {
       <TouchableOpacity style={styles.headPhones} onPress={() => navigation.navigate('Library')}>
         <Image
           source={require('../../assets/images/headphones.gif')}
-          width={80}
-          height={80}
           $sm={{ width: 60, height: 60 }}
           $md={{ width: 80, height: 80 }}
           $lg={{ width: 100, height: 100 }}
