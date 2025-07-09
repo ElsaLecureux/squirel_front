@@ -1,3 +1,4 @@
+import { useScreenOrientation } from '@/src/utils/useScreenOrientation';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useState } from 'react';
@@ -6,6 +7,7 @@ import { Stack, Image, View, Button } from 'tamagui';
 
 export default function KitchenScreen() {
   const [isVisible, setIsVisible] = useState(false);
+  const { isMobile } = useScreenOrientation();
 
   return (
     <ImageBackground
@@ -18,7 +20,7 @@ export default function KitchenScreen() {
           width={'100%'}
           justifyContent="center"
           paddingRight={'10%'}
-          paddingTop={'5%'}
+          paddingTop={isMobile ? '5%' : ''}
           alignItems="flex-end"
         >
           <TouchableOpacity
@@ -52,7 +54,7 @@ export default function KitchenScreen() {
             $lg={{ width: '70%', height: '60%' }}
             padding={'4%'}
             borderRadius={10}
-            marginBottom={'5%'} : ''}
+            marginBottom={isMobile ? '5%' : ''}
           >
             <Button
               style={styles.closeButton}

@@ -239,7 +239,7 @@ export default function LibraryScreen() {
                 </YStack>
                 <YStack style={styles.podcastContainer}>
                   {(loadedData[podcast.id]?.diffusionsConnection?.edges ?? []).map(({ node }) =>
-                    node?.title ? (
+                    node?.podcastEpisode != null ? (
                       <YStack style={styles.episodeCardContainer} key={node.id}>
                         <Separator alignSelf="stretch" style={styles.episodeSeparator} />
                         <XStack style={styles.episodeCard}>

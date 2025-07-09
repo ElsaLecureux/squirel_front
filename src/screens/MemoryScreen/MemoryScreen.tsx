@@ -121,7 +121,7 @@ export default function MemoryScreen() {
       console.error('Failed to load game:', error);
     }
     return false;
-  }, [API_URL, userId]);
+  }, [userId]);
 
   const initializeGame = useCallback(async () => {
     const createCardSet = () => {
