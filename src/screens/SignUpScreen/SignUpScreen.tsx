@@ -327,7 +327,6 @@ export default function SignUpScreen({ navigation }: Readonly<Props>) {
 
 const styles = StyleSheet.create({
   pageContainer: {
-    flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'flex-start',
