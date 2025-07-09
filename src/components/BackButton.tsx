@@ -10,13 +10,13 @@ type Props = {
 export default function BackButton({ navigation }: Readonly<Props>) {
   const media = useMedia();
 
-  const iconSize = media.sm ? 18 : media.md ? 28 : 35;
+  const iconSize = media.sm ? 18 : media.md ? 28 : 32;
   return (
     <Button
-      $xs={{ height: 30, size: 30 }}
-      $sm={{ height: 30, size: 30 }}
-      $md={{ height: 50, size: 50 }}
-      $lg={{ height: 60, size: 60 }}
+      $xs={{ size: '$2' }}
+      $sm={{ size: '$3' }}
+      $md={{ size: '$4' }}
+      $lg={{ size: '$5' }}
       variant="outlined"
       borderColor="#ff8a01"
       onPress={() => navigation.goBack()}

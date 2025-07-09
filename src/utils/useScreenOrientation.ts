@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 export const useScreenOrientation = () => {
   const [orientation, setOrientation] = useState<ScreenOrientation.Orientation | null>(null);
-  const isMobile = Platform.OS !== 'web' || (Platform.OS === 'web' && window.innerWidth < 768);
+  const isMobile = Platform.OS !== 'web' || (Platform.OS === 'web' && window.innerWidth < 930);
 
   const isLandscape =
     isMobile &&
