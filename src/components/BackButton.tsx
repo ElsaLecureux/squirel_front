@@ -19,7 +19,7 @@ export default function BackButton({ navigation }: Readonly<Props>) {
       $lg={{ height: 60, size: 60 }}
       variant="outlined"
       borderColor="#ff8a01"
-      onPress={() => navigation.navigate('Home')}
+      onPress={() => navigation.goBack()}
     >
       <FontAwesomeIcon
         icon={faArrowCircleLeft}

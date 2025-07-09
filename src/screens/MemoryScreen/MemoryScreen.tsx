@@ -280,7 +280,7 @@ export default function MemoryScreen() {
             >
               {animal?.name}
             </Text>
-            <Stack flexDirection="row" gap={'1%'}>
+            <Stack flexDirection="row" gap={'0.5%'}>
               <Image
                 $xs={{ width: 20, height: 20 }}
                 $sm={{ width: 20, height: 20 }}
