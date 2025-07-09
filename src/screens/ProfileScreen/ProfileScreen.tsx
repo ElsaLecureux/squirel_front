@@ -24,6 +24,7 @@ export default function ProfileScreen() {
     email: '',
     password: '',
     newPassword: undefined,
+    consent: true,
   });
   const style_modal_bottom = false;
   const [errorMessage, setErrorMessage] = useState<string>();
@@ -422,7 +423,6 @@ export default function ProfileScreen() {
 
 const styles = StyleSheet.create({
   pageContainer: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',

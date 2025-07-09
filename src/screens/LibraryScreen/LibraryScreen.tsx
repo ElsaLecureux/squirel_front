@@ -1,6 +1,6 @@
 import { faCirclePlay } from '@fortawesome/free-solid-svg-icons/faCirclePlay';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
-import { ImageBackground, ImageSourcePropType, Platform, TouchableOpacity } from 'react-native';
+import { ImageBackground, ImageSourcePropType, Platform } from 'react-native';
 import { styles } from './LibraryScreenStyle';
 
 import { gql, useApolloClient } from '@apollo/client';
@@ -238,40 +238,44 @@ export default function LibraryScreen() {
                   </Text>
                 </YStack>
                 <YStack style={styles.podcastContainer}>
-                  {loadedData[podcast.id]?.diffusionsConnection.edges.map(({ node }) => (
-                    <YStack style={styles.episodeCardContainer} key={node.id}>
-                      <Separator alignSelf="stretch" style={styles.episodeSeparator} />
-                      <TouchableOpacity onPress={() => onplay(node)} style={styles.episodeCard}>
-                        <Image
-                          $xs={{ width: 60, height: 60 }}
-                          $sm={{ width: 80, height: 80 }}
-                          $md={{ width: 100, height: 100 }}
-                          $lg={{ width: 120, height: 120 }}
-                          source={podcast.image}
-                        ></Image>
+                  {(loadedData[podcast.id]?.diffusionsConnection?.edges ?? []).map(({ node }) =>
+                    node?.title ? (
+                      <YStack style={styles.episodeCardContainer} key={node.id}>
+                        <Separator alignSelf="stretch" style={styles.episodeSeparator} />
+                        <XStack style={styles.episodeCard}>
+                          <Image
+                            $xs={{ width: 60, height: 60 }}
+                            $sm={{ width: 80, height: 80 }}
+                            $md={{ width: 100, height: 100 }}
+                            $lg={{ width: 120, height: 120 }}
+                            source={podcast.image}
+                          ></Image>
 
-                        <Text
-                          $xs={{ fontSize: 10 }}
-                          $sm={{ fontSize: 15 }}
-                          $md={{ fontSize: 20 }}
-                          $lg={{ fontSize: 30 }}
-                          style={styles.episodeTitle}
-                        >
-                          {node.title}
-                        </Text>
-                        <Button
-                          $xs={{ size: '$3' }}
-                          $sm={{ size: '$4' }}
-                          $md={{ size: '$5' }}
-                          $lg={{ size: '$6' }}
-                          style={styles.episodeButton}
-                          onPress={() => onplay(node)}
-                        >
-                          <FontAwesomeIcon icon={faCirclePlay} style={styles.iconButtonStyle} />
-                        </Button>
-                      </TouchableOpacity>
-                    </YStack>
-                  ))}
+                          <Text
+                            $xs={{ fontSize: 10 }}
+                            $sm={{ fontSize: 15 }}
+                            $md={{ fontSize: 20 }}
+                            $lg={{ fontSize: 30 }}
+                            style={styles.episodeTitle}
+                          >
+                            {node.title}
+                          </Text>
+                          <Button
+                            $xs={{ size: '$3' }}
+                            $sm={{ size: '$4' }}
+                            $md={{ size: '$5' }}
+                            $lg={{ size: '$6' }}
+                            style={styles.episodeButton}
+                            onPress={() => onplay(node)}
+                          >
+                            <FontAwesomeIcon icon={faCirclePlay} style={styles.iconButtonStyle} />
+                          </Button>
+                        </XStack>
+                      </YStack>
+                    ) : (
+                      ''
+                    ),
+                  )}
                 </YStack>
               </Tabs.Content>
             </ScrollView>
