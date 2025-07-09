@@ -11,18 +11,16 @@ type Props = {
 export const ProfileButton = ({ navigation }: Props) => {
   const media = useMedia();
 
-  const iconSize = media.sm ? 18 : media.md ? 28 : 35;
+  const iconSize = media.sm ? 18 : media.md ? 28 : 32;
   return (
-    <XStack marginRight="3%" marginTop="3%" gap={12}>
+    <XStack marginRight="3%" marginTop="3%">
       <Button
-        $xs={{ height: 30, size: 30 }}
-        $sm={{ height: 30, size: 30 }}
-        $md={{ height: 50, size: 50 }}
-        $lg={{ height: 60, size: 60 }}
+        $xs={{ size: '$2' }}
+        $sm={{ size: '$3' }}
+        $md={{ size: '$4' }}
+        $lg={{ size: '$5' }}
         variant="outlined"
         borderColor="#ff8a01"
-        paddingLeft={'30%'}
-        paddingRight={'30%'}
         onPress={() => navigation.navigate('Profile')}
       >
         <FontAwesomeIcon icon={faUser} style={{ color: '#ff8a01' }} size={iconSize} />

@@ -1,4 +1,3 @@
-import { useScreenOrientation } from '@/src/utils/useScreenOrientation';
 import { faXmark } from '@fortawesome/free-solid-svg-icons/faXmark';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useState } from 'react';
@@ -7,7 +6,6 @@ import { Stack, Image, View, Button } from 'tamagui';
 
 export default function KitchenScreen() {
   const [isVisible, setIsVisible] = useState(false);
-  const { isMobile } = useScreenOrientation();
 
   return (
     <ImageBackground
@@ -20,7 +18,7 @@ export default function KitchenScreen() {
           width={'100%'}
           justifyContent="center"
           paddingRight={'10%'}
-          paddingTop={isMobile ? '5%' : ''}
+          paddingTop={'5%'}
           alignItems="flex-end"
         >
           <TouchableOpacity
@@ -44,17 +42,17 @@ export default function KitchenScreen() {
 
         {isVisible ? (
           <View
-            flex={1}
             justifyContent="center"
             style={styles.recipe}
             backgroundColor={'rgb(255, 255, 255)'}
-            $xs={{ width: '100%', height: '100%' }}
-            $sm={{ width: '100%', height: '100%' }}
-            $md={{ width: '80%', height: '70%' }}
-            $lg={{ width: '70%', height: '60%' }}
+            $xs={{ width: '80%' }}
+            $sm={{ width: '80%' }}
+            $md={{ width: '75%' }}
+            $lg={{ width: '70%' }}
+            aspectRatio={16 / 9}
             padding={'4%'}
             borderRadius={10}
-            marginBottom={isMobile ? '5%' : ''}
+            marginBottom={'5%'}
           >
             <Button
               style={styles.closeButton}
@@ -69,8 +67,7 @@ export default function KitchenScreen() {
               <FontAwesomeIcon icon={faXmark} style={{ color: '#fff' }} />
             </Button>
             <Image
-              zIndex={0}
-              objectFit="cover"
+              objectFit="contain"
               height={'100%'}
               width={'100%'}
               borderRadius={0}
@@ -100,7 +97,6 @@ const styles = StyleSheet.create({
     top: 0,
     right: 0,
     backgroundColor: '#ff8a01',
-    zIndex: 10,
     elevation: 10,
   },
 });
